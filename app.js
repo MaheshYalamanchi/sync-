@@ -68,6 +68,6 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
-var server = app.listen(process.env.PORT, function () {
-  console.log("sync Service...",process.env.PORT)
+var server = app.listen(3004, function () {
+  console.log("sync Service...",3004)
 });
