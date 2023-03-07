@@ -64,14 +64,14 @@ let insertBatchDoc = async (data, collection) => {
       for (const iterator of data) {
         let status = "created";
         iterator.status = status
-        var db = await client.db(process.env.DATABSENAME);
+        var db = await client.db(process.env.DATABASENAME);
         let record = await db.collection(collection).find({_id:iterator._id}).toArray();
         if(!record.length){
           BatchDoc.push(iterator)
         }
       }
       if(BatchDoc.length>0){
-        var db = await client.db(process.env.DATABSENAME);
+        var db = await client.db(process.env.DATABASENAME);
         return await db.collection(collection).insertMany(data);
       }
     } catch (error) {
@@ -96,7 +96,7 @@ let updateBatchDoc = async (data, collection) => {
       };
       batchData.push(updateO);
     }
-      var db = await client.db(process.env.DATABSENAME);
+      var db = await client.db(process.env.DATABASENAME);
       var re = await db.collection(collection).bulkWrite(batchData);
       return re;
     } catch (error) {
@@ -109,7 +109,7 @@ let insertDoc = async (data, collection) => {
     var client = await connection();
     //console.log(data,collection)
     try {
-      var db = await client.db(process.env.DATABSENAME);
+      var db = await client.db(process.env.DATABASENAME);
       return await db.collection(collection).insertOne(data);
     } catch (error) {
       throw error;
@@ -121,7 +121,7 @@ let updateDoc = async (data, collection) => {
     var client = await connection();
     try {
       data._id = new ObjectID(data._id);
-      var db = await client.db(process.env.DATABSENAME);
+      var db = await client.db(process.env.DATABASENAME);
       return await db
         .collection(collection)
         .updateOne({ _id: data._id }, { $set: data });
