@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: aiservice
+  name: sync
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: aiservice
+      app: sync
   template:
     metadata:
       labels:
-        app: aiservice
+        app: sync
     spec:
       containers:
-        - name: aiservice
-          image: proctordev.azurecr.io/aiservice:$tag
+        - name: sync
+          image: proctordev.azurecr.io/sync:$tag
           imagePullPolicy: Always                                                             
           ports:
           - containerPort: 3004
