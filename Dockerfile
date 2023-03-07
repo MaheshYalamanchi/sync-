@@ -16,4 +16,4 @@ COPY . /usr/src/app
 EXPOSE 3004
 
 # CMD ["node","app.js"]
-CMD ["node", "./bin/www"]
+CMD ["node", "app.js"]
