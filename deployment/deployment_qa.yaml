@@ -22,12 +22,12 @@ spec:
             - name: MONGO_URI
               valueFrom:
                 secretKeyRef:
-                  name: proctor-qa-env
+                  name: proctor-dev-env
                   key: MONGO_URI
             - name: DATABASENAME
               valueFrom:
                 secretKeyRef:
-                  name: proctor-qa-env
+                  name: proctor-dev-env
                   key: DATABASENAME
       imagePullSecrets:
         - name: mysecret
