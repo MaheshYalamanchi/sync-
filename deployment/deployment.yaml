@@ -1,1 +1,78 @@
-q
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aiservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aiservice
+  template:
+    metadata:
+      labels:
+        app: aiservice
+    spec:
+      containers:
+        - name: aiservice
+          image: proctordev.azurecr.io/aiservice:$tag
+          imagePullPolicy: Always                                                             
+          ports:
+          - containerPort: 3004
+          env:
+            - name: DATA_SERVICE_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-dev-env
+                  key: DATA_SERVICE_ENDPOINT
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-dev-env
+                  key: MONGO_URI
+            - name: SubscriptionKey
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-dev-env
+                  key: SubscriptionKey
+            - name: Endpoint
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-dev-env
+                  key: Endpoint
+            - name: AZURE_SERVICE_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-dev-env
+                  key: AZURE_SERVICE_ENDPOINT
+            - name: LOCATION
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-dev-env
+                  key: LOCATION
+            - name: ACCOUNT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-dev-env
+                  key: ACCOUNT_ID
+            - name: SUBSCRIPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-dev-env
+                  key: SUBSCRIPTION_KEY
+            - name: CACHE_CONTROL
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-dev-env
+                  key: CACHE_CONTROL
+            - name: AZURE_PORTAL
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-dev-env
+                  key: AZURE_PORTAL
+            - name: BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-dev-env
+                  key: BASE_URL
+      imagePullSecrets:
+        - name: mysecret
