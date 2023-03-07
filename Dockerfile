@@ -13,7 +13,7 @@ RUN npm install
 # Bundle app source
 COPY . /usr/src/app
 
-EXPOSE 3003
+EXPOSE 3004
 
 # CMD ["node","app.js"]
 CMD ["node", "./bin/www"]
