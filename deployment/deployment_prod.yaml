@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: sync
-          image: proctordev.azurecr.io/sync:$tag
+          image: proctorprod.azurecr.io/sync:$tag
           imagePullPolicy: Always                                                             
           ports:
           - containerPort: 3004
@@ -22,12 +22,12 @@ spec:
             - name: MONGO_URI
               valueFrom:
                 secretKeyRef:
-                  name: proctor-dev-env
+                  name: proctor-prod-env
                   key: MONGO_URI
             - name: DATABASENAME
               valueFrom:
                 secretKeyRef:
-                  name: proctor-dev-env
+                  name: proctor-prod-env
                   key: DATABASENAME
       imagePullSecrets:
         - name: mysecret
