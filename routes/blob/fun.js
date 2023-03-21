@@ -454,7 +454,7 @@ let removeRecFromDB = async (query) => {
 };
 let gettotalattachcount=async()=>{
     try {
-        return {success:true,message:800}
+        return {success:true,message:300}
     } catch (error) {
         return {success:false,message:'Something went wrong'}
     }

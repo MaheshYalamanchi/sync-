@@ -66,7 +66,7 @@ module.exports = function (params) {
         try {
             let getcount=await funService.gettotalattachcount()
             for(var i=0;i<=getcount.message;i++){
-                console.log(i)
+                app.logger.info({ success: true, message: 'iterator i ...',data:i });
                 let getAttach=await funService.getAttacheRec(i)
                 if(getAttach&&getAttach.success){
                     for (const iterator of getAttach.message[0].attachArray) {
