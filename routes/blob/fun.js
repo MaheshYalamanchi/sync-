@@ -1,5 +1,5 @@
 const { param } = require('../../app');
-// const dbc = require('../../db/index')
+const dbc = require('../../db/index')
 const invoke = require("../../lib/http/invoke");
 const { BlobServiceClient, StorageSharedKeyCredential, BlobSASPermissions } = require("@azure/storage-blob");
 //userbackup
