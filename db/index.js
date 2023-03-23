@@ -17,6 +17,22 @@ let connection = async () => {
       }
 
   };
+  let connectionLocal = async () => {
+    let db, client;
+    try {
+      client = await MongoClient.connect(
+        process.env.MONGO_URI_LOCAL,
+        {
+         connectTimeoutMS: 300000, socketTimeoutMS: 300000, useNewUrlParser: true,useUnifiedTopology: true
+        }
+      );
+      return client;
+      }catch (err) {
+        //console.log("gdfg");
+        throw err;
+      }
+
+  };
 let updateorinsert = async (data, collectionname, docType) => {
     try {
       if (docType == 0) {
@@ -131,7 +147,61 @@ let updateDoc = async (data, collection) => {
       client.close();
     }
 };
+//aggregate
+let aggregate = async (data, collection) => {
+  var client = await connectionLocal();
+  try {
+    var db = await client.db(process.env.DATABASENAME);
+    return await db
+      .collection(collection)
+      .aggregate(data,{allowDiskUse: true}).toArray();
+  } catch (error) {
+    throw error;
+  } finally {
+    client.close();
+  }
+};
+//find
+let findRec = async (data, collection) => {
+  var client = await connectionLocal();
+  try {
+    var db = await client.db(process.env.DATABASENAME);
+    return await db.collection(collection).find(data).toArray();
+  } catch (error) {
+    throw error;
+  } finally {
+    client.close();
+  }
+};
+//remove
+let removeRec = async (data, collection) => {
+  var client = await connection();
+  try {
+    if(data&&data._id){
+      data._id=new ObjectID(data._id)
+    }
 
+    var db = await client.db(process.env.DATABASENAME);
+    return await db.collection(collection).deleteMany(data);
+  } catch (error) {
+    throw error;
+  } finally {
+    client.close();
+  }
+};
+//remove
+let removeRecId = async (data, collection) => {
+  var client = await connection();
+  try {
+   
+    var db = await client.db(process.env.DATABASENAME);
+    return await db.collection(collection).deleteMany(data);
+  } catch (error) {
+    throw error;
+  } finally {
+    client.close();
+  }
+};
 
 module.exports = {
     connection,
@@ -139,5 +209,9 @@ module.exports = {
     updateDoc,
     insertBatchDoc,
     updateBatchDoc,
-    updateorinsert
+    updateorinsert,
+    aggregate,
+    findRec,
+    removeRec,
+    removeRecId
 }
