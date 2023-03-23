@@ -24,12 +24,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.logger=require("./logger/logger");
 // app.use('/', indexRouter);
 // app.use('/users', usersRouter);
 app.http = require("./lib/util/http");
 app.util = require("./lib/util/parser");
 app.invoke = require("./lib/http/invoke");
 require('./routes/csvUpload/index')({app:app})
+require("./routes/blob/index")({ app: app });
 // var request = require('request')
 // var CronJob = require('cron').CronJob;
 // new CronJob('* * * * *', function() {
