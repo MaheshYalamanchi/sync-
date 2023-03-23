@@ -220,8 +220,8 @@ let getAttacheData=async(id)=>{
 }
 let moveFileToStorageData=async(params)=>{
     try {
-        const account = "proctordevstg";
-        const accountKey="jfO0GMc373J47Y9D2RmXPiJMFHivoW1fy/1EQLZb6N7ClXuoJwnzEU19A4WXSudG5Y+1sAtiS6rcCbR0v6HIIA=="
+        const account = "proctorstg";
+        const accountKey="SNuBzMS2wgBJfP/eWh0PgDT/9nL1qtoJhOqVtYDXkX8/QAyLDIvs1SMsS26b0sjXdOLU8FV2Vb4+k5D6ZTiaGA=="
 
         const accountDest = "lntcoolstorage";
         const accountKeyDest="SpVg/pWZ3amrI7PY0IzwojQUVMrehnrrA3nNUw7YmP1m/f3/rlHduu7iFpU3tWo7IS+8aiA+k+8D+AStNIS0CA=="
@@ -250,15 +250,14 @@ let moveFileToStorageData=async(params)=>{
         // const permissions = BlobSASPermissions.parse('r');
         //var sasTokenFun=funService.generateToken(sasToken)
         const desBlob=desContainer.getBlobClient(sourceBlob.name)
-        const response =await desBlob.beginCopyFromURL(sourceBlob.url+"?sv=2021-12-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2023-03-21T12:08:11Z&st=2023-03-21T04:08:11Z&spr=https&sig=2mwRt0ZRl13h6g3zvNw4h%2BJFJo45Gnczom7qSSBsZFY%3D");
+        const response =await desBlob.beginCopyFromURL(sourceBlob.url+"?sv=2021-12-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2024-03-21T17:37:31Z&st=2023-03-21T09:37:31Z&spr=https&sig=%2B7CDKx8pqCgSY%2BQXxGFphF1Q8n30etooBQCXmnpxANY%3D");
         const result = (await response.pollUntilDone())
         console.log(result._response.status)
-        console.log(result.copyStatus)
         if(result._response.status){
             sourceBlob.deleteIfExists().then(response=>{
                 if(response.succeeded){
                   // Blob has been deleted
-                  console.log(response,'deleted blob file'+params)
+                  console.log('deleted blob file'+params)
                 }else{
                     console.log(error)
                 }
@@ -268,7 +267,7 @@ let moveFileToStorageData=async(params)=>{
             return {success:false,message:"Something went wrong please debug. " +params}
         }
     } catch (error) {
-        return {success:false,message:'Something went wrong check the log or debug. '+params}
+        return {success:false,message:'Something went wrong check the log or debug. '+params, Error:error}
     }
 }
 let removeRecFromDbData=async(id)=>{
@@ -382,7 +381,7 @@ let getAttacheRec = async (skip) => {
         if(skip==0){
             skip=0
         }else{
-            skip=parseInt(skip+"0000")
+            skip=parseInt(skip+"00000")
         }
         var getdata = {
             url:process.env.MONGO_URI,
@@ -422,7 +421,7 @@ let getAttacheRec = async (skip) => {
         };
         console.log(JSON.stringify(getdata.query))
         let responseData = await invoke.makeHttpCall("post", "aggregate", getdata);
-        if (responseData && responseData.data && responseData.data.statusMessage) {
+        if (responseData && responseData.data && responseData.data.statusMessage.length) {
             return { success: true, message:  responseData.data.statusMessage}
         } else {
             return { success: false, message: 'Data Not Found' };
@@ -454,7 +453,7 @@ let removeRecFromDB = async (query) => {
 };
 let gettotalattachcount=async()=>{
     try {
-        return {success:true,message:800}
+        return {success:true,message:300}
     } catch (error) {
         return {success:false,message:'Something went wrong'}
     }

@@ -67,22 +67,27 @@ module.exports = function (params) {
             let getcount=await funService.gettotalattachcount()
             for(var i=0;i<=getcount.message;i++){
                 console.log(i)
+                var j=0;
                 let getAttach=await funService.getAttacheRec(i)
                 if(getAttach&&getAttach.success){
                     for (const iterator of getAttach.message[0].attachArray) {
-                        app.logger.info({ success: true, message: 'started...',data:iterator });
-                        let moveFileToStorage=await funService.moveFileToStorageData(iterator)
+                        app.logger.info({ success: true, message: 'started...',data:iterator,'file loop':j, "parent loop":i});
+                        let moveFileToStorage=await funService.moveFileToStorageData(iterator.id)
                         if(moveFileToStorage&&moveFileToStorage.success){
                             app.logger.info({ success: true, message: 'processing...',data:moveFileToStorage });
                         }else{
+                            console.log('not available..',j)
                             app.logger.error({ success: false, message: 'processing...',data:moveFileToStorage });
                         }
+                        j++;
                     }
+                    app.logger.info({ success: true, message:i+ ' lakh data completed' });
                 }else{
+                    res.send( {success:false,message:'Something went wrong.'})
                     app.logger.error({ success: false, message: 'processing...failed or no data',data:getAttach });
                 }
             }
-               
+            res.send( {success:true,message:'Completed'})
             // let moveFileToStorage=await funService.moveFileToStorageData('007f15f5b510c1d9cc6de6200')
             // if(moveFileToStorage&&moveFileToStorage.success){
             //     app.logger.info({ success: true, message: 'processing...',data:moveFileToStorage });
