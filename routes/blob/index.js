@@ -65,7 +65,7 @@ module.exports = function (params) {
     app.get('/copy',async(req,res)=>{
         try {
             let getcount=await funService.gettotalattachcount()
-            for(var i=0;i<=getcount.message;i++){
+            for(var i=10;i<=getcount.message;i++){
                 console.log(i)
                 var j=0;
                 app.logger.info({ success: true, message: 'iterator i ...',data:i });
