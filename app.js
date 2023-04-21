@@ -32,28 +32,20 @@ app.util = require("./lib/util/parser");
 app.invoke = require("./lib/http/invoke");
 require('./routes/csvUpload/index')({app:app})
 require("./routes/blob/index")({ app: app });
-// var request = require('request')
-// var CronJob = require('cron').CronJob;
-// new CronJob('* * * * *', function() {
-    
-//     request(process.env.ENDPOINT, function(error, response, body) {
-//         if (!error && response.statusCode == 200) {
-//           console.log('You will see this message every minute');
-//             // console.log(body) // Show the HTML for the Google homepage.
-//         }
-//     })
-// }, null, true, "Asia/Calcutta");
-// new CronJob('*/2 * * * *', function() {
-    
-//   request(process.env.LABEL, function(error, response, body) {
-//       if (!error && response.statusCode == 200) {
-//         console.log('You will see this message every minute');
-//           // console.log(body) // Show the HTML for the Google homepage.
-//       }
-//   })
-// }, null, true, "Asia/Calcutta");
 
-// catch 404 and forward to error handler
+// cronjob for every 2 minutes
+var request = require('request')
+var CronJob = require('cron').CronJob;
+new CronJob('*/2 * * * *', function() {
+    request(process.env.ENDPOINT, function(error, response, body) {
+        if (!error && response.statusCode == 200) {
+          console.log('You will see this message every 2 minutes');
+        } else {
+          console.log(error)
+        }
+    })
+}, null, true, "Asia/Calcutta");
+
 app.use(function(req, res, next) {
   next(createError(404));
 });
@@ -68,7 +60,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-var server = app.listen(3004, function () {
-  console.log("sync Service...",3004)
+var server = app.listen(3006, function () {
+  console.log("sync Service...",3006)
 });
 module.exports = app;
