@@ -136,7 +136,7 @@ let insertDoc = async (data, collection) => {
 let updateDoc = async (data, collection) => {
     var client = await connection();
     try {
-      data._id = new ObjectID(data._id);
+      // data._id = new ObjectID(data._id);
       var db = await client.db(process.env.DATABASENAME);
       return await db
         .collection(collection)
@@ -202,6 +202,56 @@ let removeRecId = async (data, collection) => {
     client.close();
   }
 };
+//Bulkupload
+ let bulkUpload = async (data, collection,docType) => {
+  if (docType == 1) {
+    var client = await connection();
+    try {
+      var batchData = [];
+    for (const iterator of data) {
+      var _id = iterator._id;
+      delete iterator._id;
+      // var _id = new ObjectID(iterator._id);
+      var updateO = {
+        updateOne: {
+          filter: { _id: _id },
+          update: { $set: iterator }
+        }
+      };
+      batchData.push(updateO);
+    }
+      var db = await client.db(process.env.DATABASENAME);
+      var re = await db.collection(collection).bulkWrite(batchData);
+      return re;
+    } catch (error) {
+      throw error;
+    } finally {
+      client.close();
+    }
+  }
+};
+
+//exec
+let exec = async (data, collection,docType) => {
+  if (docType == 1) {
+    var client = await connection();
+    try {
+      var db = await client.db(process.env.DATABASENAME);
+      return db.collection(collection).find(data.filter).sort(data.sort).limit(data.limit).skip(data.skip);
+      // db.collection(collection).find(data.filter).sort(data.sort).limit(data.limit).populate(data.populate).skip(data.skip).exec(function (B, re){
+      //   if (!re){
+      //     return null;
+      //   }
+      //   return re;
+      // });
+      
+    } catch (error) {
+      throw error;
+    } finally {
+      // client.close();
+    }
+  }
+};
 
 module.exports = {
     connection,
@@ -213,5 +263,7 @@ module.exports = {
     aggregate,
     findRec,
     removeRec,
-    removeRecId
+    removeRecId,
+    bulkUpload,
+    exec
 }
