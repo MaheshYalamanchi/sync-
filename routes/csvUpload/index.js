@@ -1,6 +1,7 @@
 const schedule = require('./scheduleService');
 let os = require('os')
 const search = require('./filter')
+const invoke = require("../../lib/http/invoke");
 module.exports = function (params) {
   var app = params.app;
   app.post('/api/csv/:model', async (req, res, next) => {
@@ -82,9 +83,11 @@ module.exports = function (params) {
             ]
           }
         },
+        {$sort:{"startedAt": -1}},
+        { $limit : 100},
         {
           $project: {
-            DifferenceInMin: { $divide: [{ $subtract: ["$updatedAt", "$startedAt"] }, (1000 * 60)] },
+            DifferenceInMin: { $divide: [{ $subtract: ["$updatedAt", "$createdAt"] }, (1000 * 60)] },
             timeout: 1,
             status: 1
           }
@@ -111,6 +114,13 @@ module.exports = function (params) {
         if (Bulkdata.length > 0) {
           let response = await schedule.dataUpload(Bulkdata);
           if (response && response.nModified > 0) {
+            for (const iterator of responseData) {
+              let json = {
+                stoptime : new Date(),
+                room : iterator._id
+              }
+              let reportlog = await invoke.makeHttpCalluserservice("post", "/api/reportlog", json);
+            }
             app.http.customResponse(res, ({ success: true, message: "records updated successfully..." }), 200);
           }
         } else {
