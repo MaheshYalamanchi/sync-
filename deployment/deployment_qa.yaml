@@ -31,3 +31,5 @@ spec:
                   key: DATABASENAME
       imagePullSecrets:
         - name: mysecret
+      nodeSelector:
+        agentpool: proctordevqa
