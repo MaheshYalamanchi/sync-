@@ -29,6 +29,16 @@ spec:
                 secretKeyRef:
                   name: proctor-qa-env
                   key: DATABASENAME
+            - name: PAUSE_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-qa-env
+                  key: PAUSE_ENDPOINT
+            - name: USER_SERVICE
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-qa-env
+                  key: USER_SERVICE
       imagePullSecrets:
         - name: mysecret
       nodeSelector:
