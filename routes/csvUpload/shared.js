@@ -17,6 +17,7 @@ let fetchdata = async (params) => {
             return "Data Not Found";
         }
     } catch (error) {
+        console.log(error,"error3=====>>>")
         if (error && error.code == 'ECONNREFUSED') {
             return { success: false, message: globalMsg[0].MSG000, status: globalMsg[0].status }
         } else {

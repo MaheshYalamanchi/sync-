@@ -135,6 +135,7 @@ module.exports = function (params) {
             app.http.customResponse(res, { success: false, message: result.message }, 200);
         }
     } catch (error) {
+      console.log(error,"error1====>>>")
         app.logger.error({ success: false, message: error });
         if (error && error.message) {
             app.http.customResponse(res, { success: false, message: error.message }, 400)

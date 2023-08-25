@@ -45,15 +45,15 @@ new CronJob('*/2 * * * *', function() {
         }
     })
 }, null, true, "Asia/Calcutta");
-new CronJob('*/2 * * * *', function() {
-    request(process.env.ENDPOINT, function(error, response, body) {
-        if (!error && response.statusCode == 200) {
-          console.log('You will see this message every 2 minutes');
-        } else {
-          console.log(error)
-        }
-    })
-}, null, true, "Asia/Calcutta");
+// new CronJob('*/2 * * * *', function() {
+//     request(process.env.ENDPOINT, function(error, response, body) {
+//         if (!error && response.statusCode == 200) {
+//           console.log('You will see this message every 2 minutes');
+//         } else {
+//           console.log(error)
+//         }
+//     })
+// }, null, true, "Asia/Calcutta");
 
 app.use(function(req, res, next) {
   next(createError(404));
