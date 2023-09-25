@@ -24,6 +24,11 @@ spec:
                 secretKeyRef:
                   name: proctor-qa-env
                   key: MONGO_URI
+            - name: DATA_SERVICE_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-qa-env
+                  key: DATA_SERVICE_ENDPOINT
             - name: DATABASENAME
               valueFrom:
                 secretKeyRef:
