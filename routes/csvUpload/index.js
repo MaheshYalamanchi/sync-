@@ -1,4 +1,5 @@
 const schedule = require('./scheduleService');
+const sharedService = require("../schedule/sharedService");
 let os = require('os')
 const search = require('./filter')
 module.exports = function (params) {
@@ -123,28 +124,33 @@ module.exports = function (params) {
       app.http.customResponse(res, ({ success: false, message: error }), 400);
     }
   });
-  app.get("/api/sessions", async (req, res) => {
-    "use strict";
+  app.post('/api/auth/jwt', async (req, res,next) => {
     try {
-        let result = await schedule.getSessions(req)
-        if (result && result.success) {
-            app.logger.info({ success: true, message: result.message });
-            app.http.customResponse(res, result.message, 200);
-        } else {
-            app.logger.info({ success: false, message: result.message });
-            app.http.customResponse(res, { success: false, message: result.message }, 200);
+        console.log('jwtapicall')
+        if(req.body && req.body.authorization){
+            let result = await sharedService.tokenValidation(req);
+            if (result && result.success) {
+                app.logger.info({ success: true, message: result.message });
+                app.http.customResponse(res, result.message, 200);
+            } else {
+                app.logger.info({ success: false, message: result.message });
+                app.http.customResponse(res, { success: false, message: 'Data Not Found' }, 200);
+            }
+        }else{
+            app.http.customResponse(res, { success: false, message: 'authorization error' }, 200);
         }
     } catch (error) {
-      console.log(error,"error1====>>>")
+        console.log('jwtapicallfailedapi')
+        console.log(error,"jwtError1===>>>>")
         app.logger.error({ success: false, message: error });
         if (error && error.message) {
-            app.http.customResponse(res, { success: false, message: error.message }, 400)
+            app.http.customResponse(res, { success: false, message: error.message }, 400);
         } else {
-            app.http.customResponse(res, { success: false, message: error }, 400)
+            app.http.customResponse(res, { success: false, message: error }, 400);
         }
     }
 });
-
+  
 }
 
 function csv(data) {
