@@ -124,11 +124,38 @@ module.exports = function (params) {
       app.http.customResponse(res, ({ success: false, message: error }), 400);
     }
   });
+//   app.post('/api/auth/jwt', async (req, res,next) => {
+//     try {
+//         console.log('jwtapicall')
+//         if(req.body && req.body.authorization){
+//             let result = await sharedService.tokenValidation(req);
+//             if (result && result.success) {
+//                 app.logger.info({ success: true, message: result.message });
+//                 app.http.customResponse(res, result.message, 200);
+//             } else {
+//               console.log(JSON.stringify(result))
+//                 // app.logger.info({ success: false, message: result.message });
+//                 app.http.customResponse(res, { success: false, message: 'Data Not Found' }, 200);
+//             }
+//         }else{
+//             app.http.customResponse(res, { success: false, message: 'authorization error' }, 200);
+//         }
+//     } catch (error) {
+//         console.log('jwtapicallfailedapi')
+//         console.log(error,"jwtError1===>>>>")
+//         app.logger.error({ success: false, message: error });
+//         if (error && error.message) {
+//             app.http.customResponse(res, { success: false, message: error.message }, 400);
+//         } else {
+//             app.http.customResponse(res, { success: false, message: error }, 400);
+//         }
+//     }
+// });
   app.post('/api/auth/jwt', async (req, res,next) => {
     try {
         console.log('jwtapicall')
         if(req.body && req.body.authorization){
-            let result = await sharedService.tokenValidation(req);
+            let result = await sharedService.validateToken(req);
             if (result && result.success) {
                 app.logger.info({ success: true, message: result.message });
                 app.http.customResponse(res, result.message, 200);
@@ -150,8 +177,7 @@ module.exports = function (params) {
             app.http.customResponse(res, { success: false, message: error }, 400);
         }
     }
-});
-  
+  });
 }
 
 function csv(data) {

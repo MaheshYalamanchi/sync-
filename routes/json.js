@@ -1,101 +1,4 @@
-let videoassData = async (params) => {
-    let username = params.username.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi,'_');
-    let addons;
-    if (params.videoass == "VA"){
-        addons = ["check","track","record","preview","finish","auto"];
-    } else if (params.videoass == "QUE"){
-        addons = ["record","track","preview","auto"]
-    }
-    
-    let videoassData = {
-        "_id" : params.id,
-        "timesheet" : {
-            "xaxis" : [],
-            "yaxis" : []
-        },
-        "invites" : [],
-        "quota" : 0,
-        "concurrent" : 0,
-        "members" : [],
-        "addons" : addons,
-        "metrics" : [
-            "b1",
-            "b2",
-            "b3",
-            "c1",
-            "c2",
-            "c3",
-            "c4",
-            "c5",
-            "h1",
-            "k1",
-            "m1",
-            "m2",
-            "m3",
-            "n1",
-            "n2",
-            "s1",
-            "s2"
-        ],
-        "weights" : [
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1
-        ],
-        "status" : "created",
-        "tags" : [ 
-            params.nickname
-        ],
-        "subject" : params.subject,
-        "locale" : null,
-        "timeout" : 90,
-        "rules" : "https://info.lntiggnite.com/Video/clip_en.html",
-        "threshold" : 0,
-        "createdAt" : new Date(),
-        "updatedAt" : new Date(),
-        "api" : null,
-        "comment" : null,
-        "complete" : false,
-        "conclusion" : null,
-        "deadline" : null,
-        "stoppedAt" : null,
-        "timezone" : null,
-        "url" : null,
-        "lifetime" : null,
-        "error" : null,
-        "scheduledAt" : new Date(),
-        "duration" : null,
-        "incidents" : null,
-        "integrator" : "sdk",
-        "ipaddress" : null,
-        "score" : null,
-        "signedAt" : new Date(),
-        "startedAt":null,
-        "useragent" : null,
-        "proctor" : null,
-        "student" : username,
-        "template" : params.template,
-        "averages" : {}
-    }
-    return videoassData;
-    
-};
 let roomsData =  async (params) => {
-    let addons = ["track","record","finish","auto","screen","chat","preview","check","face","passport","content","upload"]
     let username = params.username.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi,'_')
     let getrooms = {
         "_id" : params.id,
@@ -103,88 +6,45 @@ let roomsData =  async (params) => {
             "xaxis" : [],
             "yaxis" : []
         },
-        "invites" : [],
-        "quota" : 0,
-        "concurrent" : 0,
-        "members" : [],
-        "addons" : addons,
-        "metrics" : [
-            "b1",
-            "b2",
-            "b3",
-            "c1",
-            "c2",
-            "c3",
-            "c4",
-            "c5",
-            "h1",
-            "k1",
-            "m1",
-            "m2",
-            "m3",
-            "n1",
-            "n2",
-            "s1",
-            "s2"
-        ],
-        "weights" : [
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1
-        ],
+        "invites" :params.invites || [],
+        "quota" : params.quota || 0,
+        "concurrent" : params.concurrent || 0,
         "status" : "created",
         "tags" : [ 
             params.nickname
         ],
         "subject" : params.subject,
-        "locale" : null,
-        "timeout" : 90,
-        "rules" : "https://info.lntiggnite.com/Video/clip_en.html",
-        "threshold" : 0,
-        "createdAt" : new Date(),
-        "updatedAt" : new Date(),
-        "api" : null,
-        "comment" : null,
-        "complete" : false,
-        "conclusion" : null,
-        "deadline" : null,
-        "stoppedAt" : null,
-        "timezone" : null,
-        "url" : null,
-        "lifetime" : null,
-        "error" : null,
-        "scheduledAt" : new Date(),
-        "duration" : null,
-        "incidents" : null,
-        "integrator" : "sdk",
-        "ipaddress" : null,
-        "score" : null,
-        "signedAt" : new Date(),
-        "startedAt":null,
-        "useragent" : null,
-        "proctor" : null,
+        "locale" : params.locale || null,
+        "timeout" : params.timeout || 90,
+        "createdAt" : params.createdAt,
+        "updatedAt" : params.updatedAt,
+        "api" : params.api ||null,
+        "comment" : params.comment ||null,
+        "complete" : params.complete ||false,
+        "conclusion" : params.conclusion ||null,
+        "deadline" : params.deadline ||null,
+        "stoppedAt" : params.stoppedAt ||null,
+        "timezone" : params.timezone ||null,
+        "url" : params.url ||null,
+        "lifetime" : params.lifetime ||null,
+        "error" : params.error ||null,
+        "scheduledAt" : params.scheduledAt ,
+        "duration" : params.duration ||null,
+        "incidents" : params.incidents ||null,
+        "integrator" : params.integrator ||"sdk",
+        "ipaddress" : params.ipaddress ||null,
+        "score" : params.score ||null,
+        "signedAt" : params.signedAt ,
+        "startedAt": params.startedAt ||null,
+        "useragent" : params.bowserDetails,
         "student" : username,
         "template" : params.template,
-        "averages" : {}
     }
     return getrooms;
     
 }
 
 module.exports = {
-    videoassData,
     roomsData
 }
 
