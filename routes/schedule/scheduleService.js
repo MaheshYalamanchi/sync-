@@ -128,7 +128,7 @@ let userFetch = async (params) => {
             query: {_id:username}
         };
         let responseData = await invoke.makeHttpCall("post", "read", getdata);
-        if (responseData && responseData.data && responseData.data.statusMessage) {
+        if (responseData && responseData.data && responseData.data.statusMessage&&responseData.data.statusMessage.length) {
             return { success: true, message:responseData.data.statusMessage}
         } else {
             console.log(responseData,'responseData.data')
