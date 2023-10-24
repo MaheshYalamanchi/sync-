@@ -88,7 +88,7 @@ let validateToken = async(params)=> {
                 decodedToken.bowser = bowser.parse(params.body.bowserDetails);
                 decodedToken.bowserDetails= params.body.bowserDetails
                 let userResponse = await scheduleService.userFetch(decodedToken);
-                console.log(userResponse,'userResponse')
+                // console.log(userResponse,'userResponse')
                 if (userResponse && userResponse.success){
                     let roomsResponse = await scheduleService.roomFetch(decodedToken);
                     if (roomsResponse && roomsResponse.success){
@@ -97,9 +97,9 @@ let validateToken = async(params)=> {
                         responseData = await scheduleService.roomInsertion(decodedToken);
                     }
                 } else {
-                    console.log(decodedToken,'decodedToken')
+                    // console.log(decodedToken,'decodedToken')
                     let response = await scheduleService.userInsertion(decodedToken);
-                    console.log(response,'response')
+                    // console.log(response,'response')
                     if (response && response.success){
                         responseData = await scheduleService.roomInsertion(decodedToken);
                     } else {
