@@ -72,7 +72,7 @@ let tokenValidation = async(params)=> {
 
 let validateToken = async(params)=> {
     try {
-        // console.log(params.body,'body....................jwt')
+        console.log(params.body,'body....................jwt')
         const token =params.body.authorization.authorization.split(" ");
         if (!token) {
             return {success:false,message:"A token is required for authentication"+token[1]};
@@ -88,6 +88,7 @@ let validateToken = async(params)=> {
                 decodedToken.bowser = bowser.parse(params.body.bowserDetails);
                 decodedToken.bowserDetails= params.body.bowserDetails
                 let userResponse = await scheduleService.userFetch(decodedToken);
+                console.log(userResponse,'userResponse')
                 if (userResponse && userResponse.success){
                     let roomsResponse = await scheduleService.roomFetch(decodedToken);
                     if (roomsResponse && roomsResponse.success){
