@@ -96,7 +96,9 @@ let validateToken = async(params)=> {
                         responseData = await scheduleService.roomInsertion(decodedToken);
                     }
                 } else {
+                    console.log(decodedToken,'decodedToken')
                     let response = await scheduleService.userInsertion(decodedToken);
+                    console.log(response,'response')
                     if (response && response.success){
                         responseData = await scheduleService.roomInsertion(decodedToken);
                     } else {
