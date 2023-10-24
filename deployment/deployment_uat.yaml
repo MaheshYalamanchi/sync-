@@ -44,5 +44,15 @@ spec:
                 secretKeyRef:
                   name: proctor-uat-env
                   key: USER_SERVICE
+            - name: USERS_DATA_SERVICE_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-uat-env
+                  key: USERS_DATA_SERVICE_ENDPOINT
+            - name: ROOMS_DATA_SERVICE_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-uat-env
+                  key: ROOMS_DATA_SERVICE_ENDPOINT
       imagePullSecrets:
         - name: mysecret
