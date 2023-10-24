@@ -125,9 +125,9 @@ let userFetch = async (params) => {
             database:"proctor",
             model: "users",
             docType: 1,
-            query: username
+            query: {_id:username}
         };
-        let responseData = await invoke.makeHttpCall("post", "findById", getdata);
+        let responseData = await invoke.makeHttpCall("post", "read", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage) {
             return { success: true, message:responseData.data.statusMessage}
         } else {
