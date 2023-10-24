@@ -118,6 +118,7 @@ let userInsertion = async (params) => {
 let userFetch = async (params) => {
     try {
         let username = params.username.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi,'_');
+        console.log(username,'username of query')
         var getdata = {
             url:process.env.MONGO_URI,
             database:"proctor",
