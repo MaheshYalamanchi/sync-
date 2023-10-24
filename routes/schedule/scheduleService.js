@@ -105,6 +105,7 @@ let userInsertion = async (params) => {
         if (responseData && responseData.data && responseData.data.statusMessage) {
             return { success: true, message:responseData.data.statusMessage}
         } else {
+            console.log(responseData,'save api.........')
             return { success: false, message: 'Data Not Found' };
         }
     } catch (error) {
