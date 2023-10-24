@@ -101,7 +101,7 @@ let userInsertion = async (params) => {
             docType: 0,
             query: jsonData
         };
-        let responseData = await invoke.makeHttpCall("post", "save", getdata);
+        let responseData = await invoke.makeHttpCall_userDataService("post", "save", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage) {
             return { success: true, message:responseData.data.statusMessage}
         } else {
@@ -127,7 +127,7 @@ let userFetch = async (params) => {
             docType: 1,
             query: {_id:username}
         };
-        let responseData = await invoke.makeHttpCall("post", "read", getdata);
+        let responseData = await invoke.makeHttpCall_userDataService("post", "read", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage&&responseData.data.statusMessage.length) {
             return { success: true, message:responseData.data.statusMessage}
         } else {
@@ -180,7 +180,7 @@ let roomInsertion = async (params) => {
             docType: 1,
             query: params.template // {_id:params.template}
         };
-        let response = await invoke.makeHttpCall("post", "findById", getdata);
+        let response = await invoke.makeHttpCall_roomDataService("post", "findById", getdata);
         if (response && response.data && response.data.statusMessage) {
             let jsonData;
                 jsonData = await json.roomsData(params);
@@ -197,7 +197,7 @@ let roomInsertion = async (params) => {
                 docType: 0,
                 query: jsonData
             };
-            let responseData = await invoke.makeHttpCall("post", "save", getdata);
+            let responseData = await invoke.makeHttpCall_roomDataService("post", "save", getdata);
             if (responseData && responseData.data && responseData.data.statusMessage) {
                 return { success: true, message:responseData.data.statusMessage}
             } else {
@@ -248,7 +248,7 @@ let roomUpdate = async (params) => {
                 update: { $set: jsonData }
             }
         };
-        let responseData = await invoke.makeHttpCall("post", "update", getdata);
+        let responseData = await invoke.makeHttpCall_roomDataService("post", "update", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage.nModified ) {
             return { success: true, message: responseData.data.statusMessage}
         } else {
@@ -430,7 +430,7 @@ let roomFetch = async (params) => {
             docType: 1,
             query: params.id
         };
-        let responseData = await invoke.makeHttpCall("post", "findById", getdata);
+        let responseData = await invoke.makeHttpCall_roomDataService("post", "findById", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage) {
             return { success: true, message:responseData.data.statusMessage}
         } else {
