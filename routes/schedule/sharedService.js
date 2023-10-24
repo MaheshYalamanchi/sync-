@@ -7,7 +7,7 @@ const _ = require('lodash');
 var bowser = require("bowser");
 let tokenValidation = async(params)=> {
     try {
-        console.log(params.body,'body....................jwt')
+        // console.log(params.body,'body....................jwt')
         const token =params.body.authorization.authorization.split(" ");
         if (!token) {
             return {success:false,message:"A token is required for authentication"+token[1]};
@@ -72,7 +72,7 @@ let tokenValidation = async(params)=> {
 
 let validateToken = async(params)=> {
     try {
-        console.log(params.body,'body....................jwt')
+        // console.log(params.body,'body....................jwt')
         const token =params.body.authorization.authorization.split(" ");
         if (!token) {
             return {success:false,message:"A token is required for authentication"+token[1]};
