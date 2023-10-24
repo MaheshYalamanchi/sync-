@@ -14,7 +14,7 @@ let tokenValidation = async(params)=> {
         }else{
             const decodedToken = jwt.verify(token[1],TOKEN_KEY);
             if(!decodedToken){
-                console.log(decodedToken,'decodedToken................')
+                // console.log(decodedToken,'decodedToken................')
                 return {success:false,message:"A token is required for authentication"};
             }
             decodedToken.headers = params.body.authorization;
@@ -23,7 +23,7 @@ let tokenValidation = async(params)=> {
                 console.log('decodedToken 1')
                 let userResponse = await scheduleService.userFetch(decodedToken);
                 var responseData ;	
-                console.log(userResponse)			
+                // console.log(userResponse)			
                 if (userResponse&&userResponse.message&&(userResponse.message.length>0) &&(userResponse.message[0]._id == username)){
                     console.log('userResponse.message.length 2')
                         let response = await scheduleService.userUpdate(userResponse.message[0]);
@@ -88,7 +88,7 @@ let validateToken = async(params)=> {
                 decodedToken.bowser = bowser.parse(params.body.bowserDetails);
                 decodedToken.bowserDetails= params.body.bowserDetails
                 let userResponse = await scheduleService.userFetch(decodedToken);
-                console.log(userResponse,'userResponse')
+                // console.log(userResponse,'userResponse')
                 if (userResponse && userResponse.success){
                     let roomsResponse = await scheduleService.roomFetch(decodedToken);
                     if (roomsResponse && roomsResponse.success){
