@@ -160,7 +160,7 @@ module.exports = function (params) {
                 app.logger.info({ success: true, message: result.message });
                 app.http.customResponse(res, result.message, 200);
             } else {
-              console.log(JSON.stringify(result))
+              // console.log(JSON.stringify(result))
                 // app.logger.info({ success: false, message: result.message });
                 app.http.customResponse(res, { success: false, message: 'Data Not Found' }, 200);
             }

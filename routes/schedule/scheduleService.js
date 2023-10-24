@@ -105,7 +105,7 @@ let userInsertion = async (params) => {
         if (responseData && responseData.data && responseData.data.statusMessage) {
             return { success: true, message:responseData.data.statusMessage}
         } else {
-            console.log(responseData,'save api.........')
+            // console.log(responseData,'save api.........')
             return { success: false, message: 'Data Not Found' };
         }
     } catch (error) {
@@ -119,7 +119,7 @@ let userInsertion = async (params) => {
 let userFetch = async (params) => {
     try {
         let username = params.username.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi,'_');
-        console.log(username,'username of query')
+        // console.log(username,'username of query')
         var getdata = {
             url:process.env.MONGO_URI,
             database:"proctor",
@@ -131,7 +131,7 @@ let userFetch = async (params) => {
         if (responseData && responseData.data && responseData.data.statusMessage&&responseData.data.statusMessage.length) {
             return { success: true, message:responseData.data.statusMessage}
         } else {
-            console.log(responseData,'responseData.data')
+            // console.log(responseData,'responseData.data')
             return { success: false, message: 'Data Not Found' };
         }
     } catch (error) {
