@@ -72,7 +72,7 @@ let tokenValidation = async(params)=> {
 
 let validateToken = async(params)=> {
     try {
-        console.log('body........jwt',params.body);
+        console.log('body........jwt',params.body.authorization.authorization);
         const token =params.body.authorization.authorization.split(" ");
         if (!token) {
             return {success:false,message:"A token is required for authentication"+token[1]};
@@ -84,7 +84,6 @@ let validateToken = async(params)=> {
             }
             decodedToken.headers = params.body.authorization;
             if(decodedToken){
-                console.log('decodedToken 1')
                 decodedToken.bowser = bowser.parse(params.body.bowserDetails);
                 decodedToken.bowserDetails= params.body.bowserDetails
                 let userResponse = await scheduleService.userFetch(decodedToken);
@@ -109,6 +108,7 @@ let validateToken = async(params)=> {
                 if (responseData.success){
                     let getToken = await tokenService.jwtToken(decodedToken);
                     if (getToken) {
+                        console.log("fialResponse===>",getToken)
                         return{success:true,message:{token:getToken}};
                     }else{
                         return {success:false, message : 'Error While Generating Token!'};
