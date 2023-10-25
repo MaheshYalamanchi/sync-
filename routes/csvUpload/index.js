@@ -1,5 +1,6 @@
 const schedule = require('./scheduleService');
 const sharedService = require("../schedule/sharedService");
+const TokenService = require("../proctorToken/tokenService")
 let os = require('os')
 const search = require('./filter')
 module.exports = function (params) {
@@ -170,6 +171,30 @@ module.exports = function (params) {
     } catch (error) {
         console.log('jwtapicallfailedapi')
         console.log(error,"jwtError1===>>>>")
+        app.logger.error({ success: false, message: error });
+        if (error && error.message) {
+            app.http.customResponse(res, { success: false, message: error.message }, 400);
+        } else {
+            app.http.customResponse(res, { success: false, message: error }, 400);
+        }
+    }
+  });
+  app.post('/api/generateProctorToken', async (req, res,next) => {
+    try {
+        if(req.body){
+            let result = await TokenService.generateToken(req.body);
+            if (result && result.success) {
+                app.logger.info({ success: true, message: result });
+                app.http.customResponse(res, result, 200);
+            } else {
+                app.logger.info({ success: false, message: result.message });
+                app.http.customResponse(res, { success: false, message: 'Data Not Found' }, 200);
+            }
+        }else{
+            app.http.customResponse(res, { success: false, message: 'authorization error' }, 200);
+        }
+    } catch (error) {
+        console.log(err,"geenrateToken1===>>>>")
         app.logger.error({ success: false, message: error });
         if (error && error.message) {
             app.http.customResponse(res, { success: false, message: error.message }, 400);
