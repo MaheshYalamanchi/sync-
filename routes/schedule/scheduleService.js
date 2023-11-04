@@ -153,7 +153,7 @@ let userUpdate = async (params) => {
             model: "users",
             docType: 0,
             query:{
-                filter: { "_id": params._id },
+                filter: { "_id": params[0]._id },
                 update: { $set: jsonData }
             }
         };

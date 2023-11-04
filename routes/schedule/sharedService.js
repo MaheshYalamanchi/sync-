@@ -88,12 +88,24 @@ let validateToken = async(params)=> {
                 decodedToken.bowserDetails= params.body.bowserDetails
                 let userResponse = await scheduleService.userFetch(decodedToken);
                 // console.log(userResponse,'userResponse')
+                let responseData;
                 if (userResponse && userResponse.success){
-                    let roomsResponse = await scheduleService.roomFetch(decodedToken);
-                    if (roomsResponse && roomsResponse.success){
-                        responseData = await scheduleService.roomUpdate(decodedToken);
-                    } else {
-                        responseData = await scheduleService.roomInsertion(decodedToken);
+                    if(userResponse&&userResponse.message&&userResponse.message[0].locked !=1){
+                        let response = await scheduleService.userUpdate(userResponse.message);
+                        if (response && response.success){
+                            let roomsResponse = await scheduleService.roomFetch(decodedToken);
+                                if (roomsResponse && roomsResponse.success ){
+                                    if(roomsResponse.message.status != "stopped"  ){
+                                         responseData = await scheduleService.roomUpdate(decodedToken)
+                                    }else{
+                                        return {success:false, message : 'Data Not Found'};
+                                    }
+                                } else{
+                                    responseData = await scheduleService.roomInsertion(decodedToken);
+                                }
+                        }
+                    }else{
+                        return {success:false, message : 'Data Not Found'};
                     }
                 } else {
                     // console.log(decodedToken,'decodedToken')
