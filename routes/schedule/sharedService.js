@@ -5,6 +5,7 @@ const tokenService = require('../../routes/proctorToken/tokenService');
 const scheduleService = require('../schedule/scheduleService');
 const _ = require('lodash');
 var bowser = require("bowser");
+const invoke = require("../../lib/http/invoke");
 let tokenValidation = async(params)=> {
     try {
         // console.log(params.body,'body....................jwt')
@@ -140,7 +141,25 @@ let validateToken = async(params)=> {
         }
     }
 };
+let getConnections = async(params)=> {
+    try {
+        let closeconnection = await invoke.makeHttpCall_roomDataService("get", "closeconnection");
+        if (closeconnection) {
+            return {success:true, message: "connection closed"}
+        } else {
+            return {success:false, message:"connection close error"}
+        }
+    }catch(error){
+        if(error){
+            return {success:false, message:"closeConnection error"}
+        }else{
+            return {success:false, message:error}
+        }
+    }
+};
 module.exports = {
     tokenValidation,
-    validateToken
+    validateToken,
+    getConnections
+
 }
