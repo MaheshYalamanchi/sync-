@@ -45,10 +45,12 @@ var CronJob = require('cron').CronJob;
 //         }
 //     })
 // }, null, true, "Asia/Calcutta");
-new CronJob('*/2 * * * *', function() {
-    request(process.env.PAUSE_ENDPOINT, function(error, response, body) {
+
+// cronjob for every  15 secs.
+new CronJob('*/15 * * * * *', function() {
+    request(process.env.CLOSE_CONEECTION_ENDPOINT, function(error, response, body) {
         if (!error && response.statusCode == 200) {
-          console.log('You will see this message every 2 minutes');
+          // console.log('You will see this message every 2 minutes');
         } else {
           console.log(error)
         }
