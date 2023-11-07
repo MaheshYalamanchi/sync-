@@ -88,9 +88,10 @@ let validateToken = async(params)=> {
                 decodedToken.bowser = bowser.parse(params.body.bowserDetails);
                 decodedToken.bowserDetails= params.body.bowserDetails
                 let userResponse = await scheduleService.userFetch(decodedToken);
-                // console.log(userResponse,'userResponse')
                 let responseData;
                 if (userResponse && userResponse.success){
+                    decodedToken.role = userResponse.message[0].role;
+                    decodedToken.provider = userResponse.message[0].provider;
                     if(userResponse&&userResponse.message&&userResponse.message[0].locked !=1){
                         let response = await scheduleService.userUpdate(userResponse.message);
                         if (response && response.success){
@@ -109,10 +110,10 @@ let validateToken = async(params)=> {
                         return {success:false, message : 'Data Not Found'};
                     }
                 } else {
-                    // console.log(decodedToken,'decodedToken')
                     let response = await scheduleService.userInsertion(decodedToken);
-                    // console.log(response,'response')
                     if (response && response.success){
+                        decodedToken.role = response.message.role;
+                        decodedToken.provider = response.message.provider;
                         responseData = await scheduleService.roomInsertion(decodedToken);
                     } else {
                         return {success:false,message:"user insertion failed..."}

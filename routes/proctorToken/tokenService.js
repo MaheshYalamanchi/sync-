@@ -111,20 +111,20 @@ let generateToken1 = async (req) => {
 let jwtToken = async (req) => {
     try {
         let username = req.username.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi,'_');
-        var getdata = {
-            url:process.env.MONGO_URI,
-            database:"proctor",
-            model: "users",
-            docType: 1,
-            query: [
-                {
-                    $match:{_id:username}
-                }
-            ]
-        };
-        let responseData = await invoke.makeHttpCall_userDataService("post", "aggregate", getdata);
-        if (responseData && responseData.data && responseData.data.statusMessage) {
-            let user = { "provider": responseData.data.statusMessage[0].provider, "id": responseData.data.statusMessage[0]._id ,"role":responseData.data.statusMessage[0].role,"room":req.id}
+        // var getdata = {
+        //     url:process.env.MONGO_URI,
+        //     database:"proctor",
+        //     model: "users",
+        //     docType: 1,
+        //     query: [
+        //         {
+        //             $match:{_id:username}
+        //         }
+        //     ]
+        // };
+        // let responseData = await invoke.makeHttpCall_userDataService("post", "aggregate", getdata);
+        // if (responseData && responseData.data && responseData.data.statusMessage) {
+            let user = { "provider": req.provider, "id": username ,"role": req.role,"room": req.id}
             let tokenArg = {
                 id: user.id,
                 provider: user.provider,
@@ -137,9 +137,9 @@ let jwtToken = async (req) => {
             } else {
                 return {success: false, message:'Error While Generating Token!'};
             }
-        }else{
-            return {success: false, message:'Data not found...'};
-        }
+        // }else{
+        //     return {success: false, message:'Data not found...'};
+        // }
     } catch (err) {
         return {success:false,message:err};
     }
