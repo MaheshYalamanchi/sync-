@@ -157,8 +157,8 @@ let userUpdate = async (params) => {
                 update: { $set: jsonData }
             }
         };
-        let responseData = await invoke.makeHttpCall_userDataService("post", "update", getdata);
-        if (responseData && responseData.data && responseData.data.statusMessage.nModified) {
+        let responseData = await invoke.makeHttpCall_userDataService("post", "findOneAndUpdate", getdata);
+        if (responseData && responseData.data && responseData.data.statusMessage) {
             return { success: true, message: responseData.data.statusMessage}
         } else {
             return { success: false, message: 'Data Not Found' };
