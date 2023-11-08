@@ -109,7 +109,7 @@ let validateToken = async(params)=> {
                                     responseData = await scheduleService.roomInsertion(decodedToken);
                                  }
                         } else {
-                            console.log("userresponse112======>",JSON.stringify(response.message.response.data))
+                            console.log("userresponse112======>",JSON.stringify(response.message.response))
                         }
                     }else{
                         return {success:false, message : 'Data Not Found'};
