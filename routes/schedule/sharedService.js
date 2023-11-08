@@ -93,8 +93,8 @@ let validateToken = async(params)=> {
                     decodedToken.role = userResponse.message[0].role;
                     decodedToken.provider = userResponse.message[0].provider;
                     if(userResponse&&userResponse.message&&userResponse.message[0].locked !=1){
-                        let response = await scheduleService.userUpdate(userResponse.message);
-                        if (response && response.success){
+                        // let response = await scheduleService.userUpdate(userResponse.message);
+                        // if (response && response.success){
                             let roomsResponse = await scheduleService.roomFetch(decodedToken);
                                 if (roomsResponse && roomsResponse.success ){
                                     if(roomsResponse.message.status != "stopped"  ){
@@ -108,9 +108,9 @@ let validateToken = async(params)=> {
                                 } else{
                                     responseData = await scheduleService.roomInsertion(decodedToken);
                                  }
-                        } else {
-                            console.log("userresponse112======>",JSON.stringify(response.message.response))
-                        }
+                        // } else {
+                        //     console.log("userresponse112======>",JSON.stringify(response.message.response))
+                        // }
                     }else{
                         return {success:false, message : 'Data Not Found'};
                     }
@@ -127,7 +127,7 @@ let validateToken = async(params)=> {
                 if (responseData.success){
                     let getToken = await tokenService.jwtToken(decodedToken);
                     if (getToken) {
-                        console.log("fialResponse===>",getToken)
+                        console.log("finalResponse===>",getToken)
                         return{success:true,message:{token:getToken}};
                     }else{
                         return {success:false, message : 'Error While Generating Token!'};
