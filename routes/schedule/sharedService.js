@@ -104,7 +104,9 @@ let validateToken = async(params)=> {
                                     }
                                 } else{
                                     responseData = await scheduleService.roomInsertion(decodedToken);
-                                }
+                                 }
+                        } else {
+                            console.log("userresponse109======>",response)
                         }
                     }else{
                         return {success:false, message : 'Data Not Found'};
@@ -119,6 +121,7 @@ let validateToken = async(params)=> {
                         return {success:false,message:"user insertion failed..."}
                     }
                 }
+                console.log("responseData122=====>>>>",responseData)
                 if (responseData.success){
                     let getToken = await tokenService.jwtToken(decodedToken);
                     if (getToken) {
