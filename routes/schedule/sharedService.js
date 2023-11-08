@@ -99,6 +99,9 @@ let validateToken = async(params)=> {
                                 if (roomsResponse && roomsResponse.success ){
                                     if(roomsResponse.message.status != "stopped"  ){
                                          responseData = await scheduleService.roomUpdate(decodedToken)
+                                         if(responseData && !responseData.success){
+                                            console.log("roomresponse103====>>>",responseData)
+                                         }
                                     }else{
                                         return {success:false, message : 'Data Not Found'};
                                     }
@@ -106,7 +109,7 @@ let validateToken = async(params)=> {
                                     responseData = await scheduleService.roomInsertion(decodedToken);
                                  }
                         } else {
-                            console.log("userresponse109======>",response)
+                            console.log("userresponse112======>",response)
                         }
                     }else{
                         return {success:false, message : 'Data Not Found'};
@@ -121,7 +124,6 @@ let validateToken = async(params)=> {
                         return {success:false,message:"user insertion failed..."}
                     }
                 }
-                console.log("responseData122=====>>>>",responseData)
                 if (responseData.success){
                     let getToken = await tokenService.jwtToken(decodedToken);
                     if (getToken) {
@@ -130,6 +132,8 @@ let validateToken = async(params)=> {
                     }else{
                         return {success:false, message : 'Error While Generating Token!'};
                     }
+                } else {
+                    console.log("responseData136=====>>>>",responseData)
                 }
             } else{
                 return {success:false, message : 'Data Not Found'};
