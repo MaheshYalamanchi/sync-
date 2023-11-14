@@ -73,14 +73,13 @@ let tokenValidation = async(params)=> {
 
 let validateToken = async(params)=> {
     try {
-        console.log('body........jwt',params.body.authorization.authorization);
+        // console.log('body........jwt',params.body.authorization.authorization);
         const token =params.body.authorization.authorization.split(" ");
         if (!token) {
             return {success:false,message:"A token is required for authentication"+token[1]};
         }else{
             const decodedToken = jwt.verify(token[1],TOKEN_KEY);
             if(!decodedToken){
-                console.log(decodedToken,'decodedToken................')
                 return {success:false,message:"A token is required for authentication"};
             }
             decodedToken.headers = params.body.authorization;
@@ -103,7 +102,7 @@ let validateToken = async(params)=> {
                                             console.log("roomresponse103====>>>",responseData)
                                          }
                                     }else{
-                                        return {success:false, message : 'Data Not Found'};
+                                        return {success:false, message : 'Eroor while updating roomRecord'};
                                     }
                                 } else{
                                     responseData = await scheduleService.roomInsertion(decodedToken);
@@ -127,7 +126,7 @@ let validateToken = async(params)=> {
                 if (responseData.success){
                     let getToken = await tokenService.jwtToken(decodedToken);
                     if (getToken) {
-                        console.log("finalResponse===>",getToken)
+                        console.log("finalResponse================>>>>>",{body:params.body.authorization.authorization,response:getToken})
                         return{success:true,message:{token:getToken}};
                     }else{
                         return {success:false, message : 'Error While Generating Token!'};
