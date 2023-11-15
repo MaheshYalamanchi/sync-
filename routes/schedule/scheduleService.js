@@ -102,7 +102,7 @@ let userInsertion = async (params) => {
             docType: 0,
             query: jsonData
         };
-        let responseData = await invoke.makeHttpCall_userDataService("post", "save", getdata);
+        let responseData = await invoke.makeHttpCall_userDataService("post", "insert", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage) {
             console.log("afterUserInsertion=====>>>",params.username)
             return { success: true, message:responseData.data.statusMessage}

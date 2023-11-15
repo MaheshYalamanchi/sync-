@@ -118,7 +118,7 @@ let validateToken = async(params)=> {
                         return {success:false, message : 'Data Not Found'};
                     }
                 } else {
-                    console.log("userinsertion=====>>>",params.body.authorization.authorization)
+                    console.log("ifNoUserIsThere=====>>>",params.body.authorization.authorization)
                     let response = await scheduleService.userInsertion(decodedToken);
                     if (response && response.success){
                         decodedToken.role = response.message.role;
