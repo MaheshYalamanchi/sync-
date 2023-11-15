@@ -73,7 +73,7 @@ let tokenValidation = async(params)=> {
 
 let validateToken = async(params)=> {
     try {
-        // console.log('body........jwt',params.body.authorization.authorization);
+        console.log('body........jwt',params.body.authorization.authorization);
         const token =params.body.authorization.authorization.split(" ");
         if (!token) {
             return {success:false,message:"A token is required for authentication"+token[1]};
