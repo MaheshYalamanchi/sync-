@@ -84,11 +84,13 @@ let validateToken = async(params)=> {
             }
             decodedToken.headers = params.body.authorization;
             if(decodedToken){
+                console.log("decoded the token====>>", params.body.authorization.authorization)
                 decodedToken.bowser = bowser.parse(params.body.bowserDetails);
                 decodedToken.bowserDetails= params.body.bowserDetails
                 let userResponse = await scheduleService.userFetch(decodedToken);
                 let responseData;
                 if (userResponse && userResponse.success){
+                    console.log("afterUserfetch====>>>",decodedToken.username)
                     decodedToken.role = userResponse.message[0].role;
                     decodedToken.provider = userResponse.message[0].provider;
                     if(userResponse&&userResponse.message&&userResponse.message[0].locked !=1){
@@ -96,6 +98,7 @@ let validateToken = async(params)=> {
                         // if (response && response.success){
                             let roomsResponse = await scheduleService.roomFetch(decodedToken);
                                 if (roomsResponse && roomsResponse.success ){
+                                    console.log("afterRoomFetching=====>>>",decodedToken.id)
                                     if(roomsResponse.message.status != "stopped"  ){
                                          responseData = await scheduleService.roomUpdate(decodedToken)
                                          if(responseData && !responseData.success){
@@ -105,6 +108,7 @@ let validateToken = async(params)=> {
                                         return {success:false, message : 'Eroor while updating roomRecord'};
                                     }
                                 } else{
+                                    console.log("afterRoomFetchingForInsertion=====>>>",decodedToken.id)
                                     responseData = await scheduleService.roomInsertion(decodedToken);
                                  }
                         // } else {
@@ -114,6 +118,7 @@ let validateToken = async(params)=> {
                         return {success:false, message : 'Data Not Found'};
                     }
                 } else {
+                    console.log("userinsertion=====>>>",params.body.authorization.authorization)
                     let response = await scheduleService.userInsertion(decodedToken);
                     if (response && response.success){
                         decodedToken.role = response.message.role;
