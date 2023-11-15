@@ -183,9 +183,9 @@ let roomInsertion = async (params) => {
             database: "proctor",
             model: "rooms",
             docType: 1,
-            query: params.template // {_id:params.template}
+            query:  {_id:params.template}
         };
-        let response = await invoke.makeHttpCall_roomDataService("post", "findById", getdata);
+        let response = await invoke.makeHttpCall_roomDataService("post", "read", getdata);
         if (response && response.data && response.data.statusMessage) {
             console.log("afterRoomTemplateFetching=====>>>",params.template)
             let jsonData;
@@ -203,9 +203,9 @@ let roomInsertion = async (params) => {
                 docType: 0,
                 query: jsonData
             };
-            let responseData = await invoke.makeHttpCall_roomDataService("post", "save", getdata);
+            let responseData = await invoke.makeHttpCall_roomDataService("post", "insert", getdata);
             if (responseData && responseData.data && responseData.data.statusMessage) {
-                console.log("RoomInsertionResponse=====>>>",responseData.data.statusMessage.id)
+                console.log("RoomInsertionResponse=====>>>",responseData.data.statusMessage._id)
                 return { success: true, message:responseData.data.statusMessage}
             } else {
                 return { success: false, message: 'Error while inserting roomRecord' };
