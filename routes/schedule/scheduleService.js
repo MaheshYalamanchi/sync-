@@ -71,7 +71,7 @@ const json = require('../json');
   
 let userInsertion = async (params) => {
     try {
-        console.log("beforeUserInsertion=====>>>",params.username)
+        // console.log("beforeUserInsertion=====>>>",params.username)
         // var browser = params.headers["user-agent"];
         // const osInfo = getOperatingSystemInfo(browser);
         // const browserInfo = getBrowserInfo(browser);
@@ -104,7 +104,7 @@ let userInsertion = async (params) => {
         };
         let responseData = await invoke.makeHttpCall_userDataService("post", "insert", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage) {
-            console.log("afterUserInsertion=====>>>",params.username)
+            // console.log("afterUserInsertion=====>>>",params.username)
             return { success: true, message:responseData.data.statusMessage}
         } else {
             // console.log(responseData,'save api.........')
@@ -120,7 +120,7 @@ let userInsertion = async (params) => {
 };
 let userFetch = async (params) => {
     try {
-        console.log("userfetchfetch=====>>>",params.username)
+        // console.log("userfetchfetch=====>>>",params.username)
         let username = params.username.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi,'_');
         // console.log(username,'username of query')
         var getdata = {
@@ -132,7 +132,7 @@ let userFetch = async (params) => {
         };
         let responseData = await invoke.makeHttpCall_userDataService("post", "read", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage&&responseData.data.statusMessage.length) {
-            console.log("userResponse====>>>",params.username)
+            // console.log("userResponse====>>>",params.username)
             return { success: true, message:responseData.data.statusMessage}
         } else {
             // console.log(responseData,'responseData.data')
@@ -177,7 +177,7 @@ let userUpdate = async (params) => {
 };
 let roomInsertion = async (params) => {
     try {
-        console.log("afterRoomInsertion=====>>>",params.template)
+        // console.log("afterRoomInsertion=====>>>",params.template)
         var getdata = {
             url:process.env.MONGO_URI,
             database: "proctor",
@@ -187,7 +187,7 @@ let roomInsertion = async (params) => {
         };
         let response = await invoke.makeHttpCall_roomDataService("post", "read", getdata);
         if (response && response.data && response.data.statusMessage) {
-            console.log("afterRoomTemplateFetching=====>>>",params.template)
+            // console.log("afterRoomTemplateFetching=====>>>",params.template)
             let jsonData;
                 jsonData = await json.roomsData(params);
                 jsonData.addons = response.data.statusMessage[0].addons
@@ -205,7 +205,7 @@ let roomInsertion = async (params) => {
             };
             let responseData = await invoke.makeHttpCall_roomDataService("post", "insert", getdata);
             if (responseData && responseData.data && responseData.data.statusMessage) {
-                console.log("RoomInsertionResponse=====>>>",responseData.data.statusMessage._id)
+                // console.log("RoomInsertionResponse=====>>>",responseData.data.statusMessage._id)
                 return { success: true, message:responseData.data.statusMessage}
             } else {
                 return { success: false, message: 'Error while inserting roomRecord' };
@@ -223,7 +223,7 @@ let roomInsertion = async (params) => {
 };
 let roomUpdate = async (params) => {
     try {
-        console.log("beforeRoomUpdate=====>>>",params.id)
+        // console.log("beforeRoomUpdate=====>>>",params.id)
         // let fetchTemplateData=await fetchTemplate(params)
         // var browser = params.headers["user-agent"];
         // const osInfo = getOperatingSystemInfo(browser);
@@ -258,7 +258,7 @@ let roomUpdate = async (params) => {
         };
         let responseData = await invoke.makeHttpCall_roomDataService("post", "update", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage.nModified ) {
-            console.log("afterRoomUpdate=====>>>",params.id)
+            // console.log("afterRoomUpdate=====>>>",params.id)
             return { success: true, message: responseData.data.statusMessage}
         } else {
             return { success: true, message: 'Data Not Found' };
@@ -432,7 +432,7 @@ let chatDetails = async (params) => {
 };
 let roomFetch = async (params) => {
     try {
-        console.log("beforeRoomFetching=====>>>",params.id)
+        // console.log("beforeRoomFetching=====>>>",params.id)
         var getdata = {
             url:process.env.MONGO_URI,
             database:"proctor",
@@ -442,7 +442,7 @@ let roomFetch = async (params) => {
         };
         let responseData = await invoke.makeHttpCall_roomDataService("post", "findById", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage) {
-            console.log("RoomFetchingresponse=====>>>",params.id)
+            // console.log("RoomFetchingresponse=====>>>",params.id)
             return { success: true, message:responseData.data.statusMessage}
         } else {
             return { success: false, message: 'Data Not Found' };

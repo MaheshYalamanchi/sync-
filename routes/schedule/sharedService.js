@@ -73,7 +73,7 @@ let tokenValidation = async(params)=> {
 
 let validateToken = async(params)=> {
     try {
-        console.log('body........jwt',params.body.authorization.authorization);
+        // console.log('body........jwt',params.body.authorization.authorization);
         const token =params.body.authorization.authorization.split(" ");
         if (!token) {
             return {success:false,message:"A token is required for authentication"+token[1]};
@@ -84,13 +84,13 @@ let validateToken = async(params)=> {
             }
             decodedToken.headers = params.body.authorization;
             if(decodedToken){
-                console.log("decoded the token====>>", params.body.authorization.authorization)
+                // console.log("decoded the token====>>", params.body.authorization.authorization)
                 decodedToken.bowser = bowser.parse(params.body.bowserDetails);
                 decodedToken.bowserDetails= params.body.bowserDetails
                 let userResponse = await scheduleService.userFetch(decodedToken);
                 let responseData;
                 if (userResponse && userResponse.success){
-                    console.log("afterUserfetch====>>>",decodedToken.username)
+                    // console.log("afterUserfetch====>>>",decodedToken.username)
                     decodedToken.role = userResponse.message[0].role;
                     decodedToken.provider = userResponse.message[0].provider;
                     if(userResponse&&userResponse.message&&userResponse.message[0].locked !=1){
@@ -98,17 +98,17 @@ let validateToken = async(params)=> {
                         // if (response && response.success){
                             let roomsResponse = await scheduleService.roomFetch(decodedToken);
                                 if (roomsResponse && roomsResponse.success ){
-                                    console.log("afterRoomFetching=====>>>",decodedToken.id)
+                                    // console.log("afterRoomFetching=====>>>",decodedToken.id)
                                     if(roomsResponse.message.status != "stopped"  ){
                                          responseData = await scheduleService.roomUpdate(decodedToken)
                                          if(responseData && !responseData.success){
-                                            console.log("roomresponse103====>>>",responseData)
+                                            // console.log("roomresponse103====>>>",responseData)
                                          }
                                     }else{
                                         return {success:false, message : 'Eroor while updating roomRecord'};
                                     }
                                 } else{
-                                    console.log("afterRoomFetchingForInsertion=====>>>",decodedToken.id)
+                                    // console.log("afterRoomFetchingForInsertion=====>>>",decodedToken.id)
                                     responseData = await scheduleService.roomInsertion(decodedToken);
                                  }
                         // } else {
@@ -118,7 +118,7 @@ let validateToken = async(params)=> {
                         return {success:false, message : 'Data Not Found'};
                     }
                 } else {
-                    console.log("ifNoUserIsThere=====>>>",params.body.authorization.authorization)
+                    // console.log("ifNoUserIsThere=====>>>",params.body.authorization.authorization)
                     let response = await scheduleService.userInsertion(decodedToken);
                     if (response && response.success){
                         decodedToken.role = response.message.role;
@@ -131,13 +131,13 @@ let validateToken = async(params)=> {
                 if (responseData.success){
                     let getToken = await tokenService.jwtToken(decodedToken);
                     if (getToken) {
-                        console.log("finalResponse================>>>>>",{body:params.body.authorization.authorization,response:getToken})
+                        // console.log("finalResponse================>>>>>",{body:params.body.authorization.authorization,response:getToken})
                         return{success:true,message:{token:getToken}};
                     }else{
                         return {success:false, message : 'Error While Generating Token!'};
                     }
                 } else {
-                    console.log("responseData136=====>>>>",responseData)
+                    // console.log("responseData136=====>>>>",responseData)
                 }
             } else{
                 return {success:false, message : 'Data Not Found'};

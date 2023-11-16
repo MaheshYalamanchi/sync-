@@ -154,7 +154,7 @@ module.exports = function (params) {
 // });
   app.post('/api/auth/jwt', async (req, res,next) => {
     try {
-        console.log('jwtapicall')
+        // console.log('jwtapicall')
         if(req.body && req.body.authorization){
             let result = await sharedService.validateToken(req);
             if (result && result.success) {
