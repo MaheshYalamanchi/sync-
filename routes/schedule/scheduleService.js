@@ -190,12 +190,12 @@ let roomInsertion = async (params) => {
             console.log("afterRoomTemplateFetching=====>>>",params.template)
             let jsonData;
                 jsonData = await json.roomsData(params);
-                jsonData.addons = response.data.statusMessage.addons
-                jsonData.threshold = response.data.statusMessage.threshold
-                jsonData.rules = response.data.statusMessage.rules
-                jsonData.members = response.data.statusMessage.members
-                jsonData.metrics = response.data.statusMessage.metrics
-                jsonData.weights = response.data.statusMessage.weights
+                jsonData.addons = response.data.statusMessage[0].addons
+                jsonData.threshold = response.data.statusMessage[0].threshold
+                jsonData.rules = response.data.statusMessage[0].rules
+                jsonData.members = response.data.statusMessage[0].members
+                jsonData.metrics = response.data.statusMessage[0].metrics
+                jsonData.weights = response.data.statusMessage[0].weights
             var getdata = {
                 url:process.env.MONGO_URI,
                 database:"proctor",
