@@ -1,6 +1,7 @@
 const MongoClient = require("mongodb").MongoClient;
 const ObjectID = require("mongodb").ObjectID;
 const _ = require("lodash");
+const {v4 : uuidv4} = require('uuid')
 let connection = async () => {
     let db, client;
     try {
@@ -51,17 +52,18 @@ let updateorinsert = async (data, collectionname, docType) => {
         if (insertBatch.length > 0) {
           var requ = await insertBatchDoc(insertBatch, collectionname);
           //console.log(requ);
-          if (requ && requ.insertedCount > 0){
+          if (requ ){
             return requ
-          }else if(updateBatch.length > 0) {
-            var requ = await updateBatchDoc(updateBatch, collectionname);
-            // console.log(requ);
-            if (requ && requ.result.nModified > 0){
-              return requ
-            }else {
-              return "import proper csv file..."
-            }
           }
+          // else if(updateBatch.length > 0) {
+          //   var requ = await updateBatchDoc(updateBatch, collectionname);
+          //   // console.log(requ);
+          //   if (requ && requ.result.nModified > 0){
+          //     return requ
+          //   }else {
+          //     return "import proper csv file..."
+          //   }
+          // }
         }
       } else {
         return "invalid format";
@@ -77,18 +79,132 @@ let insertBatchDoc = async (data, collection) => {
     var client = await connection();
     try {
       let BatchDoc =[]
+      let dataupdate =[]
       for (const iterator of data) {
         let status = "created";
         iterator.status = status
         var db = await client.db(process.env.DATABASENAME);
         let record = await db.collection(collection).find({_id:iterator._id}).toArray();
-        if(!record.length){
-          BatchDoc.push(iterator)
-        }
+        record.push(record.length)
+        // if(!record.length){
+          const stringArray = iterator.addons.split(',')
+          const members = iterator.members.split(',')
+          const metrics = iterator.metrics.split(',')
+          const numberArray = iterator.weights.split(',').map(parseFloat);
+          var jsondata = {
+            "_id" : iterator._id,
+            "timesheet" : {
+              "xaxis" : [],
+              "yaxis" : []
+            },
+            "invites" : [iterator.invites],
+            "quota" : parseFloat(iterator.quota),
+            "concurrent" : parseFloat(iterator.concurrent),
+            "members" : members,
+            "addons" : stringArray,
+            "metrics" : metrics,
+            "weights" : numberArray,
+            "status" : iterator.status,
+            "tags" : [iterator.tags],
+            "integrator" : iterator.integrator,
+            "template" : iterator.template,
+            "subject" : iterator.subject,
+            "locale" : iterator.locale,
+            "timeout" : parseFloat(iterator.timeout),
+            "deadline" : parseFloat(iterator.deadline),
+            "duration" : parseFloat(iterator.duration),
+            "rules" : iterator.rules,
+            "url" : iterator.url,
+            "api" : iterator.api,
+            "threshold" : parseFloat(iterator.threshold),
+            "createdAt" : new Date(iterator.createdAt) || new Date(),
+            "scheduledAt" : new Date(iterator.scheduledAt) || new Date(),
+            "startedAt" : new Date(iterator.startedAt) || null,
+            "stoppedAt" : new Date(iterator.stoppedAt) || null,
+            "signedAt" : new Date(iterator.signedAt) || new Date(),
+            "averages" : {
+               "b1" : iterator["averages.b1"],
+               "b2" : iterator["averages.b2"],
+               "b3" : iterator["averages.b3"],
+               "c1" : iterator["averages.c1"],
+               "c2" : iterator["averages.c2"],
+               "c3" : iterator["averages.c3"],
+               "c4" : iterator["averages.c4"],
+               "c5" : iterator["averages.c5"],
+               "h1" : iterator["averages.h1"],
+               "k1" : iterator["averages.k1"],
+               "m1" : iterator["averages.m1"],
+               "m2" : iterator["averages.m2"],
+               "m3" : iterator["averages.m3"],
+               "n1" : iterator["averages.n1"],
+               "n2" : iterator["averages.n2"],
+               "s1" : iterator["averages.s1"],
+               "s2" : iterator["averages.s2"]
+              },
+            "score" : parseFloat(iterator.score) ,
+            "student" : iterator.student,
+            "incidents" : iterator.incidents,
+            "conclusion" : iterator.conclusion,
+            "comment" : iterator.comment,
+            "ipaddress" : iterator.ipaddress,
+            "useragent" : iterator.useragent,
+            "updatedAt" : new Date(iterator.updatedAt) || new Date(),
+            "isActive" : true
+          }
+          if(!jsondata.score){
+            jsondata.score = null
+          }
+          if(!jsondata.deadline){
+            jsondata.deadline = null
+          }
+          if(!jsondata.duration){
+            jsondata.duration = null
+          }
+          if(!jsondata.concurrent){
+            jsondata.concurrent = null
+          }
+          if(!jsondata.quota){
+            jsondata.quota = null
+          }
+          if(!jsondata.threshold){
+            jsondata.threshold = null
+          }
+          if(!jsondata.timeout){
+            jsondata.timeout = null
+          }
+          if(!jsondata._id){
+            jsondata._id = uuidv4()
+          }
+          for (let key in jsondata.averages) {
+            if (jsondata.averages[key] === "") {
+                jsondata.averages[key] = null;
+            }else{
+              averages[key] = parseFloat(averages[key]);
+            }
+          } 
+          if(record.length == 2){
+            var updateO = {
+              updateOne: {
+                filter: { _id: iterator._id },
+                update: { $set: jsondata }
+              }
+            };
+            dataupdate.push(updateO);
+          }else{
+            BatchDoc.push(jsondata)
+          }
+        // }
       }
-      if(BatchDoc.length>0){
+      if(BatchDoc.length > 0){
         var db = await client.db(process.env.DATABASENAME);
-        return await db.collection(collection).insertMany(data);
+        var response = await db.collection(collection).insertMany(BatchDoc);
+      }
+      if(dataupdate.length > 0){
+        var db = await client.db(process.env.DATABASENAME);
+        var response = await db.collection(collection).bulkWrite(dataupdate);
+      }
+      if( response){
+        return ({ success: true, message: 'csv uploaded sucessfully ' })
       }
     } catch (error) {
       throw error;
