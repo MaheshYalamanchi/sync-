@@ -124,12 +124,13 @@ let jwtToken = async (req) => {
         // };
         // let responseData = await invoke.makeHttpCall_userDataService("post", "aggregate", getdata);
         // if (responseData && responseData.data && responseData.data.statusMessage) {
-            let user = { "provider": req.provider, "id": username ,"role": req.role,"room": req.id}
+            let user = { "provider": req.provider, "id": username ,"role": req.role,"room": req.id,"nickname": req.nickname}
             let tokenArg = {
                 id: user.id,
                 provider: user.provider,
                 role : user.role,
-                room : user.room
+                room : user.room,
+                nickname: user.nickname
             };
             user.proctorToken = jwt.sign(tokenArg, secret, { expiresIn: 5400000 });
             if (user.proctorToken) {
