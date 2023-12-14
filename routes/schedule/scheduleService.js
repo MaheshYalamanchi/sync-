@@ -243,8 +243,8 @@ let roomUpdate = async (params) => {
             },
             "platform" : {
                 "type" : params.bowser.platform.type
-            },
-            "updatedAt" : new Date()
+            }
+            // "updatedAt" : new Date()
         }
         var getdata = {
             url:process.env.MONGO_URI,
