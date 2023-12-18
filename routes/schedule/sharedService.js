@@ -99,7 +99,7 @@ let validateToken = async(params)=> {
                             let roomsResponse = await scheduleService.roomFetch(decodedToken);
                                 if (roomsResponse && roomsResponse.success ){
                                     // console.log("afterRoomFetching=====>>>",decodedToken.id)
-                                    if(roomsResponse.message.status != "stopped"  ){
+                                    if((roomsResponse.message.status !== "stopped" ) && (roomsResponse.message.status !== "accepted") && (roomsResponse.message.status !== "rejected")  ){
                                          responseData = await scheduleService.roomUpdate(decodedToken)
                                          if(responseData && !responseData.success){
                                             // console.log("roomresponse103====>>>",responseData)
