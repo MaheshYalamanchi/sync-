@@ -353,7 +353,7 @@ let exec = async (data, collection,docType) => {
     var client = await connection();
     try {
       var db = await client.db(process.env.DATABASENAME);
-      return db.collection(collection).find(data.filter).sort(data.sort).limit(data.limit).skip(data.skip);
+      return db.collection(collection).find(data.filter).sort(data.sort).skip(data.skip);
       // db.collection(collection).find(data.filter).sort(data.sort).limit(data.limit).populate(data.populate).skip(data.skip).exec(function (B, re){
       //   if (!re){
       //     return null;
