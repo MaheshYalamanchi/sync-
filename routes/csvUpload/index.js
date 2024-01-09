@@ -33,20 +33,18 @@ module.exports = function (params) {
                   { score: { $regex:  filterData, $options: 'i' } },
                   { tags: { $regex:  filterData, $options: 'i' } },
                   { proctor: { $regex:  filterData, $options: 'i' } },
-                  { members: { $regex:  filterData, $options: 'i' } }
+                  { members: { $regex:  filterData, $options: 'i' } },
                 ]
-          }
-        } else if('object'== typeof filterData){
-          filter = filterData;
-        } else {
-          filter = {};
+          },{isActive : true}
+        }else if( 'object'== typeof filterData){
+          filter = {isActive:true};
         }
         const w = {
           model: req.params.model,
-          filter: filter,
+          filter: filter || {},
           skip: req.body.query.start||0,
           // limit: req.body.query.limit||100,
-          // sort: req.body.query.sort||{createdAt:-1},
+          sort: req.body.query.sort||{createdAt:-1},
           populate: req.body.query.populate,
           select: req.body.query.select || "id",
           cursor: !0,
@@ -233,7 +231,7 @@ function csv(data) {
           if (w) {
             w.id = w._id
             delete w._id
-            if (g.length<100){
+            // if (g.length<100){
               const A = [];
               for (let B = 0; B < C.length; B++) {
                 let E = R(w, C[B]);
@@ -242,9 +240,9 @@ function csv(data) {
                 A.push(s);
               }
               g.push(A.join(data.Q)), process.nextTick(I);
-            } else {
-              resolve({ success: true, message: g });
-            }
+            // } else {
+            //   resolve({ success: true, message: g });
+            // }
           } else {
             resolve({ success: true, message: g })
           }
