@@ -64,12 +64,12 @@ let updateorinsert = async (data, collectionname, docType) => {
           //     return "import proper csv file..."
           //   }
           // }
+        }else{
+          return { message: "Please upload the correct CSV file." }
         }
       } else {
         return "invalid format";
       }
-     
-      
     } catch (error) {
       console.log(error)
       throw error;
