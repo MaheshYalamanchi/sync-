@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sync
+  namespace: proctor-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sync
+  template:
+    metadata:
+      labels:
+        app: sync
+    spec:
+      containers:
+        - name: sync
+          image: proctordev.azurecr.io/sync:$tag
+          imagePullPolicy: Always                                                             
+          ports:
+          - containerPort: 3004
+          env:
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-prod-env
+                  key: MONGO_URI
+            - name: DATA_SERVICE_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-prod-env
+                  key: DATA_SERVICE_ENDPOINT
+            - name: DATABASENAME
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-prod-env
+                  key: DATABASENAME
+            - name: PAUSE_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-prod-env
+                  key: PAUSE_ENDPOINT
+            - name: USER_SERVICE
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-prod-env
+                  key: USER_SERVICE
+            - name: USERS_DATA_SERVICE_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-prod-env
+                  key: USERS_DATA_SERVICE_ENDPOINT
+            - name: ROOMS_DATA_SERVICE_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-prod-env
+                  key: ROOMS_DATA_SERVICE_ENDPOINT
+            - name: CLOSE_CONEECTION_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-prod-env
+                  key: CLOSE_CONEECTION_ENDPOINT
+      imagePullSecrets:
+        - name: mysecret
