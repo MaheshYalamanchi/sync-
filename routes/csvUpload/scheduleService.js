@@ -5,7 +5,7 @@ let csvUpload = async data => {
     try {
       var updatestatus = await dbc.updateorinsert(
         data.data,
-        "rooms",
+        data.model,
         1
       );
       return updatestatus;
@@ -17,7 +17,7 @@ let csvDownload = async data => {
   try {
     var updatestatus = await dbc.exec(
       data,
-      "rooms",
+      data.model,
       1
     );
     return updatestatus;

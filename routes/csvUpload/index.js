@@ -7,6 +7,12 @@ module.exports = function (params) {
   var app = params.app;
   app.post('/api/csv/:model', async (req, res, next) => {
     if (req.body) {
+      if(req.body.model === "user"){
+        req.body.model = "users"
+        req.body.data[0]._id = req.body.data[0].username
+      }else if(req.body.model === "room"){
+        req.body.model = "rooms"
+      }
       var csvUpload = await schedule.csvUpload(req.body);
       if (csvUpload.success ) {
         app.http.customResponse(res, ({ success: true, message: csvUpload.message }), 200)
@@ -49,6 +55,11 @@ module.exports = function (params) {
           select: req.body.query.select || "id",
           cursor: !0,
           single: !1,
+        }
+        if (w.model === "room") {
+          w.model = "rooms";
+        }else if(w.model === "user"){
+          w.model = "users";
         }
         let Q = req.body.query.delimiter || ";";
         let cursor = await schedule.csvDownload(w);
@@ -229,8 +240,13 @@ function csv(data) {
         data.cursor.next(function (A, w) {
           if (A) return E(A);
           if (w) {
-            w.id = w._id
-            delete w._id
+            if(data.w.model === "users"){
+              w.username = w._id
+              delete w._id
+            }else{
+              w.id = w._id
+              delete w._id
+            }
             // if (g.length<100){
               const A = [];
               for (let B = 0; B < C.length; B++) {
