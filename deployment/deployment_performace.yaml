@@ -30,10 +30,5 @@ spec:
                 secretKeyRef:
                   name: proctor-prod-env
                   key: DATABASENAME
-            - name: DATA_SERVICE_ENDPOINT
-              valueFrom:
-                secretKeyRef:
-                  name: proctor-prod-env
-                  key: DATA_SERVICE_ENDPOINT
       imagePullSecrets:
         - name: mysecret
