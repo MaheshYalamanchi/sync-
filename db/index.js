@@ -50,7 +50,11 @@ let updateorinsert = async (data, collectionname, docType) => {
           return o._id != undefined;
         });
         if (insertBatch.length > 0) {
-          var requ = await insertBatchDoc(insertBatch, collectionname);
+          if(collectionname === "users"){
+            var requ = await insertBatchDocuser(insertBatch, collectionname);
+          }else{
+            var requ = await insertBatchDoc(insertBatch, collectionname);
+          }
           //console.log(requ);
           if (requ ){
             return requ
@@ -74,6 +78,89 @@ let updateorinsert = async (data, collectionname, docType) => {
       console.log(error)
       throw error;
     }
+};
+let insertBatchDocuser = async (data, collection) => {
+  var client = await connection();
+  try {
+    let BatchDoc =[]
+    let dataupdate =[]
+    for (const iterator of data) {
+      let status = "created";
+      iterator.status = status
+      var db = await client.db(process.env.DATABASENAME);
+      let record = await db.collection(collection).find({_id:iterator._id}).toArray();
+      record.push(record.length)
+        var jsondata = {
+          "_id": iterator._id,
+          "browser": iterator.browser,
+          "os": iterator.os,
+          "platform": iterator.platform,
+          "role": iterator.role,
+          "roleId": iterator.roleId,
+          "labels": iterator.labels,
+          "exclude": iterator.exclude,
+          "rep": iterator.rep,
+          "createdBy": iterator.createdBy,
+          "description": iterator.description,
+          "hashedPassword": iterator.hashedPassword,
+          "salt": iterator.salt,
+          "orgname": iterator.orgname,
+          "thumbnail": iterator.thumbnail,
+          "updatedBy": iterator.updatedBy,
+          "nickname": iterator.nickname,
+          "provider": iterator.provider,
+          "menuname": iterator.menuname,
+          "loggedAt": new Date(),
+          "ipaddress": iterator.ipaddress,
+          "useragent": iterator.useragent,
+          "createdAt": new Date(),
+          "updatedAt": iterator.updatedAt,
+          "similar": iterator.similar,
+          "face": iterator.face,
+          "rating": iterator.rating,
+          "passport": iterator.passport,
+          "authorization": iterator.authorization,
+          "group": iterator.group,
+          "lang": iterator.lang,
+          "locked": iterator.locked,
+          "secure": iterator.secure,
+          "username": iterator.username,
+          "verified": iterator.verified,
+          "threshold" :iterator.threshold,
+          "faceArray": iterator.faceArray,
+          "passportArray": iterator.passportArray,
+          "isActive": iterator.isActive || true,
+          "referer": iterator.referer
+        }
+      // }
+      if(record.length == 2){
+        var updateO = {
+          updateOne: {
+            filter: { _id: iterator._id },
+            update: { $set: jsondata }
+          }
+        };
+        dataupdate.push(updateO);
+      }else{
+        BatchDoc.push(jsondata)
+      }
+    }
+    if(dataupdate.length > 0){
+      var db = await client.db(process.env.DATABASENAME);
+      var response = await db.collection(collection).bulkWrite(dataupdate);
+    }
+    if(BatchDoc.length > 0){
+      var db = await client.db(process.env.DATABASENAME);
+      var response = await db.collection(collection).insertMany(BatchDoc);
+    }
+    if( response){  
+      return ({ success: true, message: 'csv uploaded sucessfully ' })
+    }
+  } catch (error) {
+    throw error;
+  } finally {
+    client.close();
+  }
 };
 let insertBatchDoc = async (data, collection) => {
     var client = await connection();
@@ -374,6 +461,7 @@ module.exports = {
     insertDoc,
     updateDoc,
     insertBatchDoc,
+    insertBatchDocuser,
     updateBatchDoc,
     updateorinsert,
     aggregate,
