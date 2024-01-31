@@ -51,9 +51,9 @@ let updateorinsert = async (data, collectionname, docType) => {
         });
         if (insertBatch.length > 0) {
           if(collectionname === "users"){
-            var requ = await insertBatchDocuser(insertBatch, collectionname);
+            var requ = await insertBatchDocuser(data, collectionname);
           }else{
-            var requ = await insertBatchDoc(insertBatch, collectionname);
+            var requ = await insertBatchDoc(data, collectionname);
           }
           //console.log(requ);
           if (requ ){
@@ -88,10 +88,10 @@ let insertBatchDocuser = async (data, collection) => {
       let status = "created";
       iterator.status = status
       var db = await client.db(process.env.DATABASENAME);
-      let record = await db.collection(collection).find({_id:iterator._id}).toArray();
+      let record = await db.collection(collection).find({_id:iterator.username}).toArray();
       record.push(record.length)
         var jsondata = {
-          "_id": iterator._id,
+          "_id": iterator.username,
           "browser": iterator.browser,
           "os": iterator.os,
           "platform": iterator.platform,
