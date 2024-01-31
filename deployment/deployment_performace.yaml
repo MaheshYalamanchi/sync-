@@ -23,42 +23,42 @@ spec:
             - name: MONGO_URI
               valueFrom:
                 secretKeyRef:
-                  name: proctor-dev-env
+                  name: proctor-prod-env
                   key: MONGO_URI
             - name: DATA_SERVICE_ENDPOINT
               valueFrom:
                 secretKeyRef:
-                  name: proctor-dev-env
+                  name: proctor-prod-env
                   key: DATA_SERVICE_ENDPOINT
             - name: DATABASENAME
               valueFrom:
                 secretKeyRef:
-                  name: proctor-dev-env
+                  name: proctor-prod-env
                   key: DATABASENAME
             - name: PAUSE_ENDPOINT
               valueFrom:
                 secretKeyRef:
-                  name: proctor-dev-env
+                  name: proctor-prod-env
                   key: PAUSE_ENDPOINT
             - name: USER_SERVICE
               valueFrom:
                 secretKeyRef:
-                  name: proctor-dev-env
+                  name: proctor-prod-env
                   key: USER_SERVICE
             - name: USERS_DATA_SERVICE_ENDPOINT
               valueFrom:
                 secretKeyRef:
-                  name: proctor-dev-env
+                  name: proctor-prod-env
                   key: USERS_DATA_SERVICE_ENDPOINT
             - name: ROOMS_DATA_SERVICE_ENDPOINT
               valueFrom:
                 secretKeyRef:
-                  name: proctor-dev-env
+                  name: proctor-prod-env
                   key: ROOMS_DATA_SERVICE_ENDPOINT
             - name: CLOSE_CONEECTION_ENDPOINT
               valueFrom:
                 secretKeyRef:
-                  name: proctor-dev-env
+                  name: proctor-prod-env
                   key: CLOSE_CONEECTION_ENDPOINT
       imagePullSecrets:
         - name: mysecret
