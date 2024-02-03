@@ -62,3 +62,5 @@ spec:
                   key: CLOSE_CONEECTION_ENDPOINT
       imagePullSecrets:
         - name: mysecret
+      nodeSelector:
+        agentpool: proctproduct 
