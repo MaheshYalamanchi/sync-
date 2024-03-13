@@ -2,7 +2,12 @@ const messages = require('../../configuration/messages/message');
 var tenantService=require('./tenant.service')
 const { exec } = require('child_process');
 const MongoClient = require('mongodb').MongoClient;
+// MongoDB connection URI
+const uri = "mongodb+srv://dbimport:dbimport@proctordev.jsoli.mongodb.net";
 
+// Database Name
+const dbName = 'edutech_1';
+const client = new MongoClient(uri);
 module.exports = function (params) {
     var app = params.app;
     app.post('/createtenant', async (req, res, next) => {
@@ -50,12 +55,7 @@ module.exports = function (params) {
     });
     app.get('/import', async (req, res) => {
         try {
-           // MongoDB connection URI
-            const uri = "mongodb+srv://dbimport:dbimport@proctordev.jsoli.mongodb.net";
 
-            // Database Name
-            const dbName = 'edutech_1';
-            const client = new MongoClient(uri);
 
             // Connect to the MongoDB client
             await client.connect();
