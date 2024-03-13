@@ -1,9 +1,10 @@
 ### STAGE 1: Build ###
-#FROM node:12.7-alpine AS build
+# Use Node.js as the base image
 FROM node:14.19.0 AS build
+
+# Set npm registry to default
 RUN npm config set registry http://registry.npmjs.org/ 
-RUN apt-get update -y && \ 
-    apt-get install -y mongodb
+
 # Create app directory
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
@@ -15,7 +16,17 @@ RUN npm install
 # Bundle app source
 COPY . /usr/src/app
 
+# Expose your application port
 EXPOSE 3004
 
-# CMD ["node","app.js"]
-CMD ["node", "app.js"]
+# Install MongoDB
+RUN apt-get update && \
+    apt-get install -y mongodb && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Start MongoDB
+RUN mkdir -p /data/db
+
+# Command to start MongoDB and your Node.js application
+CMD mongod & node app.js
