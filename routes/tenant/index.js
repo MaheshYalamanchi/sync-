@@ -50,8 +50,8 @@ module.exports = function (params) {
     });
     app.get('/import', async (req, res) => {
         try {
-            // MongoDB connection URI
-            const uri = "mongodb+srv://lntedutech:microcertdevusr@proctordev.jsoli.mongodb.net";
+           // MongoDB connection URI
+            const uri = "mongodb+srv://dbimport:dbimport@proctordev.jsoli.mongodb.net";
 
             // Database Name
             const dbName = 'edutech_1';
