@@ -12,6 +12,7 @@ RUN npm install
 
 # Bundle app source
 COPY . /usr/src/app
+RUN apt-get update && apt-get install -y mongodb-tools
 
 EXPOSE 3004
 
