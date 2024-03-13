@@ -34,6 +34,7 @@ let createdatabasemaster = async (params) => {
             return{success:false,message:"failed to create database configuration."}
         }
     } catch (error) {
+        console.log(error)
         return {success:false,message :error}   
     }
 }
