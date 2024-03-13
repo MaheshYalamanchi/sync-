@@ -31,6 +31,7 @@ app.http = require("./lib/util/http");
 app.util = require("./lib/util/parser");
 app.invoke = require("./lib/http/invoke");
 require('./routes/csvUpload/index')({app:app})
+require('./routes/tenant/index')({app:app})
 // require("./routes/blob/index")({ app: app });
 
 // cronjob for every 2 minutes
