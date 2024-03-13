@@ -5,7 +5,7 @@ FROM node:14.19.0 AS build
 
 RUN npm config set registry http://registry.npmjs.org/ 
 # Update package lists and install MongoDB tools
-RUN apt-get update && apt-get install -y mongodb-tools
+RUN  apt-get install -y mongodb-tools
 
 # Create app directory
 RUN mkdir -p /usr/src/app
