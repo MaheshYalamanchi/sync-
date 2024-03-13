@@ -53,7 +53,7 @@ module.exports = function (params) {
             res.status(200).send({success:true,messages:'Database restored successfully'});
         });
     });
-    app.get('/import', async (req, res) => {
+    app.post('/import', async (req, res) => {
         try {
 
 
