@@ -64,7 +64,7 @@ module.exports = function (params) {
             const backupFilePath = './proctor';
     
             // Database Name from the connection URI
-            const databaseName = dbName;
+            const databaseName = req.body.databaseName;
     
             // Drop the existing database
             await client.db(databaseName).dropDatabase();
@@ -73,17 +73,17 @@ module.exports = function (params) {
             exec(`mongorestore --uri ${uri}/${databaseName} --drop ${backupFilePath}`, async (error, stdout, stderr) => {
                 if (error) {
                     console.error(`Error executing command: ${error}`);
-                    return res.status(500).send('Internal Server Error');
+                    return res.status(500).send({success:false,messages:'Internal Server Error'});
                 }
     
                 console.log(`stdout: ${stdout}`);
                 console.error(`stderr: ${stderr}`);
     
-                res.status(200).send('Database imported successfully');
+                res.status(200).send({success:true,messages:'Database imported successfully'});
             });
         } catch (err) {
             console.error("Error:", err);
-            res.status(500).send('Internal Server Error');
+            res.status(500).send({success:false,messages:'Internal Server Error'});
         } finally {
             await client.close();
         }
