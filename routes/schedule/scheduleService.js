@@ -96,8 +96,8 @@ let userInsertion = async (params) => {
             "referer" : params.headers.referer
         }
         var getdata = {
-            url:process.env.MONGO_URI,
-            database:"proctor",
+            url: params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName,
+			database: params.tenantResponse.message.databaseName,
             model: "users",
             docType: 0,
             query: jsonData
@@ -124,8 +124,8 @@ let userFetch = async (params) => {
         let username = params.username.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi,'_');
         // console.log(username,'username of query')
         var getdata = {
-            url:process.env.MONGO_URI,
-            database:"proctor",
+            url: params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName,
+			database: params.tenantResponse.message.databaseName,
             model: "users",
             docType: 1,
             query: {_id:username}
@@ -179,8 +179,8 @@ let roomInsertion = async (params) => {
     try {
         // console.log("afterRoomInsertion=====>>>",params.template)
         var getdata = {
-            url:process.env.MONGO_URI,
-            database: "proctor",
+            url: params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName,
+			database: params.tenantResponse.message.databaseName,
             model: "rooms",
             docType: 1,
             query:  {_id:params.template}
@@ -197,8 +197,8 @@ let roomInsertion = async (params) => {
                 jsonData.metrics = response.data.statusMessage[0].metrics
                 jsonData.weights = response.data.statusMessage[0].weights
             var getdata = {
-                url:process.env.MONGO_URI,
-                database:"proctor",
+                url: params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName,
+			    database: params.tenantResponse.message.databaseName,
                 model: "rooms",
                 docType: 0,
                 query: jsonData
@@ -247,8 +247,8 @@ let roomUpdate = async (params) => {
             // "updatedAt" : new Date()
         }
         var getdata = {
-            url:process.env.MONGO_URI,
-            database:"proctor",
+            url: params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName,
+			database: params.tenantResponse.message.databaseName,
             model: "rooms",
             docType: 0,
             query:{
@@ -434,8 +434,8 @@ let roomFetch = async (params) => {
     try {
         // console.log("beforeRoomFetching=====>>>",params.id)
         var getdata = {
-            url:process.env.MONGO_URI,
-            database:"proctor",
+            url: params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName,
+			database: params.tenantResponse.message.databaseName,
             model: "rooms",
             docType: 1,
             query: params.id
