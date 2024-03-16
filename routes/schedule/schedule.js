@@ -286,51 +286,11 @@ let getRoomDetails = async (params) => {
         }
     }
 };
-
-let tenantResponse = async (params) => {
-    try {
-        if(params.tenantId){
-            var getdata = {
-                url: process.env.MONGO_URI+"/masterdb",
-                database:"masterdb",
-                model: "tenantuser",
-                docType: 1,
-                query:
-                [
-                    {$match:{tenantId: params.tenantId}},
-                    {$lookup:{
-                        from: 'databasemaster',
-                        localField: 'tenantId',
-                        foreignField: 'tenantId',
-                        as: 'data',
-                     }},
-                     { $unwind: { path: "$data", preserveNullAndEmptyArrays: true } },
-                     { $project: {_id:0,tenantId:"$tenantId",connectionString:"$data.connectionString",databaseName:"$data.databaseName"}}
-                ]
-            };
-            let responseData = await invoke.makeHttpCall("post", "aggregate", getdata);
-            if (responseData && responseData.data && responseData.data.statusMessage) {
-                return { success: true, message:responseData.data.statusMessage[0]}
-            } else {
-                return { success: false, message: 'Provide proper tenant params' };
-            }
-        }  else {
-            return { success: false, message: 'Provide proper tenantId' };
-        }
-    } catch (error) {
-        if (error && error.code == 'ECONNREFUSED') {
-            return { success: false, message: globalMsg[0].MSG000, status: globalMsg[0].status }
-        } else {
-            return { success: false, message: error }
-        }
-    }
-};
 module.exports = {
     eventInfo,
     updateScore,
     faceInfo,
     attachInsertion,
-    getRoomDetails,
-    tenantResponse
+    getRoomDetails
     
 }

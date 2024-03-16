@@ -46,7 +46,7 @@ let generateToken = async (req) => {
     try {
         let timeout = typeof req.timeout != 'undefined' ? req.timeout : 90
         let template = typeof req.template != 'undefined' ? req.template : "default"
-        let user = {"assessmentId": req.assessmentId,"username": req.username,"nickname": req.nickname, "template": template,"subject":req.subject,"timeout":timeout,tenantId: req.tenantId}
+        let user = {"assessmentId": req.assessmentId,"username": req.username,"nickname": req.nickname, "template": template,"subject":req.subject,"timeout":timeout}
         if (!req.roomId){
             user.id = uuid()
         }else{
@@ -65,8 +65,7 @@ let generateToken = async (req) => {
             template : user.template,
             subject : user.subject,
             timeout : user.timeout,
-            videoass : user.videoass,
-            tenantId: user.tenantId
+            videoass : user.videoass
         };
         user.proctorToken = jwt.sign(tokenArg, secret, { expiresIn: 5400000 });
         if (user.proctorToken){
@@ -84,8 +83,7 @@ let generateToken = async (req) => {
                 "username": user.username,
                 "proctorToken": user.proctorToken,
                 "requestType": user.requestType,
-                "videoass": user.videoass,
-                "tenantId": user.tenantId
+                "videoass": user.videoass
             }
             return { success: true, message: "Proctor Token",ProctorToken:user.proctorToken ,data:data};
         }else{
@@ -126,14 +124,13 @@ let jwtToken = async (req) => {
         // };
         // let responseData = await invoke.makeHttpCall_userDataService("post", "aggregate", getdata);
         // if (responseData && responseData.data && responseData.data.statusMessage) {
-            let user = { "provider": req.provider, "id": username ,"role": req.role,"room": req.id,"nickname": req.nickname,"tenantId": req.tenantId}
+            let user = { "provider": req.provider, "id": username ,"role": req.role,"room": req.id,"nickname": req.nickname}
             let tokenArg = {
                 id: user.id,
                 provider: user.provider,
                 role : user.role,
                 room : user.room,
-                nickname: user.nickname,
-                tenantId: user.tenantId
+                nickname: user.nickname
             };
             user.proctorToken = jwt.sign(tokenArg, secret, { expiresIn: 5400000 });
             if (user.proctorToken) {
