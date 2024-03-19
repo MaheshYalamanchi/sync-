@@ -113,37 +113,21 @@ let generateToken1 = async (req) => {
 let jwtToken = async (req) => {
     try {
         let username = req.username.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi,'_');
-        // var getdata = {
-        //     url:process.env.MONGO_URI,
-        //     database:"proctor",
-        //     model: "users",
-        //     docType: 1,
-        //     query: [
-        //         {
-        //             $match:{_id:username}
-        //         }
-        //     ]
-        // };
-        // let responseData = await invoke.makeHttpCall_userDataService("post", "aggregate", getdata);
-        // if (responseData && responseData.data && responseData.data.statusMessage) {
-            let user = { "provider": req.provider, "id": username ,"role": req.role,"room": req.id,"nickname": req.nickname,"tenantId": req.tenantId}
-            let tokenArg = {
-                id: user.id,
-                provider: user.provider,
-                role : user.role,
-                room : user.room,
-                nickname: user.nickname,
-                tenantId: user.tenantId
-            };
-            user.proctorToken = jwt.sign(tokenArg, secret, { expiresIn: 5400000 });
-            if (user.proctorToken) {
-                return user.proctorToken;
-            } else {
-                return {success: false, message:'Error While Generating Token!'};
-            }
-        // }else{
-        //     return {success: false, message:'Data not found...'};
-        // }
+        let user = { "provider": req.provider, "id": username ,"role": req.role,"room": req.id,"nickname": req.nickname,"tenantId": req.tenantId}
+        let tokenArg = {
+            id: user.id,
+            provider: user.provider,
+            role : user.role,
+            room : user.room,
+            nickname: user.nickname,
+            tenantId: user.tenantId
+        };
+        user.proctorToken = jwt.sign(tokenArg, secret, { expiresIn: 5400000 });
+        if (user.proctorToken) {
+            return user.proctorToken;
+        } else {
+            return {success: false, message:'Error While Generating Token!'};
+        }
     } catch (err) {
         return {success:false,message:err};
     }

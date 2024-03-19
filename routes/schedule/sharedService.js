@@ -74,7 +74,6 @@ let tokenValidation = async(params)=> {
 
 let validateToken = async(params)=> {
     try {
-        // console.log('body........jwt',params.body.authorization.authorization);
         const token =params.body.authorization.authorization.split(" ");
         if (!token) {
             return {success:false,message:"A token is required for authentication"+token[1]};
@@ -83,71 +82,72 @@ let validateToken = async(params)=> {
             if(!decodedToken){
                 return {success:false,message:"A token is required for authentication"};
             }
-            let tenantResponse = await _schedule.tenantResponse(decodedToken);
-            if (tenantResponse && tenantResponse.success){
-                decodedToken.headers = params.body.authorization;
-                if(decodedToken){
-                    // console.log("decoded the token====>>", params.body.authorization.authorization)
-                    decodedToken.bowser = bowser.parse(params.body.bowserDetails);
-                    decodedToken.bowserDetails= params.body.bowserDetails;
-                    decodedToken.tenantResponse = tenantResponse;
-                    let userResponse = await scheduleService.userFetch(decodedToken);
-                    let responseData;
-                    if (userResponse && userResponse.success){
-                        // console.log("afterUserfetch====>>>",decodedToken.username)
-                        decodedToken.role = userResponse.message[0].role;
-                        decodedToken.provider = userResponse.message[0].provider;
-                        if(userResponse&&userResponse.message&&userResponse.message[0].locked !=1){
-                            // let response = await scheduleService.userUpdate(userResponse.message);
-                            // if (response && response.success){
-                                let roomsResponse = await scheduleService.roomFetch(decodedToken);
-                                    if (roomsResponse && roomsResponse.success ){
-                                        // console.log("afterRoomFetching=====>>>",decodedToken.id)
-                                        if((roomsResponse.message.status !== "stopped" ) && (roomsResponse.message.status !== "accepted") && (roomsResponse.message.status !== "rejected")  ){
-                                            responseData = await scheduleService.roomUpdate(decodedToken)
-                                            if(responseData && !responseData.success){
-                                                // console.log("roomresponse103====>>>",responseData)
-                                            }
-                                        }else{
-                                            return {success:false, message : 'Eroor while updating roomRecord'};
-                                        }
-                                    } else{
-                                        // console.log("afterRoomFetchingForInsertion=====>>>",decodedToken.id)
-                                        responseData = await scheduleService.roomInsertion(decodedToken);
-                                    }
-                            // } else {
-                            //     console.log("userresponse112======>",JSON.stringify(response.message.response))
-                            // }
-                        }else{
-                            return {success:false, message : 'Data Not Found'};
-                        }
-                    } else {
-                        // console.log("ifNoUserIsThere=====>>>",params.body.authorization.authorization)
-                        let response = await scheduleService.userInsertion(decodedToken);
-                        if (response && response.success){
-                            decodedToken.role = response.message.role;
-                            decodedToken.provider = response.message.provider;
-                            responseData = await scheduleService.roomInsertion(decodedToken);
-                        } else {
-                            return {success:false,message:"user insertion failed..."}
-                        }
+            let url;
+            let database;
+            let tenantResponse;
+            if(decodedToken && decodedToken.tenantId){
+                tenantResponse = await _schedule.tenantResponse(decodedToken);
+                if (tenantResponse && tenantResponse.success){
+                    url = tenantResponse.message.connectionString+'/'+tenantResponse.message.databaseName;
+                    database = tenantResponse.message.databaseName;
+                }else {
+                        return { success: false, message: tenantResponse.message }
                     }
-                    if (responseData.success){
-                        let getToken = await tokenService.jwtToken(decodedToken);
-                        if (getToken) {
-                            // console.log("finalResponse================>>>>>",{body:params.body.authorization.authorization,response:getToken})
-                            return{success:true,message:{token:getToken}};
-                        }else{
-                            return {success:false, message : 'Error While Generating Token!'};
-                        }
-                    } else {
-                        // console.log("responseData136=====>>>>",responseData)
-                    }
-                } else{
-                    return {success:false, message : 'Data Not Found'};
-                }
             } else {
-                return { success: false, message: tenantResponse.message }
+                url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
+                database = process.env.DATABASENAME;
+            }
+            decodedToken.headers = params.body.authorization;
+            if(decodedToken){
+                // console.log("decoded the token====>>", params.body.authorization.authorization)
+                decodedToken.bowser = bowser.parse(params.body.bowserDetails);
+                decodedToken.bowserDetails= params.body.bowserDetails;
+                if (tenantResponse && tenantResponse.success){
+                    decodedToken.tenantResponse = tenantResponse;
+                }
+                let userResponse = await scheduleService.userFetch(decodedToken);
+                let responseData;
+                if (userResponse && userResponse.success){
+                    decodedToken.role = userResponse.message[0].role;
+                    decodedToken.provider = userResponse.message[0].provider;
+                    if(userResponse&&userResponse.message&&userResponse.message[0].locked !=1){
+                        let roomsResponse = await scheduleService.roomFetch(decodedToken);
+                        if (roomsResponse && roomsResponse.success ){
+                            if((roomsResponse.message.status !== "stopped" ) && (roomsResponse.message.status !== "accepted") && (roomsResponse.message.status !== "rejected")  ){
+                                responseData = await scheduleService.roomUpdate(decodedToken)
+                                if(responseData && !responseData.success){
+                                }
+                            }else{
+                                return {success:false, message : 'Eroor while updating roomRecord'};
+                            }
+                        } else{
+                            responseData = await scheduleService.roomInsertion(decodedToken);
+                        }
+                    }else{
+                        return {success:false, message : 'Data Not Found'};
+                    }
+                } else {
+                    let response = await scheduleService.userInsertion(decodedToken);
+                    if (response && response.success){
+                        decodedToken.role = response.message.role;
+                        decodedToken.provider = response.message.provider;
+                        responseData = await scheduleService.roomInsertion(decodedToken);
+                    } else {
+                        return {success:false,message:"user insertion failed..."}
+                    }
+                }
+                if (responseData.success){
+                    let getToken = await tokenService.jwtToken(decodedToken);
+                    if (getToken) {
+                        return{success:true,message:{token:getToken}};
+                    }else{
+                        return {success:false, message : 'Error While Generating Token!'};
+                    }
+                } else {
+                    // console.log("responseData136=====>>>>",responseData)
+                }
+            } else{
+                return {success:false, message : 'Data Not Found'};
             }
         }
     }catch(error){

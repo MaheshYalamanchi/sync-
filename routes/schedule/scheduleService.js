@@ -71,10 +71,15 @@ const json = require('../json');
   
 let userInsertion = async (params) => {
     try {
-        // console.log("beforeUserInsertion=====>>>",params.username)
-        // var browser = params.headers["user-agent"];
-        // const osInfo = getOperatingSystemInfo(browser);
-        // const browserInfo = getBrowserInfo(browser);
+        let url;
+        let database;
+        if(params && params.tenantResponse && params.tenantResponse.success){
+            url = params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName;
+            database = params.tenantResponse.message.databaseName;
+        } else {
+            url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
+            database = process.env.DATABASENAME;
+        }
         let username = params.username.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi,'_')
         jsonData = {
             "_id" : username,
@@ -96,8 +101,8 @@ let userInsertion = async (params) => {
             "referer" : params.headers.referer
         }
         var getdata = {
-            url: params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName,
-			database: params.tenantResponse.message.databaseName,
+            url: url,
+			database: database,
             model: "users",
             docType: 0,
             query: jsonData
@@ -120,12 +125,21 @@ let userInsertion = async (params) => {
 };
 let userFetch = async (params) => {
     try {
+        let url;
+        let database;
+        if(params && params.tenantResponse && params.tenantResponse.success){
+            url = params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName;
+            database = params.tenantResponse.message.databaseName;
+        } else {
+            url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
+            database = process.env.DATABASENAME;
+        }
         // console.log("userfetchfetch=====>>>",params.username)
         let username = params.username.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi,'_');
         // console.log(username,'username of query')
         var getdata = {
-            url: params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName,
-			database: params.tenantResponse.message.databaseName,
+            url: url,
+			database: database,
             model: "users",
             docType: 1,
             query: {_id:username}
@@ -177,10 +191,18 @@ let userUpdate = async (params) => {
 };
 let roomInsertion = async (params) => {
     try {
-        // console.log("afterRoomInsertion=====>>>",params.template)
+        let url;
+        let database;
+        if(params && params.tenantResponse && params.tenantResponse.success){
+            url = params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName;
+            database = params.tenantResponse.message.databaseName;
+        } else {
+            url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
+            database = process.env.DATABASENAME;
+        }
         var getdata = {
-            url: params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName,
-			database: params.tenantResponse.message.databaseName,
+            url: url,
+			database: database,
             model: "rooms",
             docType: 1,
             query:  {_id:params.template}
@@ -197,8 +219,8 @@ let roomInsertion = async (params) => {
                 jsonData.metrics = response.data.statusMessage[0].metrics
                 jsonData.weights = response.data.statusMessage[0].weights
             var getdata = {
-                url: params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName,
-			    database: params.tenantResponse.message.databaseName,
+                url: url,
+			    database: database,
                 model: "rooms",
                 docType: 0,
                 query: jsonData
@@ -223,15 +245,16 @@ let roomInsertion = async (params) => {
 };
 let roomUpdate = async (params) => {
     try {
-        // console.log("beforeRoomUpdate=====>>>",params.id)
-        // let fetchTemplateData=await fetchTemplate(params)
-        // var browser = params.headers["user-agent"];
-        // const osInfo = getOperatingSystemInfo(browser);
-        // const browserInfo = getBrowserInfo(browser);
+        let url;
+        let database;
+        if(params && params.tenantResponse && params.tenantResponse.success){
+            url = params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName;
+            database = params.tenantResponse.message.databaseName;
+        } else {
+            url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
+            database = process.env.DATABASENAME;
+        }
         var jsonData = {
-            // "metrics":fetchTemplateData.message.metrics,
-            // "weights":fetchTemplateData.message.weights,
-            // "addons":fetchTemplateData.message.addons,
             "browser" : {
                 "name" : params.bowser.browser.name,
                 "version" : params.bowser.browser.version
@@ -247,8 +270,8 @@ let roomUpdate = async (params) => {
             // "updatedAt" : new Date()
         }
         var getdata = {
-            url: params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName,
-			database: params.tenantResponse.message.databaseName,
+            url: url,
+			database: database,
             model: "rooms",
             docType: 0,
             query:{
@@ -432,10 +455,19 @@ let chatDetails = async (params) => {
 };
 let roomFetch = async (params) => {
     try {
+        let url;
+        let database;
+        if(params && params.tenantResponse && params.tenantResponse.success){
+            url = params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName;
+            database = params.tenantResponse.message.databaseName;
+        } else {
+            url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
+            database = process.env.DATABASENAME;
+        }
         // console.log("beforeRoomFetching=====>>>",params.id)
         var getdata = {
-            url: params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName,
-			database: params.tenantResponse.message.databaseName,
+            url: url,
+			database: database,
             model: "rooms",
             docType: 1,
             query: params.id
