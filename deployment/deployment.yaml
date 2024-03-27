@@ -12,12 +12,19 @@ spec:
       labels:
         app: sync
     spec:
+      volumes:
+      - name: 'data'
+        persistentVolumeClaim:
+          claimName: my-azurefile
       containers:
         - name: sync
           image: proctordev.azurecr.io/sync:$tag
           imagePullPolicy: Always                                                             
           ports:
           - containerPort: 3004
+          volumeMounts:
+          - name: 'data'
+            mountPath: '/mnt'
           env:
             - name: MONGO_URI
               valueFrom:
