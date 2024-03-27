@@ -61,6 +61,7 @@ module.exports = function (params) {
         }else if(w.model === "user"){
           w.model = "users";
         }
+        w.authorization = req.body.authorization
         let Q = req.body.query.delimiter || ";";
         let cursor = await schedule.csvDownload(w);
         let jsondata = {

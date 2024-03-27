@@ -2,11 +2,11 @@ const MongoClient = require("mongodb").MongoClient;
 const ObjectID = require("mongodb").ObjectID;
 const _ = require("lodash");
 const {v4 : uuidv4} = require('uuid')
-let connection = async () => {
+let connection = async (url) => {
     let db, client;
     try {
       client = await MongoClient.connect(
-        process.env.MONGO_URI,
+        url,
         {
          connectTimeoutMS: 300000, socketTimeoutMS: 300000, useNewUrlParser: true,useUnifiedTopology: true
         }
@@ -34,13 +34,13 @@ let connection = async () => {
       }
 
   };
-let updateorinsert = async (data, collectionname, docType) => {
+let updateorinsert = async (data, collectionname, docType,dbInfo) => {
     try {
       if (docType == 0) {
         if (data._id === undefined) {
-          var requ = await insertDoc(data, collectionname);
+          var requ = await insertDoc(data, collectionname,dbInfo);
         } else {
-          var requ = await updateDoc(data, collectionname);
+          var requ = await updateDoc(data, collectionname,dbInfo);
         }
       } else if (docType == 1) {
         var insertBatch = _.filter(data, function(o) {
@@ -51,9 +51,9 @@ let updateorinsert = async (data, collectionname, docType) => {
         });
         if (insertBatch.length > 0) {
           if(collectionname === "users"){
-            var requ = await insertBatchDocuser(data, collectionname);
+            var requ = await insertBatchDocuser(data, collectionname,dbInfo);
           }else{
-            var requ = await insertBatchDoc(data, collectionname);
+            var requ = await insertBatchDoc(data, collectionname,dbInfo);
           }
           //console.log(requ);
           if (requ ){
@@ -79,15 +79,15 @@ let updateorinsert = async (data, collectionname, docType) => {
       throw error;
     }
 };
-let insertBatchDocuser = async (data, collection) => {
-  var client = await connection();
+let insertBatchDocuser = async (data, collection,dbInfo) => {
+  var client = await connection(dbInfo.url);
   try {
     let BatchDoc =[]
     let dataupdate =[]
     for (const iterator of data) {
       let status = "created";
       iterator.status = status
-      var db = await client.db(process.env.DATABASENAME);
+      var db = await client.db(dbInfo.database);
       let record = await db.collection(collection).find({_id:iterator.username}).toArray();
       record.push(record.length)
         var jsondata = {
@@ -162,15 +162,15 @@ let insertBatchDocuser = async (data, collection) => {
     client.close();
   }
 };
-let insertBatchDoc = async (data, collection) => {
-    var client = await connection();
+let insertBatchDoc = async (data, collection, dbInfo) => {
+    var client = await connection(dbInfo.url);
     try {
       let BatchDoc =[]
       let dataupdate =[]
       for (const iterator of data) {
         let status = "created";
         iterator.status = status
-        var db = await client.db(process.env.DATABASENAME);
+        var db = await client.db(dbInfo.database);
         let record = await db.collection(collection).find({_id:iterator._id}).toArray();
         record.push(record.length)
         // if(!record.length){
@@ -324,11 +324,11 @@ let updateBatchDoc = async (data, collection) => {
       client.close();
     }
 };
-let insertDoc = async (data, collection) => {
-    var client = await connection();
+let insertDoc = async (data, collection,dbInfo) => {
+    var client = await connection(dbInfo.url);
     //console.log(data,collection)
     try {
-      var db = await client.db(process.env.DATABASENAME);
+      var db = await client.db(dbInfo.database);
       return await db.collection(collection).insertOne(data);
     } catch (error) {
       throw error;
@@ -336,11 +336,11 @@ let insertDoc = async (data, collection) => {
       client.close();
     }
 };
-let updateDoc = async (data, collection) => {
-    var client = await connection();
+let updateDoc = async (data, collection, dbInfo) => {
+    var client = await connection(dbInfo.url);
     try {
       // data._id = new ObjectID(data._id);
-      var db = await client.db(process.env.DATABASENAME);
+      var db = await client.db(dbInfo.database);
       return await db
         .collection(collection)
         .updateOne({ _id: data._id }, { $set: data });
@@ -406,9 +406,9 @@ let removeRecId = async (data, collection) => {
   }
 };
 //Bulkupload
- let bulkUpload = async (data, collection,docType) => {
+ let bulkUpload = async (data, collection,docType,dbInfo) => {
   if (docType == 1) {
-    var client = await connection();
+    var client = await connection(dbInfo.url);
     try {
       var batchData = [];
     for (const iterator of data) {
@@ -423,7 +423,7 @@ let removeRecId = async (data, collection) => {
       };
       batchData.push(updateO);
     }
-      var db = await client.db(process.env.DATABASENAME);
+      var db = await client.db(dbInfo.database);
       var re = await db.collection(collection).bulkWrite(batchData);
       return re;
     } catch (error) {
@@ -435,11 +435,11 @@ let removeRecId = async (data, collection) => {
 };
 
 //exec
-let exec = async (data, collection,docType) => {
+let exec = async (data, collection,docType,dbInfo) => {
   if (docType == 1) {
-    var client = await connection();
+    var client = await connection(dbInfo.url);
     try {
-      var db = await client.db(process.env.DATABASENAME);
+      var db = await client.db(dbInfo.database);
         return db.collection(collection).find(data.filter).sort(data.sort).skip(data.skip);
       // db.collection(collection).find(data.filter).sort(data.sort).limit(data.limit).populate(data.populate).skip(data.skip).exec(function (B, re){
       //   if (!re){
