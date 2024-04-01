@@ -2,8 +2,8 @@ const invoke = require("../../lib/http/invoke");
 let createtenant = async (params) => {
     try {
         var getdata = {
-            url:process.env.MONGO_URI,
-            database:"proctor",
+            url:process.env.MONGO_URI+"/masterdb",
+            database:"masterdb",
             model: "tenantuser",
             docType: 0,
             query: jsonData
