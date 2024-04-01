@@ -15,6 +15,7 @@ let createtenant = async (params) => {
             return {success:false,message :'Tenant creation failed.'}   
         }
     } catch (error) {
+        console.log(error)
         return {success:false,message :error}   
     }
 }
