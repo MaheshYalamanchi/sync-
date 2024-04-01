@@ -6,7 +6,7 @@ let createtenant = async (params) => {
             database:"masterdb",
             model: "tenantuser",
             docType: 0,
-            query: jsonData
+            query: params
         };
         let responseData = await invoke.makeHttpCall("post", "write", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage._id) {
