@@ -11,12 +11,12 @@ const client = new MongoClient(uri);
 module.exports = function (params) {
     var app = params.app;
     app.post('/createtenant', async (req, res, next) => {
-        if(req.body){
+        if(req.body&&req.body.tenantId&&req.body.fullName&&req.body.email&&req.body.password&&req.body.role&&req.body.siteName&&req.body.loginUrl){
             let createtenant=await tenantService.createtenant(req.body)
             if(createtenant.success){
-                app.http.customResponse(res, { success: true, message: 'Tenant created successfully.' }, 200);
+                app.http.customResponse(res,createtenant, 200);
             }else{
-                app.http.customResponse(res, { success: false, message: 'There is a problem with tenant creation.' }, 200);
+                app.http.customResponse(res, createtenant, 200);
             }
             
         }else{

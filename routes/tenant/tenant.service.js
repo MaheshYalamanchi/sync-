@@ -16,7 +16,10 @@ let createtenant = async (params) => {
         }
     } catch (error) {
         console.log(error)
-        return {success:false,message :error}   
+        if(error&&error.response&&error.response.data&&error.response.data.code&&(error.response.data.code==11000)){
+            return {success:false,message:'Tenant id already exists.'}
+        }
+        return {success:false,message :'error'}   
     }
 }
 let createdatabasemaster = async (params) => {
