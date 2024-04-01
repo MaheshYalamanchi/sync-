@@ -10,9 +10,9 @@ let createtenant = async (params) => {
         };
         let responseData = await invoke.makeHttpCall("post", "write", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage._id) {
-
+            return {success:true,message :'Tenant created successfully.'}   
         }else{
-
+            return {success:false,message :'Tenant creation failed.'}   
         }
     } catch (error) {
         return {success:false,message :error}   
