@@ -2,6 +2,7 @@ const dbc = require('../../db/index')
 const shared = require('./shared');
 const invoke = require("../../lib/http/invoke");
 const _schedule = require('../schedule/schedule')
+const jwt_decode = require('jwt-decode');
 let csvUpload = async (data) => {
     try {
       let  decodeToken = jwt_decode(data.authorization);
