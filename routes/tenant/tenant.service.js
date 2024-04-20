@@ -43,8 +43,30 @@ let createdatabasemaster = async (params) => {
     }
 }
 
+let getTenantDtl = async () => {
+    try {
+        var getdata = {
+            url:process.env.MONGO_URI+"/masterdb",
+            database:"masterdb",
+            model: "tenantuser",
+            docType: 1,
+            query: {}
+        };
+        let responseData = await invoke.makeHttpCall("post", "read", getdata);
+        console.log(responseData.data.statusMessage)
+        if (responseData && responseData.data && responseData.data.statusMessage.length) {
+            return {success:true,message:responseData.data.statusMessage}
+        }else{
+            return{success:false,message:"Failed to fetch data."}
+        }
+    } catch (error) {
+        console.log(error)
+        return {success:false,message :error}   
+    }
+}
 
 module.exports={
     createtenant,
-    createdatabasemaster
+    createdatabasemaster,
+    getTenantDtl
 }

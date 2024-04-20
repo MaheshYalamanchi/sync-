@@ -88,4 +88,12 @@ module.exports = function (params) {
             await client.close();
         }
     });
+    app.get('/gettenant',async(req,res)=>{
+        try {
+            let getTenantDtl=await tenantService.getTenantDtl()
+            app.http.customResponse(res,getTenantDtl, 200);
+        } catch (error) {
+            res.status(500).send({success:false,messages:'Internal Server Error'});
+        }
+    })
 }
