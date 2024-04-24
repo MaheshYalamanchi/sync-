@@ -24,6 +24,7 @@ let createtenant = async (params) => {
 }
 let createdatabasemaster = async (params) => {
     try {
+        params.connectionString = process.env.MONGO_URI;
         var getdata = {
             url:process.env.MONGO_URI+"/masterdb",
             database:"masterdb",
