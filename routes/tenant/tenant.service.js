@@ -2,6 +2,10 @@ const invoke = require("../../lib/http/invoke");
 const jwt_decode = require('jwt-decode');
 let createtenant = async (params) => {
     try {
+        params.branding={
+            logo:params.logo.etag,
+            brandName:params.brandName
+        }
         var getdata = {
             url:process.env.MONGO_URI+"/masterdb",
             database:"masterdb",
