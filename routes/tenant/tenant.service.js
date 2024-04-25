@@ -1,4 +1,5 @@
 const invoke = require("../../lib/http/invoke");
+const jwt_decode = require('jwt-decode');
 let createtenant = async (params) => {
     try {
         var getdata = {
@@ -66,8 +67,43 @@ let getTenantDtl = async () => {
     }
 }
 
+let getBranding = async (params) => {
+    try {
+        let tenantId;
+        if(params && params.authorization){
+            let  decodeToken = jwt_decode(params.authorization);
+            tenantId = decodeToken.tenantId
+        } else {
+            tenantId = params.tenantId
+        }
+        var getdata = {
+            url:process.env.MONGO_URI+"/masterdb",
+            database:"masterdb",
+            model: "tenantuser",
+            docType: 1,
+            query: [
+                {$match:{"tenantId": tenantId}},
+                {$project:{_id:0,branding:"$branding"}}
+            ]
+        };
+        let responseData = await invoke.makeHttpCall("post", "aggregate", getdata);
+        if (responseData && responseData.data && responseData.data.statusMessage._id) {
+            return {success:true,message :'Tenant created successfully.'}   
+        }else{
+            return {success:false,message :'Tenant creation failed.'}   
+        }
+    } catch (error) {
+        console.log(error)
+        if(error&&error.response&&error.response.data&&error.response.data.code&&(error.response.data.code==11000)){
+            return {success:false,message:'Tenant id already exists.'}
+        }
+        return {success:false,message :'error'}   
+    }
+}
+
 module.exports={
     createtenant,
     createdatabasemaster,
-    getTenantDtl
+    getTenantDtl,
+    getBranding
 }

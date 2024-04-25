@@ -95,5 +95,18 @@ module.exports = function (params) {
         } catch (error) {
             res.status(500).send({success:false,messages:'Internal Server Error'});
         }
+    });
+    app.post('/getBranding', async (req, res, next) => {
+        if(req && req.body){
+            let createtenant=await tenantService.createtenant(req.body)
+            if(createtenant.success){
+                app.http.customResponse(res,createtenant, 200);
+            }else{
+                app.http.customResponse(res, createtenant, 200);
+            }
+            
+        }else{
+            app.http.customResponse(res, { success: false, message: 'Please provide required field.' }, 200);
+        }
     })
 }
