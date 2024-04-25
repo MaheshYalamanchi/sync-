@@ -87,15 +87,14 @@ let getBranding = async (params) => {
             ]
         };
         let responseData = await invoke.makeHttpCall("post", "aggregate", getdata);
-        if (responseData && responseData.data && responseData.data.statusMessage._id) {
-            return {success:true,message :'Tenant created successfully.'}   
+        if (responseData && responseData.data && responseData.data.statusMessage) {
+            return {success:true,message : responseData.data.statusMessage}   
         }else{
-            return {success:false,message :'Tenant creation failed.'}   
+            return {success:false,message :'Data Not Found'}   
         }
     } catch (error) {
-        console.log(error)
         if(error&&error.response&&error.response.data&&error.response.data.code&&(error.response.data.code==11000)){
-            return {success:false,message:'Tenant id already exists.'}
+            return {success:false,message:'Provide proper tenantId.'}
         }
         return {success:false,message :'error'}   
     }
