@@ -100,7 +100,7 @@ module.exports = function (params) {
         if(req && req.body){
             let createtenant=await tenantService.getBranding(req.body)
             if(createtenant.success){
-                app.http.customResponse(res,createtenant, 200);
+                app.http.customResponse(res,createtenant.message[0], 200);
             }else{
                 app.http.customResponse(res, createtenant, 200);
             }
