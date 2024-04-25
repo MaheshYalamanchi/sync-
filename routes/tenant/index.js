@@ -98,7 +98,7 @@ module.exports = function (params) {
     });
     app.post('/getBranding', async (req, res, next) => {
         if(req && req.body){
-            let createtenant=await tenantService.createtenant(req.body)
+            let createtenant=await tenantService.getBranding(req.body)
             if(createtenant.success){
                 app.http.customResponse(res,createtenant, 200);
             }else{
