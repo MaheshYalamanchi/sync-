@@ -9,6 +9,7 @@ let createtenant = async (params) => {
             docType: 0,
             query: params
         };
+        console.log('payload',params)
         let responseData = await invoke.makeHttpCall("post", "write", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage._id) {
             return {success:true,message :'Tenant created successfully.'}   
