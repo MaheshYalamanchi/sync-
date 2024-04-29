@@ -5,7 +5,7 @@ let createtenant = async (params) => {
         params.branding={
             logo:params.logo.etag,
             brandName:params.brandName,
-            styles:params.styles
+            styles:JSON.parse(params.styles)
         }
         var getdata = {
             url:process.env.MONGO_URI+"/masterdb",
