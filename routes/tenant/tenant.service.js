@@ -1,3 +1,4 @@
+const messages = require("../../configuration/messages/message");
 const invoke = require("../../lib/http/invoke");
 const jwt_decode = require('jwt-decode');
 let createtenant = async (params) => {
@@ -105,10 +106,34 @@ let getBranding = async (params) => {
         return {success:false,message :'error'}   
     }
 }
-
+let updateTenant=async(params)=>{
+    try {
+        params.branding={
+            logo:params.logo.etag,
+            brandName:params.brandName,
+            styles:JSON.parse(params.styles)
+        }
+        var getdata = {
+            url:process.env.MONGO_URI+"/masterdb",
+            database:"masterdb",
+            model: "tenantuser",
+            docType: 0,
+            query: params
+        };
+        let responseData = await invoke.makeHttpCall("post", "write", getdata);
+        if (responseData && responseData.data && responseData.data.statusMessage) {
+            return {success:true,message : 'Tenant updated successfully.'}   
+        }else{
+            return {success:false,message :'Data Not Found'}   
+        }
+    } catch (error) {
+        return {success:false,messages:'Tenant updated failed'}
+    }
+}
 module.exports={
     createtenant,
     createdatabasemaster,
     getTenantDtl,
-    getBranding
+    getBranding,
+    updateTenant
 }
