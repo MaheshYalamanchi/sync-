@@ -140,7 +140,7 @@ let deleteTenant=async(params)=>{
             model: "tenantuser",
             docType: 1,
             query: {
-                filter:{ _id:params._id },
+                filter:{ tenantId:params.tenantId },
                 update:{$set:{ status: false}}
             }   
         };
@@ -151,7 +151,7 @@ let deleteTenant=async(params)=>{
             return {success:false,message :'Data Not Found'}   
         }
     } catch (error) {
-        return {success:false,messages:'Tenant updated failed'}
+        return {success:false,messages:'Tenant deletion failed'}
     }
 }
 module.exports={

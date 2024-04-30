@@ -123,6 +123,7 @@ module.exports = function (params) {
     app.post('/deletetenant',async(req,res)=>{
         try {
             let deleteRecord=await tenantService.deleteTenant(req.body)
+            app.http.customResponse(res, deleteRecord, 200);
         } catch (error) {
             return({success:false,message:error})
         }
