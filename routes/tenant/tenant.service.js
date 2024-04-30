@@ -93,7 +93,7 @@ let getBranding = async (params) => {
             ]
         };
         let responseData = await invoke.makeHttpCall("post", "aggregate", getdata);
-        if (responseData && responseData.data && responseData.data.statusMessage) {
+        if (responseData && responseData.data && responseData.data.statusMessage.length) {
             return {success:true,message : responseData.data.statusMessage}   
         }else{
             return {success:false,message :'Data Not Found'}   
@@ -130,10 +130,35 @@ let updateTenant=async(params)=>{
         return {success:false,messages:'Tenant updated failed'}
     }
 }
+
+let deleteTenant=async(params)=>{
+    try {
+      
+        var getdata = {
+            url:process.env.MONGO_URI+"/masterdb",
+            database:"masterdb",
+            model: "tenantuser",
+            docType: 1,
+            query: {
+                filter:{ _id:params._id },
+                update:{$set:{ status: false}}
+            }   
+        };
+        let responseData = await invoke.makeHttpCall("post", "updatedataMany", getdata);
+        if (responseData && responseData.data && responseData.data.statusMessage) {
+            return {success:true,message : 'Tenant deleted successfully.'}   
+        }else{
+            return {success:false,message :'Data Not Found'}   
+        }
+    } catch (error) {
+        return {success:false,messages:'Tenant updated failed'}
+    }
+}
 module.exports={
     createtenant,
     createdatabasemaster,
     getTenantDtl,
     getBranding,
-    updateTenant
+    updateTenant,
+    deleteTenant
 }
