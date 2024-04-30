@@ -59,10 +59,9 @@ let getTenantDtl = async () => {
             database:"masterdb",
             model: "tenantuser",
             docType: 1,
-            query: {}
+            query: {status:true}
         };
         let responseData = await invoke.makeHttpCall("post", "read", getdata);
-        console.log(responseData.data.statusMessage)
         if (responseData && responseData.data && responseData.data.statusMessage.length) {
             return {success:true,message:responseData.data.statusMessage}
         }else{
@@ -120,6 +119,7 @@ let updateTenant=async(params)=>{
             docType: 0,
             query: params
         };
+        console.log(params,'while updating tenant')
         let responseData = await invoke.makeHttpCall("post", "write", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage) {
             return {success:true,message : 'Tenant updated successfully.'}   
