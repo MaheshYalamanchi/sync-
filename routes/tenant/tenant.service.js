@@ -82,21 +82,25 @@ let getBranding = async (params) => {
         } else {
             tenantId = params.tenantId
         }
-        var getdata = {
-            url:process.env.MONGO_URI+"/masterdb",
-            database:"masterdb",
-            model: "tenantuser",
-            docType: 1,
-            query: [
-                {$match:{"tenantId": tenantId}},
-                {$project:{_id:0,branding:"$branding"}}
-            ]
-        };
-        let responseData = await invoke.makeHttpCall("post", "aggregate", getdata);
-        if (responseData && responseData.data && responseData.data.statusMessage.length) {
-            return {success:true,message : responseData.data.statusMessage}   
-        }else{
-            return {success:false,message :'Data Not Found'}   
+        if(!tenantId){
+            return {success:false,message :'No TennantId Found'}
+        } else {
+            var getdata = {
+                url:process.env.MONGO_URI+"/masterdb",
+                database:"masterdb",
+                model: "tenantuser",
+                docType: 1,
+                query: [
+                    {$match:{"tenantId": tenantId}},
+                    {$project:{_id:0,branding:"$branding"}}
+                ]
+            };
+            let responseData = await invoke.makeHttpCall("post", "aggregate", getdata);
+            if (responseData && responseData.data && responseData.data.statusMessage.length) {
+                return {success:true,message : responseData.data.statusMessage}   
+            }else{
+                return {success:false,message :'Data Not Found'}   
+            }
         }
     } catch (error) {
         if(error&&error.response&&error.response.data&&error.response.data.code&&(error.response.data.code==11000)){
