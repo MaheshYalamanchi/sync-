@@ -111,13 +111,20 @@ module.exports = function (params) {
         if (req && req.body) {
             let createtenant = await tenantService.getBranding(req.body)
             if (createtenant.success) {
-                app.http.customResponse(res, {success:true,messages:createtenant.message[0]}, 200);
+                app.http.customResponse(res, {success:true,message:createtenant.message[0]}, 200);
             } else {
                 app.http.customResponse(res, createtenant, 200);
             }
 
         } else {
             app.http.customResponse(res, { success: false, message: 'Please provide required field.' }, 200);
+        }
+    })
+    app.post('/deletetenant',async(req,res)=>{
+        try {
+            
+        } catch (error) {
+            //return({success:false,messages:})
         }
     })
 }
