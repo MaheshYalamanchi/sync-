@@ -66,6 +66,11 @@ spec:
                 secretKeyRef:
                   name: proctor-dev-env
                   key: CLOSE_CONEECTION_ENDPOINT
+            - name: PROCTOR_BACKEND
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-dev-env
+                  key: PROCTOR_BACKEND
       imagePullSecrets:
         - name: mysecret
       nodeSelector:
