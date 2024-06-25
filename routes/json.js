@@ -39,18 +39,18 @@ let roomsData =  async (params) => {
         "useragent" : params.bowserDetails,
         "student" : username,
         "template" : params.template,
-        "browser" : {
-            "name" : params.bowser.browser.name,
-            "version" : params.bowser.browser.version
-        },
-        "os" : {
-            "name" : params.bowser.os.name,
-            "version" : params.bowser.os.version,
-            "versionName" : params.bowser.os.version
-        },
-        "platform" : {
-            "type" : params.bowser.platform.type
-        },
+        // "browser" : {
+        //     "name" : params.bowser.browser.name,
+        //     "version" : params.bowser.browser.version
+        // },
+        // "os" : {
+        //     "name" : params.bowser.os.name,
+        //     "version" : params.bowser.os.version,
+        //     "versionName" : params.bowser.os.version
+        // },
+        // "platform" : {
+        //     "type" : params.bowser.platform.type
+        // },
     }
     return getrooms;
     

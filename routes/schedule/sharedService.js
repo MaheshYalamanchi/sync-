@@ -108,23 +108,26 @@ let validateToken = async(params)=> {
                 let userResponse = await scheduleService.userFetch(decodedToken);
                 let responseData;
                 if (userResponse && userResponse.success){
-                    decodedToken.role = userResponse.message[0].role;
-                    decodedToken.provider = userResponse.message[0].provider;
-                    if(userResponse&&userResponse.message&&userResponse.message[0].locked !=1){
-                        let roomsResponse = await scheduleService.roomFetch(decodedToken);
-                        if (roomsResponse && roomsResponse.success ){
-                            if((roomsResponse.message.status !== "stopped" ) && (roomsResponse.message.status !== "accepted") && (roomsResponse.message.status !== "rejected")  ){
-                                responseData = await scheduleService.roomUpdate(decodedToken)
-                                if(responseData && !responseData.success){
+                    let userUpdateResponse = await scheduleService.user_Update(decodedToken);
+                    if(userUpdateResponse && userUpdateResponse.success){
+                        decodedToken.role = userResponse.message[0].role;
+                        decodedToken.provider = userResponse.message[0].provider;
+                        if(userResponse&&userResponse.message&&userResponse.message[0].locked !=1){
+                            let roomsResponse = await scheduleService.roomFetch(decodedToken);
+                            if (roomsResponse && roomsResponse.success ){
+                                if((roomsResponse.message.status !== "stopped" ) && (roomsResponse.message.status !== "accepted") && (roomsResponse.message.status !== "rejected")  ){
+                                    responseData = await scheduleService.roomUpdate(decodedToken)
+                                    if(responseData && !responseData.success){
+                                    }
+                                }else{
+                                    return {success:false, message : 'Eroor while updating roomRecord'};
                                 }
-                            }else{
-                                return {success:false, message : 'Eroor while updating roomRecord'};
+                            } else{
+                                responseData = await scheduleService.roomInsertion(decodedToken);
                             }
-                        } else{
-                            responseData = await scheduleService.roomInsertion(decodedToken);
+                        }else{
+                            return {success:false, message : 'Data Not Found'};
                         }
-                    }else{
-                        return {success:false, message : 'Data Not Found'};
                     }
                 } else {
                     let response = await scheduleService.userInsertion(decodedToken);

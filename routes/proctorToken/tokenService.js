@@ -6,6 +6,7 @@ var uuid = require('uuid-random');
 const secret = 'eime6Daeb2xanienojaefoh4';
 const invoke = require("../../lib/http/invoke");
 const { v4: uuidv4 } = require('uuid');
+const scheduleService = require('../schedule/scheduleService');
 
 let generateProctorToken = async (req) => {
     try {
@@ -86,6 +87,20 @@ let generateToken = async (req) => {
                 "requestType": user.requestType,
                 "videoass": user.videoass,
                 "tenantId": user.tenantId
+            }
+            const decodedToken = jwt.verify(user.proctorToken,secret);
+            let userResponse = await scheduleService.userFetch(decodedToken);
+            if(userResponse&&userResponse.message&&(userResponse.message.length>0)){
+                decodedToken.role = userResponse.message[0].role;
+                decodedToken.provider = userResponse.message[0].provider;
+                let responseData = await scheduleService.roomInsertion(decodedToken);
+            }else {
+                let response = await scheduleService.userInsertion(decodedToken);
+                if (response && response.success){
+                    decodedToken.role = response.message.role;
+                    decodedToken.provider = response.message.provider;
+                    let responseData = await scheduleService.roomInsertion(decodedToken);
+                }
             }
             return { success: true, message: "Proctor Token",ProctorToken:user.proctorToken ,data:data};
         }else{

@@ -83,22 +83,22 @@ let userInsertion = async (params) => {
         let username = params.username.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi,'_')
         jsonData = {
             "_id" : username,
-            "browser" : {
-                "name" : params.bowser.browser.name,
-                "version" : params.bowser.browser.version
-            },
-            "os" : {
-                "name" : params.bowser.os.name,
-                "version" : params.bowser.os.version,
-                "versionName" : params.bowser.os.version
-            },
-            "platform" : {
-                "type" : params.bowser.platform.type
-            },
-            "nickname" : params.nickname,
+            // "browser" : {
+            //     "name" : params.bowser.browser.name || null,
+            //     "version" : params.bowser.browser.version || null
+            // },
+            // "os" : {
+            //     "name" : params.bowser.os.name || null,
+            //     "version" : params.bowser.os.version || null,
+            //     "versionName" : params.bowser.os.version || null
+            // },
+            // "platform" : {
+            //     "type" : params.bowser.platform.type || null
+            // },
+            "nickname" : params.nickname || null,
             "provider" : "jwt",
-            "useragent" : params.bowserDetails,
-            "referer" : params.headers.referer
+            // "useragent" : params.bowserDetails || null,
+            // "referer" : params.headers.referer || null
         }
         var getdata = {
             url: url,
@@ -123,6 +123,64 @@ let userInsertion = async (params) => {
         }
     }
 };
+
+let user_Update = async (params) => {
+    try {
+        let url;
+        let database;
+        if(params && params.tenantResponse && params.tenantResponse.success){
+            url = params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName;
+            database = params.tenantResponse.message.databaseName;
+        } else {
+            url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
+            database = process.env.DATABASENAME;
+        }
+        let username = params.username.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi,'_')
+        jsonData = {
+            "browser" : {
+                "name" : params.bowser.browser.name,
+                "version" : params.bowser.browser.version
+            },
+            "os" : {
+                "name" : params.bowser.os.name,
+                "version" : params.bowser.os.version,
+                "versionName" : params.bowser.os.version
+            },
+            "platform" : {
+                "type" : params.bowser.platform.type
+            },
+            "nickname" : params.nickname,
+            "provider" : "jwt",
+            "useragent" : params.bowserDetails,
+            "referer" : params.headers.referer
+        }
+        var getdata = {
+            url: url,
+			database: database,
+            model: "users",
+            docType: 0,
+            query: {
+                filter: { "_id": username},
+                update: { $set: jsonData }
+            }
+        };
+        let responseData = await invoke.makeHttpCall_userDataService("post", "update", getdata);
+        if (responseData && responseData.data && responseData.data.statusMessage) {
+            // console.log("afterUserInsertion=====>>>",params.username)
+            return { success: true, message:responseData.data.statusMessage}
+        } else {
+            // console.log(responseData,'save api.........')
+            return { success: false, message: 'Data Not Found' };
+        }
+    } catch (error) {
+        if (error && error.code == 'ECONNREFUSED') {
+            return { success: false, message: globalMsg[0].MSG000, status: globalMsg[0].status }
+        } else {
+            return { success: false, message: error }
+        }
+    }
+};
+
 let userFetch = async (params) => {
     try {
         let url;
@@ -561,5 +619,6 @@ module.exports = {
     chatDetails,
     roomFetch,
     getCandidateDetailsUpdateStop,
-    errorupdate
+    errorupdate,
+    user_Update
 }
