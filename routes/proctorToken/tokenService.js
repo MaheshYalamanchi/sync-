@@ -90,7 +90,7 @@ let generateToken = async (req) => {
             }
             const decodedToken = jwt.verify(user.proctorToken,secret);
             let userResponse = await scheduleService.userFetch(decodedToken);
-            if(userResponse&&userResponse.message&&(userResponse.message.length>0)){
+            if(userResponse&&userResponse.success){
                 decodedToken.role = userResponse.message[0].role;
                 decodedToken.provider = userResponse.message[0].provider;
                 let responseData = await scheduleService.roomInsertion(decodedToken);
