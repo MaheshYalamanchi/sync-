@@ -82,21 +82,6 @@ let aggregate = async data =>{
 }
 let dataUpload = async data =>{
   try {
-    let  decodeToken = jwt_decode(params.authorization);
-    let url;
-    let database;
-    if(decodeToken && decodeToken.tenantId){
-        let tenantResponse = await _schedule.getTennant(decodeToken);
-        if (tenantResponse && tenantResponse.success){
-            url = tenantResponse.message.connectionString+'/'+tenantResponse.message.databaseName;
-            database = tenantResponse.message.databaseName;
-        }else {
-                return { success: false, message: tenantResponse.message }
-            }
-    } else {
-        url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
-        database = process.env.DATABASENAME;
-    }
     let jsonData = {
       url: url,
       database: database

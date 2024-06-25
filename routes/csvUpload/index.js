@@ -2,7 +2,8 @@ const schedule = require('./scheduleService');
 const sharedService = require("../schedule/sharedService");
 const TokenService = require("../proctorToken/tokenService")
 let os = require('os')
-const search = require('./filter')
+const search = require('./filter');
+const invoke = require("../../lib/http/invoke");
 module.exports = function (params) {
   var app = params.app;
   app.post('/api/csv/:model', async (req, res, next) => {
@@ -112,19 +113,11 @@ module.exports = function (params) {
       if (responseData && responseData.length > 0) {
         let Bulkdata = []
         for (const iterator of responseData) {
-          let jsonData = {
-            _id: iterator._id,
-            status: "stopped"
+          try{
+            let response = await invoke.makeHttpCallProctor_Backend("post", '/api/stop/' + iterator._id, iterator)
+          } catch(Error){
+            console.log("session status upadate",Error)
           }
-          Bulkdata.push(jsonData)
-        }
-        if (Bulkdata.length > 0) {
-          let response = await schedule.dataUpload(Bulkdata);
-          if (response && response.nModified > 0) {
-            app.http.customResponse(res, ({ success: true, message: "records updated successfully..." }), 200);
-          }
-        } else {
-          app.http.customResponse(res, ({ success: false, message: "records missing" }), 200);
         }
       } else {
         app.http.customResponse(res, ({ success: false, message: "data not found" }), 200);
