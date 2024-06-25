@@ -72,7 +72,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-var server = app.listen(3006, function () {
-  console.log("sync Service...",3006)
+var server = app.listen(3004, function () {
+  console.log("sync Service...",3004)
 });
 module.exports = app;
