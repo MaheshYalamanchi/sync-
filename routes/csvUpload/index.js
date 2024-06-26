@@ -225,6 +225,23 @@ module.exports = function (params) {
         }
     }
   });
+  app.post('/api/user/scheduleInfo', async (req, res,next) => {
+    try {
+        if(req.body){
+           console.log(JSON.stringify(req.body));
+           app.http.customResponse(res, {success:true,message:"Upload Successfully"}, 200);
+        }else{
+            app.http.customResponse(res, { success: false, message: 'Upload Failed' }, 200);
+        }
+    } catch (error) {
+        app.logger.error({ success: false, message: error });
+        if (error && error.message) {
+            app.http.customResponse(res, { success: false, message: error.message }, 400);
+        } else {
+            app.http.customResponse(res, { success: false, message: error }, 400);
+        }
+    }
+  });
 }
 
 function csv(data) {
