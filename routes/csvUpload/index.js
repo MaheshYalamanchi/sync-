@@ -93,9 +93,10 @@ module.exports = function (params) {
             ]
           }
         },
+        {$sort: { startedAt:-1}},
         {
           $project: {
-            DifferenceInMin: { $divide: [{ $subtract: ["$updatedAt", "$startedAt"] }, (1000 * 60)] },
+            DifferenceInMin: { $divide: [{ $subtract: [new Date(),"$updatedAt"] }, (1000 * 60)] },
             timeout: 1,
             status: 1
           }
