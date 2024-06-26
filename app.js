@@ -37,7 +37,7 @@ require('./routes/tenant/index')({app:app})
 // cronjob for every 2 minutes
 var request = require('request')
 var CronJob = require('cron').CronJob;
-new CronJob('*/1 * * * *', function() {
+new CronJob('*/2 * * * *', function() {
     request(process.env.ENDPOINT, function(error, response, body) {
         if (!error && response.statusCode == 200) {
           console.log('You will see this message every 2 minutes');
