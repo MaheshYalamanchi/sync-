@@ -229,9 +229,14 @@ module.exports = function (params) {
     try {
         if(req.body){
            console.log(JSON.stringify(req.body));
-           app.http.customResponse(res, {success:true,message:"Upload Successfully"}, 200);
+           let response = await sharedService.getScheduleInfo(req.body);
+           if(response && response.success){
+            app.http.customResponse(res, {success:true,message:response.message}, 200);
+           } else {
+            app.http.customResponse(res, {success:false,message:response.message}, 200);
+           }
         }else{
-            app.http.customResponse(res, { success: false, message: 'Upload Failed' }, 200);
+            app.http.customResponse(res, { success: false, message: 'Insertion Failed' }, 200);
         }
     } catch (error) {
         app.logger.error({ success: false, message: error });
