@@ -98,7 +98,8 @@ let sessionData =  async (params) => {
         "student" : username,
         "template" : "default",
         "deliveryId": params.deliveryId || null,
-        "taskId": params.taskId || null
+        "taskId": params.taskId || null,
+        "pauseURL": params.pauseURL || null
         // "browser" : {
         //     "name" : params.bowser.browser.name,
         //     "version" : params.bowser.browser.version

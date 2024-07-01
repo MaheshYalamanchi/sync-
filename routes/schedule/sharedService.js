@@ -203,7 +203,7 @@ let getScheduleInfo = async (params) => {
             url = process.env.MONGO_URI + '/' + process.env.DATABASENAME;
             database = process.env.DATABASENAME;
         }
-        let userArray = params.map(user => user.email);
+        let userArray = Array.from(new Set(params.map(user => user.email)));
         var getdata = {
             url: url,
             database: database,
@@ -216,7 +216,7 @@ let getScheduleInfo = async (params) => {
         };
         let existingUser = await invoke.makeHttpCall("post", "aggregate", getdata);
         if (existingUser && existingUser.data && existingUser.data.statusMessage && (existingUser.data.statusMessage.length > 0)) {
-            const existingUserIds = existingUser.data.statusMessage.map(user => user.id);
+            const existingUserIds = Array.from(new Set(existingUser.data.statusMessage.map(user => user.id)));
             const missingUsers = userArray.filter(user => !existingUserIds.includes(user))
                 .map(user => ({
                     "_id": user.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '_'),
@@ -256,7 +256,7 @@ let getScheduleInfo = async (params) => {
                         let SessionsListUser = await invoke.makeHttpCall("post", "aggregate", SessionsListData);
                         if (SessionsListUser && SessionsListUser.data && SessionsListUser.data.statusMessage && (SessionsListUser.data.statusMessage.length > 0)) {
                             const SessionsIds = SessionsListUser.data.statusMessage.map(user => user.id);
-                            const missingSessions = params.filter(param => !SessionsIds.includes(param.roomId));
+                            const missingSessions = Array.from(new Set(params.filter(param => !SessionsIds.includes(param.roomId))));
                             if (missingSessions && (missingSessions.length > 0)) {
                                 const sessionArray = await Promise.all(
                                     missingSessions.map(async user => {
@@ -343,7 +343,7 @@ let getScheduleInfo = async (params) => {
                 };
                 let templateResponse = await invoke.makeHttpCall_roomDataService("post", "read", getTemplate);
                 if (templateResponse && templateResponse.data && templateResponse.data.statusMessage) {
-                    let SessionsList = params.map(user => user.roomId);
+                    let SessionsList = Array.from(new Set(params.map(user => user.roomId)));
                     var SessionsListData = {
                         url: url,
                         database: database,
@@ -357,7 +357,7 @@ let getScheduleInfo = async (params) => {
                     let SessionsListUser = await invoke.makeHttpCall("post", "aggregate", SessionsListData);
                     if (SessionsListUser && SessionsListUser.data && SessionsListUser.data.statusMessage && (SessionsListUser.data.statusMessage.length > 0)) {
                         const SessionsIds = SessionsListUser.data.statusMessage.map(user => user.id);
-                        const missingSessions = params.filter(param => !SessionsIds.includes(param.roomId));
+                        const missingSessions = Array.from(new Set(params.filter(param => !SessionsIds.includes(param.roomId))));
                         if (missingSessions && (missingSessions.length > 0)) {
                             const sessionArray = await Promise.all(
                                 missingSessions.map(async user => {
@@ -458,7 +458,7 @@ let getScheduleInfo = async (params) => {
                     };
                     let templateResponse = await invoke.makeHttpCall_roomDataService("post", "read", getTemplate);
                     if (templateResponse && templateResponse.data && templateResponse.data.statusMessage) {
-                        let SessionsList = params.map(user => user.roomId);
+                        let SessionsList = Array.from(new Set(params.map(user => user.roomId)));
                         var SessionsListData = {
                             url: url,
                             database: database,
@@ -472,7 +472,7 @@ let getScheduleInfo = async (params) => {
                         let SessionsListUser = await invoke.makeHttpCall("post", "aggregate", SessionsListData);
                         if (SessionsListUser && SessionsListUser.data && SessionsListUser.data.statusMessage && (SessionsListUser.data.statusMessage.length > 0)) {
                             const SessionsIds = SessionsListUser.data.statusMessage.map(user => user.id);
-                            const missingSessions = params.filter(param => !SessionsIds.includes(param.roomId));
+                            const missingSessions = Array.from(new Set(params.filter(param => !SessionsIds.includes(param.roomId))));
                             if (missingSessions && (missingSessions.length > 0)) {
                                 const sessionArray = await Promise.all(
                                     missingSessions.map(async user => {
