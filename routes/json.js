@@ -99,7 +99,15 @@ let sessionData =  async (params) => {
         "template" : "default",
         "deliveryId": params.deliveryId || null,
         "taskId": params.taskId || null,
-        "pauseURL": params.pauseURL || null
+        "pauseURL": params.pauseURL || null,
+        "rdfRef": params.rdfRef || null,
+        "assessmentId":params.assessmentId || null,
+        "testId":params.testId || null,
+        "srcSystem":params.srcSystem || null
+
+
+
+
         // "browser" : {
         //     "name" : params.bowser.browser.name,
         //     "version" : params.bowser.browser.version
