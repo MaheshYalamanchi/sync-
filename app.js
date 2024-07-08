@@ -36,17 +36,17 @@ require('./routes/tenant/index')({app:app})
 
 // cronjob for every 2 minutes
 var request = require('request')
-var CronJob = require('cron').CronJob;
-new CronJob('*/2 * * * *', function() {
-  console.log(process.env.STOP_ENDPOINT)
-    request(process.env.STOP_ENDPOINT, function(error, response, body) {
-        if (!error && response.statusCode == 200) {
-          console.log('You will see this message every 2 minutes');
-        } else {
-          console.log(error)
-        }
-    })
-}, null, true, "Asia/Calcutta");
+// var CronJob = require('cron').CronJob;
+// new CronJob('*/2 * * * *', function() {
+//   console.log(process.env.STOP_ENDPOINT)
+//     request(process.env.STOP_ENDPOINT, function(error, response, body) {
+//         if (!error && response.statusCode == 200) {
+//           console.log('You will see this message every 2 minutes');
+//         } else {
+//           console.log(error)
+//         }
+//     })
+// }, null, true, "Asia/Calcutta");
 
 // cronjob for every  15 secs.
 // new CronJob('*/15 * * * * *', function() {
