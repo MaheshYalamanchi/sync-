@@ -71,3 +71,5 @@ spec:
                   key: STOP_ENDPOINT
       imagePullSecrets:
         - name: mysecret
+      nodeSelector:
+        agentpool: proctoruat
