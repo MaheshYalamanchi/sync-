@@ -228,7 +228,7 @@ module.exports = function (params) {
   app.post('/api/user/scheduleInfo', async (req, res,next) => {
     try {
         if(req.body){
-           console.log(JSON.stringify(req.body));
+           console.log("scheduleInfo===>>>",JSON.stringify(req.body));
            let response = await sharedService.getScheduleInfo(req.body);
            if(response && response.success){
             app.http.customResponse(res, {success:true,message:response.message}, 200);

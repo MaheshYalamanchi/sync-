@@ -262,6 +262,8 @@ let getScheduleInfo = async (params) => {
                                     missingSessions.map(async user => {
                                         let jsonData;
                                         try {
+                                            user.rdfRef = params.rdfRef;
+                                            user.deliveryId = params.deliveryId;
                                             jsonData = await json.sessionData(user);
                                             const statusMessage = templateResponse.data.statusMessage[0];
                                             jsonData.addons = statusMessage.addons;
@@ -296,6 +298,8 @@ let getScheduleInfo = async (params) => {
                                 params.map(async user => {
                                     let jsonData;
                                     try {
+                                        user.rdfRef = params.rdfRef;
+                                        user.deliveryId = params.deliveryId;
                                         jsonData = await json.sessionData(user);
                                         const statusMessage = templateResponse.data.statusMessage[0];
                                         jsonData.addons = statusMessage.addons;
@@ -363,6 +367,8 @@ let getScheduleInfo = async (params) => {
                                 missingSessions.map(async user => {
                                     let jsonData;
                                     try {
+                                        user.rdfRef = params.rdfRef;
+                                        user.deliveryId = params.deliveryId;
                                         jsonData = await json.sessionData(user);
                                         const statusMessage = templateResponse.data.statusMessage[0];
                                         jsonData.addons = statusMessage.addons;
@@ -397,6 +403,8 @@ let getScheduleInfo = async (params) => {
                             params.map(async user => {
                                 let jsonData;
                                 try {
+                                    user.rdfRef = params.rdfRef;
+                                    user.deliveryId = params.deliveryId;
                                     jsonData = await json.sessionData(user);
                                     const statusMessage = templateResponse.data.statusMessage[0];
                                     jsonData.addons = statusMessage.addons;
@@ -478,6 +486,8 @@ let getScheduleInfo = async (params) => {
                                     missingSessions.map(async user => {
                                         let jsonData;
                                         try {
+                                            user.rdfRef = params.rdfRef;
+                                            user.deliveryId = params.deliveryId;
                                             jsonData = await json.sessionData(user);
                                             const statusMessage = templateResponse.data.statusMessage[0];
                                             jsonData.addons = statusMessage.addons;
@@ -512,6 +522,8 @@ let getScheduleInfo = async (params) => {
                                 params.map(async user => {
                                     let jsonData;
                                     try {
+                                        user.rdfRef = params.rdfRef;
+                                        user.deliveryId = params.deliveryId;
                                         jsonData = await json.sessionData(user);
                                         const statusMessage = templateResponse.data.statusMessage[0];
                                         jsonData.addons = statusMessage.addons;
