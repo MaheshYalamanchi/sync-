@@ -39,6 +39,7 @@ let roomsData =  async (params) => {
         "useragent" : params.bowserDetails,
         "student" : username,
         "template" : params.template,
+        "verified" : false
         // "browser" : {
         //     "name" : params.bowser.browser.name,
         //     "version" : params.bowser.browser.version
@@ -103,7 +104,8 @@ let sessionData =  async (params) => {
         "rdfRef": params.rdfRef || null,
         "assessmentId":params.assessmentId || null,
         "testId":params.testId || null,
-        "srcSystem":params.srcSystem || null
+        "srcSystem":params.srcSystem || null,
+        "verified":false
 
 
 
