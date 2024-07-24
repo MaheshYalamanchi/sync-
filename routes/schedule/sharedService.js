@@ -238,7 +238,7 @@ let getScheduleInfo = async (params) => {
                         database: database,
                         model: "rooms",
                         docType: 1,
-                        query: { _id: "default" }
+                        query: { _id: params[0].templateName }
                     };
                     let templateResponse = await invoke.makeHttpCall_roomDataService("post", "read", getTemplate);
                     if (templateResponse && templateResponse.data && templateResponse.data.statusMessage) {
@@ -328,6 +328,7 @@ let getScheduleInfo = async (params) => {
                             }
                         }
                     } {
+                        console.log("Template Error1====>>>>>",JSON.stringify(params[0]))
                         return { success: false, message: "Template fetching Error -1" };
                     }
                 } else {
@@ -339,7 +340,7 @@ let getScheduleInfo = async (params) => {
                     database: database,
                     model: "rooms",
                     docType: 1,
-                    query: { _id: "default" }
+                    query: { _id: params[0].templateName }
                 };
                 let templateResponse = await invoke.makeHttpCall_roomDataService("post", "read", getTemplate);
                 if (templateResponse && templateResponse.data && templateResponse.data.statusMessage) {
@@ -429,6 +430,7 @@ let getScheduleInfo = async (params) => {
                         }
                     }
                 } {
+                    console.log("Template Error2====>>>>>",JSON.stringify(params[0]))
                     return { success: false, message: "Template fetching Error -2" };
                 }
             }
@@ -454,7 +456,7 @@ let getScheduleInfo = async (params) => {
                         database: database,
                         model: "rooms",
                         docType: 1,
-                        query: { _id: "default" }
+                        query: { _id: params[0].templateName }
                     };
                     let templateResponse = await invoke.makeHttpCall_roomDataService("post", "read", getTemplate);
                     if (templateResponse && templateResponse.data && templateResponse.data.statusMessage) {
@@ -544,6 +546,7 @@ let getScheduleInfo = async (params) => {
                             }
                         }
                     } {
+                        console.log("Template Error3====>>>>>",JSON.stringify(params[0]))
                         return { success: false, message: "Template fetching Error -3" };
                     }
                 } else {
