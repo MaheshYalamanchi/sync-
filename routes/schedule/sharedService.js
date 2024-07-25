@@ -239,7 +239,7 @@ let getScheduleInfo = async (params) => {
                         database: database,
                         model: "rooms",
                         docType: 1,
-                        query: { _id: params[0]?.templateName?params[0]?.templateName:"default" }
+                        query: { _id: params[0].templateName }
                     };
                     let templateResponse = await invoke.makeHttpCall_roomDataService("post", "read", getTemplate);
                     if (templateResponse && templateResponse.data && templateResponse.data.statusMessage) {
@@ -343,7 +343,7 @@ let getScheduleInfo = async (params) => {
                     database: database,
                     model: "rooms",
                     docType: 1,
-                    query: { _id: params[0]?.templateName?params[0]?.templateName:"default" }
+                    query: { _id: params[0].templateName }
                 };
                 let templateResponse = await invoke.makeHttpCall_roomDataService("post", "read", getTemplate);
                 if (templateResponse && templateResponse.data && templateResponse.data.statusMessage) {
@@ -461,7 +461,7 @@ let getScheduleInfo = async (params) => {
                         database: database,
                         model: "rooms",
                         docType: 1,
-                        query: { _id: params[0]?.templateName?params[0]?.templateName:"default" }
+                        query: { _id: params[0].templateName }
                     };
                     let templateResponse = await invoke.makeHttpCall_roomDataService("post", "read", getTemplate);
                     if (templateResponse && templateResponse.data && templateResponse.data.statusMessage) {

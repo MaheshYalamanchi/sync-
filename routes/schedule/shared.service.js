@@ -99,8 +99,10 @@ let scheduleCreation = async (params) => {
                 "subject": params?.scheduleName || null
             }
         };
+        console.log("schedule Pay load======>>>>>>",JSON.stringify(getdata.query))
         let responseData = await invoke.makeHttpCall("post", "write", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage) {
+            console.log("schedule Response======>>>>>>",JSON.stringify(responseData.data.statusMessage))
             return { success: true, message: responseData.data.statusMessage}
         } else {
             return { success: false, message: 'Data Not Found' };
