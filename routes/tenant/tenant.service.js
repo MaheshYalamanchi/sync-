@@ -158,11 +158,43 @@ let deleteTenant=async(params)=>{
         return {success:false,messages:'Tenant deletion failed'}
     }
 }
+
+let getScheduleList=async(params)=>{
+    try {
+        let url;
+        let database;
+        if(params && params.tenantResponse && params.tenantResponse.success){
+            url = params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName;
+            database = params.tenantResponse.message.databaseName;
+        } else {
+            url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
+            database = process.env.DATABASENAME;
+        }
+        var getdata = {
+            url:url,
+            database:database,
+            model: "schedules",
+            docType: 1,
+            query: [
+                {$match:{proctor: params.proctorid }}
+        ]
+        };
+        let responseData = await invoke.makeHttpCall("post", "aggregate", getdata);
+        if (responseData && responseData.data && responseData.data.statusMessage.length) {
+            return { success: true, message:responseData.data.statusMessage}
+        } else {
+            return { success: false, message: 'Data Not Found' };
+        }
+    } catch (error) {
+        return {success:false,messages:'Tenant deletion failed'}
+    }
+}
 module.exports={
     createtenant,
     createdatabasemaster,
     getTenantDtl,
     getBranding,
     updateTenant,
-    deleteTenant
+    deleteTenant,
+    getScheduleList
 }
