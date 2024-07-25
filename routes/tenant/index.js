@@ -128,4 +128,17 @@ module.exports = function (params) {
             return({success:false,message:error})
         }
     })
+    app.post('/schedulelist',async(req,res)=>{
+        try {
+            if(req.body.proctorid){
+                let getScheduleList=await tenantService.getScheduleList(req.body)
+                app.http.customResponse(res, getScheduleList, 200);
+            }else{
+                app.http.customResponse(res, {success:false,message:'Please provide proctor id!'}, 200);
+            }
+            
+        } catch (error) {
+            
+        }
+    })
 }
