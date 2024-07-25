@@ -86,7 +86,7 @@ let sessionData =  async (params) => {
         "startedAt": params.startedAt ||null,
         "useragent" : params.bowserDetails || null,
         "student" : username,
-        "template" : "default",
+        "template" : params.templateName || "default",
         "deliveryId": params.deliveryId || null,
         "taskId": params.taskId || null,
         "pauseURL": params.pauseURL || null,
