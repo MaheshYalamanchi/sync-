@@ -86,8 +86,37 @@ let attachInfo = async (params) => {
     }
 };
 
+let scheduleCreation = async (params) => {
+    try {
+        var getdata = {
+            url: url,
+			database: database,
+            model: "schedules",
+            docType: 0,
+            query: {
+                "proctor": params?.proctor || "defaultproctor",
+                "schedule_id" : params?.scheduleId || null,
+                "subject": params?.scheduleName || null
+            }
+        };
+        let responseData = await invoke.makeHttpCall("post", "write", getdata);
+        if (responseData && responseData.data && responseData.data.statusMessage) {
+            return { success: true, message: responseData.data.statusMessage}
+        } else {
+            return { success: false, message: 'Data Not Found' };
+        }
+    } catch (error) {
+        if (error && error.code == 'ECONNREFUSED') {
+            return { success: false, message: globalMsg[0].MSG000, status: globalMsg[0].status }
+        } else {
+            return { success: false, message: error }
+        }
+    }
+};
+
 module.exports = {
     roomsUpdate,
     roomsInfo,
-    attachInfo
+    attachInfo,
+    scheduleCreation
 }

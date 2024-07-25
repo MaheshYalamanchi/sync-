@@ -8,6 +8,7 @@ var bowser = require("bowser");
 const invoke = require("../../lib/http/invoke");
 const _schedule = require('../schedule/schedule')
 const json = require('../json');
+const shared_service  = require('./shared.service')
 let tokenValidation = async (params) => {
     try {
         // console.log(params.body,'body....................jwt')
@@ -238,7 +239,7 @@ let getScheduleInfo = async (params) => {
                         database: database,
                         model: "rooms",
                         docType: 1,
-                        query: { _id: params[0].templateName }
+                        query: { _id: params[0]?.templateName?params[0]?.templateName:"default" }
                     };
                     let templateResponse = await invoke.makeHttpCall_roomDataService("post", "read", getTemplate);
                     if (templateResponse && templateResponse.data && templateResponse.data.statusMessage) {
@@ -286,6 +287,7 @@ let getScheduleInfo = async (params) => {
                                 };
                                 let SessionbulkwriteResponse = await invoke.makeHttpCall_userDataService("post", "bulkWrite", SessionbulkWriteData);
                                 if (SessionbulkwriteResponse && SessionbulkwriteResponse.data && SessionbulkwriteResponse.data.statusMessage && (SessionbulkwriteResponse.data.statusMessage.length > 0)) {
+                                    let scheduleCreationResponse = await shared_service.scheduleCreation(params[0]);
                                     return { success: true, message: "Inserted successfully" }
                                 }
                             } else {
@@ -321,6 +323,7 @@ let getScheduleInfo = async (params) => {
                                 };
                                 let SessionbulkwriteResponse = await invoke.makeHttpCall_userDataService("post", "bulkWrite", SessionbulkWriteData);
                                 if (SessionbulkwriteResponse && SessionbulkwriteResponse.data && SessionbulkwriteResponse.data.statusMessage && (SessionbulkwriteResponse.data.statusMessage.length > 0)) {
+                                    let scheduleCreationResponse = await shared_service.scheduleCreation(params[0]);
                                     return { success: true, message: "Inserted successfully" };
                                 }
                             } else {
@@ -340,7 +343,7 @@ let getScheduleInfo = async (params) => {
                     database: database,
                     model: "rooms",
                     docType: 1,
-                    query: { _id: params[0].templateName }
+                    query: { _id: params[0]?.templateName?params[0]?.templateName:"default" }
                 };
                 let templateResponse = await invoke.makeHttpCall_roomDataService("post", "read", getTemplate);
                 if (templateResponse && templateResponse.data && templateResponse.data.statusMessage) {
@@ -388,6 +391,7 @@ let getScheduleInfo = async (params) => {
                             };
                             let SessionbulkwriteResponse = await invoke.makeHttpCall_userDataService("post", "bulkWrite", SessionbulkWriteData);
                             if (SessionbulkwriteResponse && SessionbulkwriteResponse.data && SessionbulkwriteResponse.data.statusMessage && (SessionbulkwriteResponse.data.statusMessage.length > 0)) {
+                                let scheduleCreationResponse = await shared_service.scheduleCreation(params[0]);
                                 return { success: true, message: "Inserted successfully" }
                             }
                         } else {
@@ -423,6 +427,7 @@ let getScheduleInfo = async (params) => {
                             };
                             let SessionbulkwriteResponse = await invoke.makeHttpCall_userDataService("post", "bulkWrite", SessionbulkWriteData);
                             if (SessionbulkwriteResponse && SessionbulkwriteResponse.data && SessionbulkwriteResponse.data.statusMessage && (SessionbulkwriteResponse.data.statusMessage.length > 0)) {
+                                let scheduleCreationResponse = await shared_service.scheduleCreation(params[0]);
                                 return { success: true, message: "Inserted successfully" };
                             }
                         } else {
@@ -456,7 +461,7 @@ let getScheduleInfo = async (params) => {
                         database: database,
                         model: "rooms",
                         docType: 1,
-                        query: { _id: params[0].templateName }
+                        query: { _id: params[0]?.templateName?params[0]?.templateName:"default" }
                     };
                     let templateResponse = await invoke.makeHttpCall_roomDataService("post", "read", getTemplate);
                     if (templateResponse && templateResponse.data && templateResponse.data.statusMessage) {
@@ -504,6 +509,7 @@ let getScheduleInfo = async (params) => {
                                 };
                                 let SessionbulkwriteResponse = await invoke.makeHttpCall_userDataService("post", "bulkWrite", SessionbulkWriteData);
                                 if (SessionbulkwriteResponse && SessionbulkwriteResponse.data && SessionbulkwriteResponse.data.statusMessage && (SessionbulkwriteResponse.data.statusMessage.length > 0)) {
+                                    let scheduleCreationResponse = await shared_service.scheduleCreation(params[0]);
                                     return { success: true, message: "Inserted successfully" }
                                 }
                             } else {
@@ -539,6 +545,7 @@ let getScheduleInfo = async (params) => {
                                 };
                                 let SessionbulkwriteResponse = await invoke.makeHttpCall_userDataService("post", "bulkWrite", SessionbulkWriteData);
                                 if (SessionbulkwriteResponse && SessionbulkwriteResponse.data && SessionbulkwriteResponse.data.statusMessage && (SessionbulkwriteResponse.data.statusMessage.length > 0)) {
+                                    let scheduleCreationResponse = await shared_service.scheduleCreation(params[0]);
                                     return { success: true, message: "Inserted successfully" };
                                 }
                             } else {

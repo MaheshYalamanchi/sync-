@@ -39,19 +39,8 @@ let roomsData =  async (params) => {
         "useragent" : params.bowserDetails,
         "student" : username,
         "template" : params.template,
-        "verified" : false
-        // "browser" : {
-        //     "name" : params.bowser.browser.name,
-        //     "version" : params.bowser.browser.version
-        // },
-        // "os" : {
-        //     "name" : params.bowser.os.name,
-        //     "version" : params.bowser.os.version,
-        //     "versionName" : params.bowser.os.version
-        // },
-        // "platform" : {
-        //     "type" : params.bowser.platform.type
-        // },
+        "verified" : false,
+        "schedule_id": params.scheduleId || null
     }
     return getrooms;
     
@@ -105,23 +94,8 @@ let sessionData =  async (params) => {
         "assessmentId":params.assessmentId || null,
         "testId":params.testId || null,
         "srcSystem":params.srcSystem || null,
-        "verified":false
-
-
-
-
-        // "browser" : {
-        //     "name" : params.bowser.browser.name,
-        //     "version" : params.bowser.browser.version
-        // },
-        // "os" : {
-        //     "name" : params.bowser.os.name,
-        //     "version" : params.bowser.os.version,
-        //     "versionName" : params.bowser.os.version
-        // },
-        // "platform" : {
-        //     "type" : params.bowser.platform.type
-        // },
+        "verified":false,
+        "schedule_id": params.scheduleId || null
     }
     return getrooms;
     
