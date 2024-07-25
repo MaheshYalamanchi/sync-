@@ -89,6 +89,8 @@ let generateToken = async (req) => {
                 "tenantId": user.tenantId
             }
             const decodedToken = jwt.verify(user.proctorToken,secret);
+            decodedToken.testId = req?.testId || null;
+            decodedToken.scheduleId = req?.scheduleId || null;
             let userResponse = await scheduleService.userFetch(decodedToken);
             if(userResponse&&userResponse.success){
                 decodedToken.role = userResponse.message[0].role;

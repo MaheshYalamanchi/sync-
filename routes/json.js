@@ -40,7 +40,8 @@ let roomsData =  async (params) => {
         "student" : username,
         "template" : params.template,
         "verified" : false,
-        "schedule_id": params.scheduleId || null
+        "schedule_id": params.scheduleId || null,
+        "testId":params.testId || null,
     }
     return getrooms;
     
