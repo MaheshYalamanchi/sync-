@@ -94,7 +94,7 @@ let scheduleCreation = async (params) => {
             model: "schedules",
             docType: 0,
             query: {
-                "proctor": params?.proctor || "defaultproctor",
+                "proctor": params?.member || "defaultproctor",
                 "schedule_id" : params?.scheduleId || null,
                 "subject": params?.scheduleName || null
             }

@@ -8,7 +8,7 @@ var bowser = require("bowser");
 const invoke = require("../../lib/http/invoke");
 const _schedule = require('../schedule/schedule')
 const json = require('../json');
-const shared_service  = require('./shared.service')
+const shared_service = require('./shared.service')
 let tokenValidation = async (params) => {
     try {
         // console.log(params.body,'body....................jwt')
@@ -204,63 +204,103 @@ let getScheduleInfo = async (params) => {
             url = process.env.MONGO_URI + '/' + process.env.DATABASENAME;
             database = process.env.DATABASENAME;
         }
-        let userArray = Array.from(new Set(params.map(user => user.email)));
-        var getdata = {
-            url: url,
-            database: database,
-            model: "users",
-            docType: 1,
-            query: [
-                { $match: { nickname: { $in: userArray } } },
-                { $project: { id: "$nickname", _id: 0 } }
-            ]
-        };
-        let existingUser = await invoke.makeHttpCall("post", "aggregate", getdata);
-        if (existingUser && existingUser.data && existingUser.data.statusMessage && (existingUser.data.statusMessage.length > 0)) {
-            const existingUserIds = Array.from(new Set(existingUser.data.statusMessage.map(user => user.id)));
-            const missingUsers = userArray.filter(user => !existingUserIds.includes(user))
-                .map(user => ({
-                    "_id": user.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '_'),
-                    "nickname": user,
-                    "provider": "jwt"
-                }));
-            if (missingUsers && (missingUsers.length > 0)) {
-                var bulkWriteData = {
-                    url: url,
-                    database: database,
-                    model: "users",
-                    docType: 0,
-                    query: missingUsers
-                };
-                let bulkwriteResponse = await invoke.makeHttpCall_userDataService("post", "bulkWrite", bulkWriteData);
-                if (bulkwriteResponse && bulkwriteResponse.data && bulkwriteResponse.data.statusMessage && (bulkwriteResponse.data.statusMessage.length > 0)) {
-                    var getTemplate = {
+        const chunks = await chunkArray(params, 20);
+        for (let i = 0; i < chunks.length; i++) {
+            let userArray = Array.from(new Set(chunks[i].map(user => user.email)));
+            var getdata = {
+                url: url,
+                database: database,
+                model: "users",
+                docType: 1,
+                query: [
+                    { $match: { nickname: { $in: userArray } } },
+                    { $project: { id: "$nickname", _id: 0 } }
+                ]
+            };
+            let existingUser = await invoke.makeHttpCall("post", "aggregate", getdata);
+            if (existingUser && existingUser.data && existingUser.data.statusMessage && (existingUser.data.statusMessage.length > 0)) {
+                const existingUserIds = Array.from(new Set(existingUser.data.statusMessage.map(user => user.id)));
+                const missingUsers = userArray.filter(user => !existingUserIds.includes(user))
+                    .map(user => ({
+                        "_id": user.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '_'),
+                        "nickname": user,
+                        "provider": "jwt"
+                    }));
+                if (missingUsers && (missingUsers.length > 0)) {
+                    var bulkWriteData = {
                         url: url,
                         database: database,
-                        model: "rooms",
-                        docType: 1,
-                        query: { _id: params[0]?.templateName || "default" }
+                        model: "users",
+                        docType: 0,
+                        query: missingUsers
                     };
-                    let templateResponse = await invoke.makeHttpCall_roomDataService("post", "read", getTemplate);
-                    if (templateResponse && templateResponse.data && templateResponse.data.statusMessage) {
-                        let SessionsList = params.map(user => user.roomId);
-                        var SessionsListData = {
+                    let bulkwriteResponse = await invoke.makeHttpCall_userDataService("post", "bulkWrite", bulkWriteData);
+                    if (bulkwriteResponse && bulkwriteResponse.data && bulkwriteResponse.data.statusMessage && (bulkwriteResponse.data.statusMessage.length > 0)) {
+                        var getTemplate = {
                             url: url,
                             database: database,
                             model: "rooms",
                             docType: 1,
-                            query: [
-                                { $match: { _id: { $in: SessionsList } } },
-                                { $project: { id: "$_id", _id: 0 } }
-                            ]
+                            query: { _id: chunks[i][0]?.templateName || "default" }
                         };
-                        let SessionsListUser = await invoke.makeHttpCall("post", "aggregate", SessionsListData);
-                        if (SessionsListUser && SessionsListUser.data && SessionsListUser.data.statusMessage && (SessionsListUser.data.statusMessage.length > 0)) {
-                            const SessionsIds = SessionsListUser.data.statusMessage.map(user => user.id);
-                            const missingSessions = Array.from(new Set(params.filter(param => !SessionsIds.includes(param.roomId))));
-                            if (missingSessions && (missingSessions.length > 0)) {
+                        let templateResponse = await invoke.makeHttpCall_roomDataService("post", "read", getTemplate);
+                        if (templateResponse && templateResponse.data && templateResponse.data.statusMessage) {
+                            let SessionsList = chunks[i].map(user => user.roomId);
+                            var SessionsListData = {
+                                url: url,
+                                database: database,
+                                model: "rooms",
+                                docType: 1,
+                                query: [
+                                    { $match: { _id: { $in: SessionsList } } },
+                                    { $project: { id: "$_id", _id: 0 } }
+                                ]
+                            };
+                            let SessionsListUser = await invoke.makeHttpCall("post", "aggregate", SessionsListData);
+                            if (SessionsListUser && SessionsListUser.data && SessionsListUser.data.statusMessage && (SessionsListUser.data.statusMessage.length > 0)) {
+                                const SessionsIds = SessionsListUser.data.statusMessage.map(user => user.id);
+                                const missingSessions = Array.from(new Set(chunks[i].filter(param => !SessionsIds.includes(param.roomId))));
+                                if (missingSessions && (missingSessions.length > 0)) {
+                                    const sessionArray = await Promise.all(
+                                        missingSessions.map(async user => {
+                                            let jsonData;
+                                            try {
+                                                jsonData = await json.sessionData(user);
+                                                const statusMessage = templateResponse.data.statusMessage[0];
+                                                jsonData.addons = statusMessage.addons;
+                                                jsonData.threshold = statusMessage.threshold;
+                                                jsonData.rules = statusMessage.rules;
+                                                jsonData.members = statusMessage.members;
+                                                jsonData.metrics = statusMessage.metrics;
+                                                jsonData.weights = statusMessage.weights;
+                                                return jsonData;
+                                            } catch (error) {
+                                                console.error(`Error processing user ${user}:`, error);
+                                                throw error;
+                                            }
+                                        })
+                                    );
+                                    var SessionbulkWriteData = {
+                                        url: url,
+                                        database: database,
+                                        model: "rooms",
+                                        docType: 0,
+                                        query: sessionArray
+                                    };
+                                    let SessionbulkwriteResponse = await invoke.makeHttpCall_userDataService("post", "bulkWrite", SessionbulkWriteData);
+                                    if (SessionbulkwriteResponse && SessionbulkwriteResponse.data && SessionbulkwriteResponse.data.statusMessage && (SessionbulkwriteResponse.data.statusMessage.length > 0)) {
+                                        chunks[i][0].url = url;
+                                        chunks[i][0].database = database;
+                                        chunks[i][0].member = templateResponse.data.statusMessage[0].members[i];
+                                        let scheduleCreationResponse = await shared_service.scheduleCreation(chunks[i][0]);
+                                        return { success: true, message: "Inserted successfully" }
+                                    }
+                                } else {
+                                    return { success: false, message: "SessionIds allready present so, Please provide new sessionsIds -1" };
+                                }
+                            } else {
                                 const sessionArray = await Promise.all(
-                                    missingSessions.map(async user => {
+                                    chunks[i].map(async user => {
                                         let jsonData;
                                         try {
                                             jsonData = await json.sessionData(user);
@@ -278,202 +318,44 @@ let getScheduleInfo = async (params) => {
                                         }
                                     })
                                 );
-                                var SessionbulkWriteData = {
-                                    url: url,
-                                    database: database,
-                                    model: "rooms",
-                                    docType: 0,
-                                    query: sessionArray
-                                };
-                                let SessionbulkwriteResponse = await invoke.makeHttpCall_userDataService("post", "bulkWrite", SessionbulkWriteData);
-                                if (SessionbulkwriteResponse && SessionbulkwriteResponse.data && SessionbulkwriteResponse.data.statusMessage && (SessionbulkwriteResponse.data.statusMessage.length > 0)) {
-                                    params[0].url = url;
-                                    params[0].database = database;
-                                    let scheduleCreationResponse = await shared_service.scheduleCreation(params[0]);
-                                    return { success: true, message: "Inserted successfully" }
-                                }
-                            } else {
-                                return { success: false, message: "SessionIds allready present so, Please provide new sessionsIds -1" };
-                            }
-                        } else {
-                            const sessionArray = await Promise.all(
-                                params.map(async user => {
-                                    let jsonData;
-                                    try {
-                                        jsonData = await json.sessionData(user);
-                                        const statusMessage = templateResponse.data.statusMessage[0];
-                                        jsonData.addons = statusMessage.addons;
-                                        jsonData.threshold = statusMessage.threshold;
-                                        jsonData.rules = statusMessage.rules;
-                                        jsonData.members = statusMessage.members;
-                                        jsonData.metrics = statusMessage.metrics;
-                                        jsonData.weights = statusMessage.weights;
-                                        return jsonData;
-                                    } catch (error) {
-                                        console.error(`Error processing user ${user}:`, error);
-                                        throw error;
+                                if (sessionArray && (sessionArray.length > 0)) {
+                                    var SessionbulkWriteData = {
+                                        url: url,
+                                        database: database,
+                                        model: "rooms",
+                                        docType: 0,
+                                        query: sessionArray
+                                    };
+                                    let SessionbulkwriteResponse = await invoke.makeHttpCall_userDataService("post", "bulkWrite", SessionbulkWriteData);
+                                    if (SessionbulkwriteResponse && SessionbulkwriteResponse.data && SessionbulkwriteResponse.data.statusMessage && (SessionbulkwriteResponse.data.statusMessage.length > 0)) {
+                                        chunks[i][0].url = url;
+                                        chunks[i][0].database = database;
+                                        chunks[i][0].member = templateResponse.data.statusMessage[0].members[i];
+                                        let scheduleCreationResponse = await shared_service.scheduleCreation(chunks[i][0]);
+                                        return { success: true, message: "Inserted successfully" };
                                     }
-                                })
-                            );
-                            if (sessionArray && (sessionArray.length > 0)) {
-                                var SessionbulkWriteData = {
-                                    url: url,
-                                    database: database,
-                                    model: "rooms",
-                                    docType: 0,
-                                    query: sessionArray
-                                };
-                                let SessionbulkwriteResponse = await invoke.makeHttpCall_userDataService("post", "bulkWrite", SessionbulkWriteData);
-                                if (SessionbulkwriteResponse && SessionbulkwriteResponse.data && SessionbulkwriteResponse.data.statusMessage && (SessionbulkwriteResponse.data.statusMessage.length > 0)) {
-                                    params[0].url = url;
-                                    params[0].database = database;
-                                    let scheduleCreationResponse = await shared_service.scheduleCreation(params[0]);
-                                    return { success: true, message: "Inserted successfully" };
+                                } else {
+                                    return { success: false, message: "Session Insertion Failed -1" };
                                 }
-                            } else {
-                                return { success: false, message: "Session Insertion Failed -1" };
                             }
-                        }
-                    } {
-                        console.log("Template Error1====>>>>>",JSON.stringify(params[0]))
-                        return { success: false, message: "Template fetching Error -1" };
-                    }
-                } else {
-                    return { success: false, message: "User Insertion Failed -1" };
-                }
-            } else {
-                var getTemplate = {
-                    url: url,
-                    database: database,
-                    model: "rooms",
-                    docType: 1,
-                    query: { _id: params[0]?.templateName || "default" }
-                };
-                let templateResponse = await invoke.makeHttpCall_roomDataService("post", "read", getTemplate);
-                if (templateResponse && templateResponse.data && templateResponse.data.statusMessage) {
-                    let SessionsList = Array.from(new Set(params.map(user => user.roomId)));
-                    var SessionsListData = {
-                        url: url,
-                        database: database,
-                        model: "rooms",
-                        docType: 1,
-                        query: [
-                            { $match: { _id: { $in: SessionsList } } },
-                            { $project: { id: "$_id", _id: 0 } }
-                        ]
-                    };
-                    let SessionsListUser = await invoke.makeHttpCall("post", "aggregate", SessionsListData);
-                    if (SessionsListUser && SessionsListUser.data && SessionsListUser.data.statusMessage && (SessionsListUser.data.statusMessage.length > 0)) {
-                        const SessionsIds = SessionsListUser.data.statusMessage.map(user => user.id);
-                        const missingSessions = Array.from(new Set(params.filter(param => !SessionsIds.includes(param.roomId))));
-                        if (missingSessions && (missingSessions.length > 0)) {
-                            const sessionArray = await Promise.all(
-                                missingSessions.map(async user => {
-                                    let jsonData;
-                                    try {
-                                        jsonData = await json.sessionData(user);
-                                        const statusMessage = templateResponse.data.statusMessage[0];
-                                        jsonData.addons = statusMessage.addons;
-                                        jsonData.threshold = statusMessage.threshold;
-                                        jsonData.rules = statusMessage.rules;
-                                        jsonData.members = statusMessage.members;
-                                        jsonData.metrics = statusMessage.metrics;
-                                        jsonData.weights = statusMessage.weights;
-                                        return jsonData;
-                                    } catch (error) {
-                                        console.error(`Error processing user ${user}:`, error);
-                                        throw error;
-                                    }
-                                })
-                            );
-                            var SessionbulkWriteData = {
-                                url: url,
-                                database: database,
-                                model: "rooms",
-                                docType: 0,
-                                query: sessionArray
-                            };
-                            let SessionbulkwriteResponse = await invoke.makeHttpCall_userDataService("post", "bulkWrite", SessionbulkWriteData);
-                            if (SessionbulkwriteResponse && SessionbulkwriteResponse.data && SessionbulkwriteResponse.data.statusMessage && (SessionbulkwriteResponse.data.statusMessage.length > 0)) {
-                                params[0].url = url;
-                                params[0].database = database;
-                                let scheduleCreationResponse = await shared_service.scheduleCreation(params[0]);
-                                return { success: true, message: "Inserted successfully" }
-                            }
-                        } else {
-                            return { success: false, message: "SessionIds allready present so, Please provide new sessionsIds -2" };
+                        } {
+                            console.log("Template Error1====>>>>>",JSON.stringify(params[0]))
+                            return { success: false, message: "Template fetching Error -1" };
                         }
                     } else {
-                        const sessionArray = await Promise.all(
-                            params.map(async user => {
-                                let jsonData;
-                                try {
-                                    jsonData = await json.sessionData(user);
-                                    const statusMessage = templateResponse.data.statusMessage[0];
-                                    jsonData.addons = statusMessage.addons;
-                                    jsonData.threshold = statusMessage.threshold;
-                                    jsonData.rules = statusMessage.rules;
-                                    jsonData.members = statusMessage.members;
-                                    jsonData.metrics = statusMessage.metrics;
-                                    jsonData.weights = statusMessage.weights;
-                                    return jsonData;
-                                } catch (error) {
-                                    console.error(`Error processing user ${user}:`, error);
-                                    throw error;
-                                }
-                            })
-                        );
-                        if (sessionArray && (sessionArray.length > 0)) {
-                            var SessionbulkWriteData = {
-                                url: url,
-                                database: database,
-                                model: "rooms",
-                                docType: 0,
-                                query: sessionArray
-                            };
-                            let SessionbulkwriteResponse = await invoke.makeHttpCall_userDataService("post", "bulkWrite", SessionbulkWriteData);
-                            if (SessionbulkwriteResponse && SessionbulkwriteResponse.data && SessionbulkwriteResponse.data.statusMessage && (SessionbulkwriteResponse.data.statusMessage.length > 0)) {
-                                params[0].url = url;
-                                params[0].database = database;
-                                let scheduleCreationResponse = await shared_service.scheduleCreation(params[0]);
-                                return { success: true, message: "Inserted successfully" };
-                            }
-                        } else {
-                            return { success: false, message: "Session Insertion Failed -2" };
-                        }
+                        return { success: false, message: "User Insertion Failed -1" };
                     }
-                } {
-                    console.log("Template Error2====>>>>>",JSON.stringify(params[0]))
-                    return { success: false, message: "Template fetching Error -2" };
-                }
-            }
-        } else {
-            const missingUsers = userArray
-                .map(user => ({
-                    "_id": user.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '_'),
-                    "nickname": user,
-                    "provider": "jwt"
-                }));
-            if (missingUsers && (missingUsers.length > 0)) {
-                var bulkWriteData = {
-                    url: url,
-                    database: database,
-                    model: "users",
-                    docType: 0,
-                    query: missingUsers
-                };
-                let bulkwriteResponse = await invoke.makeHttpCall_userDataService("post", "bulkWrite", bulkWriteData);
-                if (bulkwriteResponse && bulkwriteResponse.data && bulkwriteResponse.data.statusMessage && (bulkwriteResponse.data.statusMessage.length > 0)) {
+                } else {
                     var getTemplate = {
                         url: url,
                         database: database,
                         model: "rooms",
                         docType: 1,
-                        query: { _id: params[0]?.templateName || "default" }
+                        query: { _id: chunks[i][0]?.templateName || "default" }
                     };
                     let templateResponse = await invoke.makeHttpCall_roomDataService("post", "read", getTemplate);
                     if (templateResponse && templateResponse.data && templateResponse.data.statusMessage) {
-                        let SessionsList = Array.from(new Set(params.map(user => user.roomId)));
+                        let SessionsList = Array.from(new Set(chunks[i].map(user => user.roomId)));
                         var SessionsListData = {
                             url: url,
                             database: database,
@@ -487,7 +369,7 @@ let getScheduleInfo = async (params) => {
                         let SessionsListUser = await invoke.makeHttpCall("post", "aggregate", SessionsListData);
                         if (SessionsListUser && SessionsListUser.data && SessionsListUser.data.statusMessage && (SessionsListUser.data.statusMessage.length > 0)) {
                             const SessionsIds = SessionsListUser.data.statusMessage.map(user => user.id);
-                            const missingSessions = Array.from(new Set(params.filter(param => !SessionsIds.includes(param.roomId))));
+                            const missingSessions = Array.from(new Set(chunks[i].filter(param => !SessionsIds.includes(param.roomId))));
                             if (missingSessions && (missingSessions.length > 0)) {
                                 const sessionArray = await Promise.all(
                                     missingSessions.map(async user => {
@@ -517,17 +399,18 @@ let getScheduleInfo = async (params) => {
                                 };
                                 let SessionbulkwriteResponse = await invoke.makeHttpCall_userDataService("post", "bulkWrite", SessionbulkWriteData);
                                 if (SessionbulkwriteResponse && SessionbulkwriteResponse.data && SessionbulkwriteResponse.data.statusMessage && (SessionbulkwriteResponse.data.statusMessage.length > 0)) {
-                                    params[0].url = url;
-                                    params[0].database = database;
-                                    let scheduleCreationResponse = await shared_service.scheduleCreation(params[0]);
+                                    chunks[i][0].url = url;
+                                    chunks[i][0].database = database;
+                                    chunks[i][0].member = templateResponse.data.statusMessage[0].members[i];
+                                    let scheduleCreationResponse = await shared_service.scheduleCreation(chunks[i][0]);
                                     return { success: true, message: "Inserted successfully" }
                                 }
                             } else {
-                                return { success: false, message: "SessionIds allready present so, Please provide new sessionsIds -3" };
+                                return { success: false, message: "SessionIds allready present so, Please provide new sessionsIds -2" };
                             }
                         } else {
                             const sessionArray = await Promise.all(
-                                params.map(async user => {
+                                chunks[i].map(async user => {
                                     let jsonData;
                                     try {
                                         jsonData = await json.sessionData(user);
@@ -555,24 +438,150 @@ let getScheduleInfo = async (params) => {
                                 };
                                 let SessionbulkwriteResponse = await invoke.makeHttpCall_userDataService("post", "bulkWrite", SessionbulkWriteData);
                                 if (SessionbulkwriteResponse && SessionbulkwriteResponse.data && SessionbulkwriteResponse.data.statusMessage && (SessionbulkwriteResponse.data.statusMessage.length > 0)) {
-                                    params[0].url = url;
-                                    params[0].database = database;
-                                    let scheduleCreationResponse = await shared_service.scheduleCreation(params[0]);
+                                    chunks[i][0].url = url;
+                                    chunks[i][0].database = database;
+                                    chunks[i][0].member = templateResponse.data.statusMessage[0].members[i];
+                                    let scheduleCreationResponse = await shared_service.scheduleCreation(chunks[i][0]);
                                     return { success: true, message: "Inserted successfully" };
                                 }
                             } else {
-                                return { success: false, message: "Session Insertion Failed -3" };
+                                return { success: false, message: "Session Insertion Failed -2" };
                             }
                         }
                     } {
-                        console.log("Template Error3====>>>>>",JSON.stringify(params[0]))
-                        return { success: false, message: "Template fetching Error -3" };
+                        console.log("Template Error2====>>>>>",JSON.stringify(params[0]))
+                        return { success: false, message: "Template fetching Error -2" };
                     }
-                } else {
-                    return { success: false, message: "User Insertion Failed -2" };
                 }
             } else {
-                return { success: false, message: "user creation failed -!" }
+                const missingUsers = userArray
+                    .map(user => ({
+                        "_id": user.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '_'),
+                        "nickname": user,
+                        "provider": "jwt"
+                    }));
+                if (missingUsers && (missingUsers.length > 0)) {
+                    var bulkWriteData = {
+                        url: url,
+                        database: database,
+                        model: "users",
+                        docType: 0,
+                        query: missingUsers
+                    };
+                    let bulkwriteResponse = await invoke.makeHttpCall_userDataService("post", "bulkWrite", bulkWriteData);
+                    if (bulkwriteResponse && bulkwriteResponse.data && bulkwriteResponse.data.statusMessage && (bulkwriteResponse.data.statusMessage.length > 0)) {
+                        var getTemplate = {
+                            url: url,
+                            database: database,
+                            model: "rooms",
+                            docType: 1,
+                            query: { _id: chunks[i][0]?.templateName || "default" }
+                        };
+                        let templateResponse = await invoke.makeHttpCall_roomDataService("post", "read", getTemplate);
+                        if (templateResponse && templateResponse.data && templateResponse.data.statusMessage) {
+                            let SessionsList = Array.from(new Set(chunks[i].map(user => user.roomId)));
+                            var SessionsListData = {
+                                url: url,
+                                database: database,
+                                model: "rooms",
+                                docType: 1,
+                                query: [
+                                    { $match: { _id: { $in: SessionsList } } },
+                                    { $project: { id: "$_id", _id: 0 } }
+                                ]
+                            };
+                            let SessionsListUser = await invoke.makeHttpCall("post", "aggregate", SessionsListData);
+                            if (SessionsListUser && SessionsListUser.data && SessionsListUser.data.statusMessage && (SessionsListUser.data.statusMessage.length > 0)) {
+                                const SessionsIds = SessionsListUser.data.statusMessage.map(user => user.id);
+                                const missingSessions = Array.from(new Set(chunks[i].filter(param => !SessionsIds.includes(param.roomId))));
+                                if (missingSessions && (missingSessions.length > 0)) {
+                                    const sessionArray = await Promise.all(
+                                        missingSessions.map(async user => {
+                                            let jsonData;
+                                            try {
+                                                jsonData = await json.sessionData(user);
+                                                const statusMessage = templateResponse.data.statusMessage[0];
+                                                jsonData.addons = statusMessage.addons;
+                                                jsonData.threshold = statusMessage.threshold;
+                                                jsonData.rules = statusMessage.rules;
+                                                jsonData.members = statusMessage.members;
+                                                jsonData.metrics = statusMessage.metrics;
+                                                jsonData.weights = statusMessage.weights;
+                                                return jsonData;
+                                            } catch (error) {
+                                                console.error(`Error processing user ${user}:`, error);
+                                                throw error;
+                                            }
+                                        })
+                                    );
+                                    var SessionbulkWriteData = {
+                                        url: url,
+                                        database: database,
+                                        model: "rooms",
+                                        docType: 0,
+                                        query: sessionArray
+                                    };
+                                    let SessionbulkwriteResponse = await invoke.makeHttpCall_userDataService("post", "bulkWrite", SessionbulkWriteData);
+                                    if (SessionbulkwriteResponse && SessionbulkwriteResponse.data && SessionbulkwriteResponse.data.statusMessage && (SessionbulkwriteResponse.data.statusMessage.length > 0)) {
+                                        chunks[i][0].url = url;
+                                        chunks[i][0].database = database;
+                                        chunks[i][0].member = templateResponse.data.statusMessage[0].members[i];
+                                        let scheduleCreationResponse = await shared_service.scheduleCreation(chunks[i][0]);
+                                        return { success: true, message: "Inserted successfully" }
+                                    }
+                                } else {
+                                    return { success: false, message: "SessionIds allready present so, Please provide new sessionsIds -3" };
+                                }
+                            } else {
+                                const sessionArray = await Promise.all(
+                                    chunks[i].map(async user => {
+                                        let jsonData;
+                                        try {
+                                            jsonData = await json.sessionData(user);
+                                            const statusMessage = templateResponse.data.statusMessage[0];
+                                            jsonData.addons = statusMessage.addons;
+                                            jsonData.threshold = statusMessage.threshold;
+                                            jsonData.rules = statusMessage.rules;
+                                            jsonData.members = statusMessage.members;
+                                            jsonData.metrics = statusMessage.metrics;
+                                            jsonData.weights = statusMessage.weights;
+                                            return jsonData;
+                                        } catch (error) {
+                                            console.error(`Error processing user ${user}:`, error);
+                                            throw error;
+                                        }
+                                    })
+                                );
+                                if (sessionArray && (sessionArray.length > 0)) {
+                                    var SessionbulkWriteData = {
+                                        url: url,
+                                        database: database,
+                                        model: "rooms",
+                                        docType: 0,
+                                        query: sessionArray
+                                    };
+                                    let SessionbulkwriteResponse = await invoke.makeHttpCall_userDataService("post", "bulkWrite", SessionbulkWriteData);
+                                    if (SessionbulkwriteResponse && SessionbulkwriteResponse.data && SessionbulkwriteResponse.data.statusMessage && (SessionbulkwriteResponse.data.statusMessage.length > 0)) {
+                                        chunks[i][0].url = url;
+                                        chunks[i][0].database = database;
+                                        chunks[i][0].member = templateResponse.data.statusMessage[0].members[i];
+                                        let scheduleCreationResponse = await shared_service.scheduleCreation(chunks[i][0]);
+                                        return { success: true, message: "Inserted successfully" };
+                                    }
+                                } else {
+                                    return { success: false, message: "Session Insertion Failed -3" };
+                                }
+                            }
+                        } {
+                            console.log("Template Error3====>>>>>",JSON.stringify(params[0]))
+                            return { success: false, message: "Template fetching Error -3" };
+                        }
+                    } else {
+                        return { success: false, message: "User Insertion Failed -2" };
+                    }
+                } else {
+                    return { success: false, message: "user creation failed -!" }
+                }
             }
         }
 
@@ -584,6 +593,14 @@ let getScheduleInfo = async (params) => {
         }
     }
 };
+
+function chunkArray(array, chunkSize) {
+    const results = [];
+    for (let i = 0; i < array.length; i += chunkSize) {
+        results.push(array.slice(i, i + chunkSize));
+    }
+    return results;
+}
 module.exports = {
     tokenValidation,
     validateToken,
