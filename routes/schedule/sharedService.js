@@ -271,7 +271,7 @@ let getScheduleInfo = async (params) => {
                                                 jsonData.addons = statusMessage.addons;
                                                 jsonData.threshold = statusMessage.threshold;
                                                 jsonData.rules = statusMessage.rules;
-                                                jsonData.members = statusMessage.members;
+                                                jsonData.members = statusMessage.members[i];
                                                 jsonData.metrics = statusMessage.metrics;
                                                 jsonData.weights = statusMessage.weights;
                                                 return jsonData;
@@ -308,7 +308,7 @@ let getScheduleInfo = async (params) => {
                                             jsonData.addons = statusMessage.addons;
                                             jsonData.threshold = statusMessage.threshold;
                                             jsonData.rules = statusMessage.rules;
-                                            jsonData.members = statusMessage.members;
+                                            jsonData.members = statusMessage.members[i];
                                             jsonData.metrics = statusMessage.metrics;
                                             jsonData.weights = statusMessage.weights;
                                             return jsonData;
@@ -338,7 +338,6 @@ let getScheduleInfo = async (params) => {
                                 }
                             }
                         } {
-                            console.log("Template Error1====>>>>>",JSON.stringify(chunks[1][0]))
                             scheduleCreationResponse = { success: false, message: "Template fetching Error -1" };
                         }
                     } else {
@@ -379,7 +378,7 @@ let getScheduleInfo = async (params) => {
                                             jsonData.addons = statusMessage.addons;
                                             jsonData.threshold = statusMessage.threshold;
                                             jsonData.rules = statusMessage.rules;
-                                            jsonData.members = statusMessage.members;
+                                            jsonData.members = statusMessage.members[i];
                                             jsonData.metrics = statusMessage.metrics;
                                             jsonData.weights = statusMessage.weights;
                                             return jsonData;
@@ -416,7 +415,7 @@ let getScheduleInfo = async (params) => {
                                         jsonData.addons = statusMessage.addons;
                                         jsonData.threshold = statusMessage.threshold;
                                         jsonData.rules = statusMessage.rules;
-                                        jsonData.members = statusMessage.members;
+                                        jsonData.members = statusMessage.members[i];
                                         jsonData.metrics = statusMessage.metrics;
                                         jsonData.weights = statusMessage.weights;
                                         return jsonData;
@@ -446,7 +445,6 @@ let getScheduleInfo = async (params) => {
                             }
                         }
                     } {
-                        console.log("Template Error2====>>>>>",JSON.stringify(chunks[1][0]))
                         scheduleCreationResponse = { success: false, message: "Template fetching Error -2" };
                     }
                 }
@@ -501,7 +499,7 @@ let getScheduleInfo = async (params) => {
                                                 jsonData.addons = statusMessage.addons;
                                                 jsonData.threshold = statusMessage.threshold;
                                                 jsonData.rules = statusMessage.rules;
-                                                jsonData.members = statusMessage.members;
+                                                jsonData.members = statusMessage.members[i];
                                                 jsonData.metrics = statusMessage.metrics;
                                                 jsonData.weights = statusMessage.weights;
                                                 return jsonData;
@@ -538,7 +536,7 @@ let getScheduleInfo = async (params) => {
                                             jsonData.addons = statusMessage.addons;
                                             jsonData.threshold = statusMessage.threshold;
                                             jsonData.rules = statusMessage.rules;
-                                            jsonData.members = statusMessage.members;
+                                            jsonData.members = statusMessage.members[i];
                                             jsonData.metrics = statusMessage.metrics;
                                             jsonData.weights = statusMessage.weights;
                                             return jsonData;
@@ -568,7 +566,6 @@ let getScheduleInfo = async (params) => {
                                 }
                             }
                         } {
-                            console.log("Template Error3====>>>>>",JSON.stringify(chunks[1][0]))
                             scheduleCreationResponse = { success: false, message: "Template fetching Error -3" };
                         }
                     } else {
