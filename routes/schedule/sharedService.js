@@ -204,6 +204,7 @@ let getScheduleInfo = async (params) => {
             url = process.env.MONGO_URI + '/' + process.env.DATABASENAME;
             database = process.env.DATABASENAME;
         }
+        let scheduleCreationResponse;
         const chunks = await chunkArray(params, 20);
         for (let i = 0; i < chunks.length; i++) {
             let userArray = Array.from(new Set(chunks[i].map(user => user.email)));
@@ -292,11 +293,10 @@ let getScheduleInfo = async (params) => {
                                         chunks[i][0].url = url;
                                         chunks[i][0].database = database;
                                         chunks[i][0].member = templateResponse.data.statusMessage[0].members[i];
-                                        let scheduleCreationResponse = await shared_service.scheduleCreation(chunks[i][0]);
-                                        return { success: true, message: "Inserted successfully" }
+                                        scheduleCreationResponse = await shared_service.scheduleCreation(chunks[i][0]);
                                     }
                                 } else {
-                                    return { success: false, message: "SessionIds allready present so, Please provide new sessionsIds -1" };
+                                    scheduleCreationResponse = { success: false, message: "SessionIds allready present so, Please provide new sessionsIds -1" };
                                 }
                             } else {
                                 const sessionArray = await Promise.all(
@@ -331,19 +331,18 @@ let getScheduleInfo = async (params) => {
                                         chunks[i][0].url = url;
                                         chunks[i][0].database = database;
                                         chunks[i][0].member = templateResponse.data.statusMessage[0].members[i];
-                                        let scheduleCreationResponse = await shared_service.scheduleCreation(chunks[i][0]);
-                                        return { success: true, message: "Inserted successfully" };
+                                        scheduleCreationResponse = await shared_service.scheduleCreation(chunks[i][0]);
                                     }
                                 } else {
-                                    return { success: false, message: "Session Insertion Failed -1" };
+                                    scheduleCreationResponse = { success: false, message: "Session Insertion Failed -1" };
                                 }
                             }
                         } {
-                            console.log("Template Error1====>>>>>",JSON.stringify(params[0]))
-                            return { success: false, message: "Template fetching Error -1" };
+                            console.log("Template Error1====>>>>>",JSON.stringify(chunks[1][0]))
+                            scheduleCreationResponse = { success: false, message: "Template fetching Error -1" };
                         }
                     } else {
-                        return { success: false, message: "User Insertion Failed -1" };
+                        scheduleCreationResponse = { success: false, message: "User Insertion Failed -1" };
                     }
                 } else {
                     var getTemplate = {
@@ -402,11 +401,10 @@ let getScheduleInfo = async (params) => {
                                     chunks[i][0].url = url;
                                     chunks[i][0].database = database;
                                     chunks[i][0].member = templateResponse.data.statusMessage[0].members[i];
-                                    let scheduleCreationResponse = await shared_service.scheduleCreation(chunks[i][0]);
-                                    return { success: true, message: "Inserted successfully" }
+                                    scheduleCreationResponse = await shared_service.scheduleCreation(chunks[i][0]);
                                 }
                             } else {
-                                return { success: false, message: "SessionIds allready present so, Please provide new sessionsIds -2" };
+                                scheduleCreationResponse = { success: false, message: "SessionIds allready present so, Please provide new sessionsIds -2" };
                             }
                         } else {
                             const sessionArray = await Promise.all(
@@ -441,16 +439,15 @@ let getScheduleInfo = async (params) => {
                                     chunks[i][0].url = url;
                                     chunks[i][0].database = database;
                                     chunks[i][0].member = templateResponse.data.statusMessage[0].members[i];
-                                    let scheduleCreationResponse = await shared_service.scheduleCreation(chunks[i][0]);
-                                    return { success: true, message: "Inserted successfully" };
+                                    scheduleCreationResponse = await shared_service.scheduleCreation(chunks[i][0]);
                                 }
                             } else {
-                                return { success: false, message: "Session Insertion Failed -2" };
+                                scheduleCreationResponse = { success: false, message: "Session Insertion Failed -2" };
                             }
                         }
                     } {
-                        console.log("Template Error2====>>>>>",JSON.stringify(params[0]))
-                        return { success: false, message: "Template fetching Error -2" };
+                        console.log("Template Error2====>>>>>",JSON.stringify(chunks[1][0]))
+                        scheduleCreationResponse = { success: false, message: "Template fetching Error -2" };
                     }
                 }
             } else {
@@ -526,11 +523,10 @@ let getScheduleInfo = async (params) => {
                                         chunks[i][0].url = url;
                                         chunks[i][0].database = database;
                                         chunks[i][0].member = templateResponse.data.statusMessage[0].members[i];
-                                        let scheduleCreationResponse = await shared_service.scheduleCreation(chunks[i][0]);
-                                        return { success: true, message: "Inserted successfully" }
+                                        scheduleCreationResponse = await shared_service.scheduleCreation(chunks[i][0]);
                                     }
                                 } else {
-                                    return { success: false, message: "SessionIds allready present so, Please provide new sessionsIds -3" };
+                                    scheduleCreationResponse = { success: false, message: "SessionIds allready present so, Please provide new sessionsIds -3" };
                                 }
                             } else {
                                 const sessionArray = await Promise.all(
@@ -565,26 +561,29 @@ let getScheduleInfo = async (params) => {
                                         chunks[i][0].url = url;
                                         chunks[i][0].database = database;
                                         chunks[i][0].member = templateResponse.data.statusMessage[0].members[i];
-                                        let scheduleCreationResponse = await shared_service.scheduleCreation(chunks[i][0]);
-                                        return { success: true, message: "Inserted successfully" };
+                                        scheduleCreationResponse = await shared_service.scheduleCreation(chunks[i][0]);
                                     }
                                 } else {
-                                    return { success: false, message: "Session Insertion Failed -3" };
+                                    scheduleCreationResponse = { success: false, message: "Session Insertion Failed -3" };
                                 }
                             }
                         } {
-                            console.log("Template Error3====>>>>>",JSON.stringify(params[0]))
-                            return { success: false, message: "Template fetching Error -3" };
+                            console.log("Template Error3====>>>>>",JSON.stringify(chunks[1][0]))
+                            scheduleCreationResponse = { success: false, message: "Template fetching Error -3" };
                         }
                     } else {
-                        return { success: false, message: "User Insertion Failed -2" };
+                        scheduleCreationResponse = { success: false, message: "User Insertion Failed -2" };
                     }
                 } else {
-                    return { success: false, message: "user creation failed -!" }
+                    scheduleCreationResponse = { success: false, message: "user creation failed -!" }
                 }
             }
         }
-
+        if(scheduleCreationResponse && scheduleCreationResponse.success){
+            return { success: true, message: "Inserted successfully" }
+        } else {
+            return { success: false, message: scheduleCreationResponse.message }
+        }
     } catch (error) {
         if (error) {
             return { success: false, message: error }
