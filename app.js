@@ -37,6 +37,7 @@ require('./routes/tenant/index')({ app: app })
 // cronjob for every 2 minutes
 var request = require('request')
 var CronJob = require('cron').CronJob;
+var PauseCronJob = require('cron').CronJob;
 new CronJob('*/3 * * * *', function () {
   try {
     request(process.env.STOP_ENDPOINT, function (error, response, body) {
@@ -51,17 +52,17 @@ new CronJob('*/3 * * * *', function () {
   }
 }, null, true, "Asia/Calcutta");
 
-new CronJob('*/2 * * * *', function () {
+new PauseCronJob('*/2 * * * *', function () {
   try {
     request(process.env.PAUSE_ENDPOINT, function (error, response, body) {
       if (!error && response.statusCode == 200) {
         console.log('You will see this message every 2 minutes(pause)');
       } else {
-        console.log("StopErrorLog====>>>>", error)
+        console.log("PauseErrorLog====>>>>", error)
       }
     })
   } catch (error) {
-    console.log("StopCatchLog====>>>>", error)
+    console.log("PauseCatchLog====>>>>", error)
   }
 }, null, true, "Asia/Calcutta");
 
