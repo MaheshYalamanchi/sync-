@@ -112,7 +112,6 @@ module.exports = function (params) {
       ]
       var responseData = await schedule.aggregate(data);
       if (responseData && responseData.length > 0) {
-        console.log("testing====>>>>",responseData.length)
         let Bulkdata = []
         for (const iterator of responseData) {
           try{
