@@ -99,7 +99,7 @@ let dataUpload = async data =>{
 }
 let getSessions = async (params) => {
   try {
-      let fetchTenantResponse = await _schedule.getTennant();
+      let fetchTenantResponse = await _schedule.fetchTenant();
       if(fetchTenantResponse && fetchTenantResponse.success){
           fetchTenantResponse.message.forEach(async element => {
               var getdata = {
