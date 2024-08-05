@@ -24,28 +24,31 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.logger=require("./logger/logger");
+app.logger = require("./logger/logger");
 // app.use('/', indexRouter);
 // app.use('/users', usersRouter);
 app.http = require("./lib/util/http");
 app.util = require("./lib/util/parser");
 app.invoke = require("./lib/http/invoke");
-require('./routes/csvUpload/index')({app:app})
-require('./routes/tenant/index')({app:app})
+require('./routes/csvUpload/index')({ app: app })
+require('./routes/tenant/index')({ app: app })
 // require("./routes/blob/index")({ app: app });
 
 // cronjob for every 2 minutes
 var request = require('request')
 var CronJob = require('cron').CronJob;
-new CronJob('*/2 * * * *', function() {
-  console.log(process.env.STOP_ENDPOINT)
-    request(process.env.STOP_ENDPOINT, function(error, response, body) {
-        if (!error && response.statusCode == 200) {
-          console.log('You will see this message every 2 minutes');
-        } else {
-          console.log(error)
-        }
+new CronJob('*/2 * * * *', function () {
+  try {
+    request(process.env.STOP_ENDPOINT, function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        console.log('You will see this message every 2 minutes');
+      } else {
+        console.log("StopErrorLog====>>>>", error)
+      }
     })
+  } catch (error) {
+    console.log("StopCatchLog====>>>>", error)
+  }
 }, null, true, "Asia/Calcutta");
 
 // cronjob for every  15 secs.
@@ -59,12 +62,12 @@ new CronJob('*/2 * * * *', function() {
 //     })
 // }, null, true, "Asia/Calcutta");
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -74,6 +77,6 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 var server = app.listen(3004, function () {
-  console.log("sync Service...",3004)
+  console.log("sync Service...", 3004)
 });
 module.exports = app;
