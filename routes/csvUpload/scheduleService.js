@@ -113,7 +113,7 @@ let getSessions = async (params) => {
                   }   
               };
               // let response = await schedule.fetchdata(getdata)
-              let responseData = await invoke.makeHttpCall("post", "updatedataMany", getdata);
+              let responseData = await invoke.makeHttpCall_userDataService("post", "updatedataMany", getdata);
               if(responseData && responseData.data && responseData.data.statusMessage.nModified>0) {
                   // let closeconnection = await invoke.makeHttpCall("get", "closeconnection");
                   // for (const iterator of response.data.statusMessage) {
