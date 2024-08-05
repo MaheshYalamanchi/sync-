@@ -131,7 +131,6 @@ let getSessions = async (params) => {
       //         }
       //     });
       // } else {
-        console.log("===========>>>>>>2",process.env.MONGO_URI+'/'+process.env.DATABASENAME)
         var getdata = {
           url: process.env.MONGO_URI+'/'+process.env.DATABASENAME,
           database: process.env.DATABASENAME,
