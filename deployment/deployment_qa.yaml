@@ -57,17 +57,17 @@ spec:
             - name: CLOSE_CONEECTION_ENDPOINT
               valueFrom:
                 secretKeyRef:
-                  name: proctor-dev-env
+                  name: proctor-qa-env
                   key: CLOSE_CONEECTION_ENDPOINT
             - name: PROCTOR_BACKEND
               valueFrom:
                 secretKeyRef:
-                  name: proctor-dev-env
+                  name: proctor-qa-env
                   key: PROCTOR_BACKEND
             - name: STOP_ENDPOINT
               valueFrom:
                 secretKeyRef:
-                  name: proctor-dev-env
+                  name: proctor-qa-env
                   key: STOP_ENDPOINT
       imagePullSecrets:
         - name: mysecret
