@@ -33,29 +33,38 @@ app.invoke = require("./lib/http/invoke");
 require('./routes/csvUpload/index')({app:app})
 // require("./routes/blob/index")({ app: app });
 
+
 // cronjob for every 2 minutes
 var request = require('request')
 var CronJob = require('cron').CronJob;
-// new CronJob('*/2 * * * *', function() {
-//     request(process.env.PAUSE_ENDPOINT, function(error, response, body) {
-//         if (!error && response.statusCode == 200) {
-//           console.log('You will see this message every 2 minutes');
-//         } else {
-//           console.log(error)
-//         }
-//     })
-// }, null, true, "Asia/Calcutta");
+var PauseCronJob = require('cron').CronJob;
+new CronJob('*/3 * * * *', function () {
+  try {
+    request(process.env.STOP_ENDPOINT, function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        console.log('You will see this message every 3 minutes(stop)');
+      } else {
+        console.log("StopErrorLog====>>>>", error)
+      }
+    })
+  } catch (error) {
+    console.log("StopCatchLog====>>>>", error)
+  }
+}, null, true, "Asia/Calcutta");
 
-// cronjob for every  15 secs.
-// new CronJob('*/15 * * * * *', function() {
-//     request(process.env.CLOSE_CONEECTION_ENDPOINT, function(error, response, body) {
-//         if (!error && response.statusCode == 200) {
-//           // console.log('You will see this message every 2 minutes');
-//         } else {
-//           console.log(error)
-//         }
-//     })
-// }, null, true, "Asia/Calcutta");
+new PauseCronJob('*/2 * * * *', function () {
+  try {
+    request(process.env.PAUSE_ENDPOINT, function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        console.log('You will see this message every 2 minutes(pause)');
+      } else {
+        console.log("PauseErrorLog====>>>>", error)
+      }
+    })
+  } catch (error) {
+    console.log("PauseCatchLog====>>>>", error)
+  }
+}, null, true, "Asia/Calcutta");
 
 app.use(function(req, res, next) {
   next(createError(404));
