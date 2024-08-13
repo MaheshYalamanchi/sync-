@@ -4,6 +4,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const bodyParser = require('body-parser');
 
 // var indexRouter = require('./routes/index');
 // var usersRouter = require('./routes/users');
@@ -19,10 +20,10 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.json({ limit: '500mb' }));
+app.use(bodyParser.urlencoded({ extended: !1 }))
 
 app.logger = require("./logger/logger");
 // app.use('/', indexRouter);
@@ -80,9 +81,6 @@ new PauseCronJob('*/2 * * * *', function () {
 app.use(function (req, res, next) {
   next(createError(404));
 });
-
-app.use(express.json({ limit: '50mb' })); // Adjust the limit as needed
-app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // error handler
 app.use(function (err, req, res, next) {
