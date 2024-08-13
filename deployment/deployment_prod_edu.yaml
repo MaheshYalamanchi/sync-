@@ -37,17 +37,17 @@ spec:
             - name: PAUSE_ENDPOINT
               valueFrom:
                 secretKeyRef:
-                  name: proctor-dev-env
+                  name: proctor-prod-env
                   key: PAUSE_ENDPOINT
             - name: STOP_ENDPOINT
               valueFrom:
                 secretKeyRef:
-                  name: proctor-dev-env
+                  name: proctor-prod-env
                   key: STOP_ENDPOINT
             - name: PROCTOR_BACKEND
               valueFrom:
                 secretKeyRef:
-                  name: proctor-dev-env
+                  name: proctor-prod-env
                   key: PROCTOR_BACKEND
       imagePullSecrets:
         - name: mysecret
