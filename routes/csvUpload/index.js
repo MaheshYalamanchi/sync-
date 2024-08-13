@@ -100,7 +100,7 @@ module.exports = function (params) {
         }
     }
 });
-  app.get('/api/sessions/stopped', async (req, res, next) => {
+app.get('/api/sessions/stopped', async (req, res, next) => {
     try {
       let data = [
         {
@@ -111,9 +111,10 @@ module.exports = function (params) {
             ]
           }
         },
+        {$sort: { startedAt:-1}},
         {
           $project: {
-            DifferenceInMin: { $divide: [{ $subtract: ["$updatedAt", "$startedAt"] }, (1000 * 60)] },
+            DifferenceInMin: { $divide: [{ $subtract: [new Date(),"$updatedAt"] }, (1000 * 60)] },
             timeout: 1,
             status: 1
           }
@@ -131,19 +132,11 @@ module.exports = function (params) {
       if (responseData && responseData.length > 0) {
         let Bulkdata = []
         for (const iterator of responseData) {
-          let jsonData = {
-            _id: iterator._id,
-            status: "stopped"
+          try{
+            let response = await invoke.makeHttpCallProctor_Backend("post", '/api/stop/' + iterator._id, iterator)
+          } catch(Error){
+            console.log("session status upadate",Error)
           }
-          Bulkdata.push(jsonData)
-        }
-        if (Bulkdata.length > 0) {
-          let response = await schedule.dataUpload(Bulkdata);
-          if (response && response.nModified > 0) {
-            app.http.customResponse(res, ({ success: true, message: "records updated successfully..." }), 200);
-          }
-        } else {
-          app.http.customResponse(res, ({ success: false, message: "records missing" }), 200);
         }
       } else {
         app.http.customResponse(res, ({ success: false, message: "data not found" }), 200);
