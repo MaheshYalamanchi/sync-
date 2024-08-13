@@ -22,7 +22,7 @@ let connection = async () => {
     let db, client;
     try {
       client = await MongoClient.connect(
-        process.env.MONGO_URI_LOCAL,
+        process.env.MONGO_URI,
         {
          connectTimeoutMS: 300000, socketTimeoutMS: 300000, useNewUrlParser: true,useUnifiedTopology: true
         }
