@@ -34,5 +34,20 @@ spec:
                 secretKeyRef:
                   name: proctor-prod-env
                   key: DATA_SERVICE_ENDPOINT
+            - name: PAUSE_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-dev-env
+                  key: PAUSE_ENDPOINT
+            - name: STOP_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-dev-env
+                  key: STOP_ENDPOINT
+            - name: PROCTOR_BACKEND
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-dev-env
+                  key: PROCTOR_BACKEND
       imagePullSecrets:
         - name: mysecret
