@@ -129,6 +129,7 @@ app.get('/api/sessions/stopped', async (req, res, next) => {
         }
       ]
       var responseData = await schedule.aggregate(data);
+      console.log(responseData)
       if (responseData && responseData.length > 0) {
         let Bulkdata = []
         for (const iterator of responseData) {
