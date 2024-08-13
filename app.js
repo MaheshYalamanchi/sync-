@@ -40,7 +40,7 @@ var CronJob = require('cron').CronJob;
 var PauseCronJob = require('cron').CronJob;
 new CronJob('*/3 * * * *', function () {
   try {
-    console.log(process.env.STOP_ENDPOINT,'stop endpoint')
+    
     request(process.env.STOP_ENDPOINT, function (error, response, body) {
       if (!error && response.statusCode == 200) {
         console.log('You will see this message every 3 minutes(stop)');
