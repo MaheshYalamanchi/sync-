@@ -70,6 +70,11 @@ spec:
                 secretKeyRef:
                   name: proctor-prod-env
                   key: PROCTOR_BACKEND
+            - name: MONGO_URI_LOCAL
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-prod-env
+                  key: MONGO_URI_LOCAL
       imagePullSecrets:
         - name: mysecret
       nodeSelector:
