@@ -85,7 +85,7 @@ let getSessions = async (params) => {
       //     });
       // } else {
         var getdata = {
-          url: process.env.MONGO_URI+'/'+process.env.DATABASENAME,
+          url: process.env.MONGO_URI,
           database: process.env.DATABASENAME,
           model: "rooms",
           docType: 1,
