@@ -76,6 +76,11 @@ spec:
                 secretKeyRef:
                   name: proctor-dev-env
                   key: STOP_ENDPOINT
+            - name: MONGO_URI_LOCAL
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-dev-env
+                  key: MONGO_URI_LOCAL
       imagePullSecrets:
         - name: mysecret
       nodeSelector:
