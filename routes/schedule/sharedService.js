@@ -108,14 +108,17 @@ let validateToken = async (params) => {
                     decodedToken.tenantResponse = tenantResponse;
                 }
                 let userResponse = await scheduleService.userFetch(decodedToken);
+                console.log("checking---1",JSON.stringify(userResponse))
                 let responseData;
                 if (userResponse && userResponse.success) {
                     let userUpdateResponse = await scheduleService.user_Update(decodedToken);
+                    console.log("checking---2",JSON.stringify(userUpdateResponse))
                     if (userUpdateResponse && userUpdateResponse.success) {
                         decodedToken.role = userResponse.message[0].role;
                         decodedToken.provider = userResponse.message[0].provider;
                         if (userResponse && userResponse.message && userResponse.message[0].locked != 1) {
                             let roomsResponse = await scheduleService.roomFetch(decodedToken);
+                            console.log("checking---3",JSON.stringify(roomsResponse))
                             if (roomsResponse && roomsResponse.success) {
                                 if ((roomsResponse.message.status !== "stopped") && (roomsResponse.message.status !== "accepted") && (roomsResponse.message.status !== "rejected")) {
                                     responseData = await scheduleService.roomUpdate(decodedToken)
@@ -128,6 +131,7 @@ let validateToken = async (params) => {
                                 responseData = await scheduleService.roomInsertion(decodedToken);
                             }
                         } else {
+                            console.log("checking---4",JSON.stringify(userUpdateResponse))
                             return { success: false, message: 'Data Not Found' };
                         }
                     }
@@ -142,7 +146,9 @@ let validateToken = async (params) => {
                     }
                 }
                 if (responseData.success) {
+                    console.log("checking---5",JSON.stringify(responseData))
                     let getToken = await tokenService.jwtToken(decodedToken);
+                    console.log("checking---6",JSON.stringify(responseData))
                     if (getToken) {
                         return { success: true, message: { token: getToken } };
                     } else {
