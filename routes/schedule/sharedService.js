@@ -148,7 +148,7 @@ let validateToken = async (params) => {
                 if (responseData.success) {
                     console.log("checking---5",JSON.stringify(responseData))
                     let getToken = await tokenService.jwtToken(decodedToken);
-                    console.log("checking---6",JSON.stringify(responseData))
+                    console.log("checking---6",JSON.stringify(getToken))
                     if (getToken) {
                         return { success: true, message: { token: getToken } };
                     } else {
