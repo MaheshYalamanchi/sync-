@@ -121,7 +121,9 @@ let validateToken = async (params) => {
                             console.log("checking---3",JSON.stringify(roomsResponse))
                             if (roomsResponse && roomsResponse.success) {
                                 if ((roomsResponse.message.status !== "stopped") && (roomsResponse.message.status !== "accepted") && (roomsResponse.message.status !== "rejected")) {
+                                    console.log("checking---4",JSON.stringify(roomsResponse))
                                     responseData = await scheduleService.roomUpdate(decodedToken)
+                                    console.log("checking---5",JSON.stringify(responseData))
                                     if (responseData && !responseData.success) {
                                     }
                                 } else {
@@ -131,7 +133,7 @@ let validateToken = async (params) => {
                                 responseData = await scheduleService.roomInsertion(decodedToken);
                             }
                         } else {
-                            console.log("checking---4",JSON.stringify(userUpdateResponse))
+                            console.log("checking---6",JSON.stringify(userUpdateResponse))
                             return { success: false, message: 'Data Not Found' };
                         }
                     }
@@ -145,10 +147,11 @@ let validateToken = async (params) => {
                         return { success: false, message: "user insertion failed..." }
                     }
                 }
+                console.log("checking---7",JSON.stringify(responseData))
                 if (responseData.success) {
-                    console.log("checking---5",JSON.stringify(responseData))
+                    console.log("checking---8")
                     let getToken = await tokenService.jwtToken(decodedToken);
-                    console.log("checking---6",JSON.stringify(getToken))
+                    console.log("checking---9",JSON.stringify(getToken))
                     if (getToken) {
                         return { success: true, message: { token: getToken } };
                     } else {
@@ -158,6 +161,7 @@ let validateToken = async (params) => {
                     // console.log("responseData136=====>>>>",responseData)
                 }
             } else {
+                console.log("checking---10")
                 return { success: false, message: 'Data Not Found' };
             }
         }
