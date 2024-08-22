@@ -88,22 +88,22 @@ let generateToken = async (req) => {
                 "videoass": user.videoass,
                 "tenantId": user.tenantId
             }
-            const decodedToken = jwt.verify(user.proctorToken,secret);
-            decodedToken.testId = req?.testId || null;
-            decodedToken.scheduleId = req?.scheduleId || null;
-            let userResponse = await scheduleService.userFetch(decodedToken);
-            if(userResponse&&userResponse.success){
-                decodedToken.role = userResponse.message[0].role;
-                decodedToken.provider = userResponse.message[0].provider;
-                let responseData = await scheduleService.roomInsertion(decodedToken);
-            }else {
-                let response = await scheduleService.userInsertion(decodedToken);
-                if (response && response.success){
-                    decodedToken.role = response.message.role;
-                    decodedToken.provider = response.message.provider;
-                    let responseData = await scheduleService.roomInsertion(decodedToken);
-                }
-            }
+            // const decodedToken = jwt.verify(user.proctorToken,secret);
+            // decodedToken.testId = req?.testId || null;
+            // decodedToken.scheduleId = req?.scheduleId || null;
+            // let userResponse = await scheduleService.userFetch(decodedToken);
+            // if(userResponse&&userResponse.success){
+            //     decodedToken.role = userResponse.message[0].role;
+            //     decodedToken.provider = userResponse.message[0].provider;
+            //     let responseData = await scheduleService.roomInsertion(decodedToken);
+            // }else {
+            //     let response = await scheduleService.userInsertion(decodedToken);
+            //     if (response && response.success){
+            //         decodedToken.role = response.message.role;
+            //         decodedToken.provider = response.message.provider;
+            //         let responseData = await scheduleService.roomInsertion(decodedToken);
+            //     }
+            // }
             return { success: true, message: "Proctor Token",ProctorToken:user.proctorToken ,data:data};
         }else{
             return {success: false, message:'Error While Generating Token!'};

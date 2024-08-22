@@ -71,15 +71,6 @@ const json = require('../json');
   
 let userInsertion = async (params) => {
     try {
-        let url;
-        let database;
-        if(params && params.tenantResponse && params.tenantResponse.success){
-            url = params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName;
-            database = params.tenantResponse.message.databaseName;
-        } else {
-            url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
-            database = process.env.DATABASENAME;
-        }
         let username = params.username.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi,'_')
         jsonData = {
             "_id" : username,
@@ -101,18 +92,16 @@ let userInsertion = async (params) => {
             // "referer" : params.headers.referer || null
         }
         var getdata = {
-            url: url,
-			database: database,
+            url: params.url,
+			database: params.database,
             model: "users",
             docType: 0,
             query: jsonData
         };
         let responseData = await invoke.makeHttpCall_userDataService("post", "insert", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage) {
-            // console.log("afterUserInsertion=====>>>",params.username)
             return { success: true, message:responseData.data.statusMessage}
         } else {
-            // console.log(responseData,'save api.........')
             return { success: false, message: 'Data Not Found' };
         }
     } catch (error) {
@@ -126,15 +115,6 @@ let userInsertion = async (params) => {
 
 let user_Update = async (params) => {
     try {
-        let url;
-        let database;
-        if(params && params.tenantResponse && params.tenantResponse.success){
-            url = params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName;
-            database = params.tenantResponse.message.databaseName;
-        } else {
-            url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
-            database = process.env.DATABASENAME;
-        }
         let username = params.username.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi,'_')
         jsonData = {
             "browser" : {
@@ -155,8 +135,8 @@ let user_Update = async (params) => {
             "referer" : params.headers.referer
         }
         var getdata = {
-            url: url,
-			database: database,
+            url: params.url,
+			database: params.database,
             model: "users",
             docType: 0,
             query: {
@@ -166,10 +146,8 @@ let user_Update = async (params) => {
         };
         let responseData = await invoke.makeHttpCall_userDataService("post", "update", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage) {
-            // console.log("afterUserInsertion=====>>>",params.username)
             return { success: true, message:responseData.data.statusMessage}
         } else {
-            // console.log(responseData,'save api.........')
             return { success: false, message: 'Data Not Found' };
         }
     } catch (error) {
@@ -183,31 +161,18 @@ let user_Update = async (params) => {
 
 let userFetch = async (params) => {
     try {
-        let url;
-        let database;
-        if(params && params.tenantResponse && params.tenantResponse.success){
-            url = params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName;
-            database = params.tenantResponse.message.databaseName;
-        } else {
-            url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
-            database = process.env.DATABASENAME;
-        }
-        // console.log("userfetchfetch=====>>>",params.username)
         let username = params.username.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi,'_');
-        // console.log(username,'username of query')
         var getdata = {
-            url: url,
-			database: database,
+            url: params.url,
+			database: params.database,
             model: "users",
             docType: 1,
             query: {_id:username}
         };
         let responseData = await invoke.makeHttpCall_userDataService("post", "read", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage&&responseData.data.statusMessage.length) {
-            // console.log("userResponse====>>>",params.username)
             return { success: true, message:responseData.data.statusMessage}
         } else {
-            // console.log(responseData,'responseData.data')
             return { success: false, message: 'Data Not Found' };
         }
     } catch (error) {
@@ -249,25 +214,15 @@ let userUpdate = async (params) => {
 };
 let roomInsertion = async (params) => {
     try {
-        let url;
-        let database;
-        if(params && params.tenantResponse && params.tenantResponse.success){
-            url = params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName;
-            database = params.tenantResponse.message.databaseName;
-        } else {
-            url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
-            database = process.env.DATABASENAME;
-        }
         var getdata = {
-            url: url,
-			database: database,
+            url: params.url,
+			database: params.database,
             model: "rooms",
             docType: 1,
             query:  {_id:params.template}
         };
         let response = await invoke.makeHttpCall_roomDataService("post", "read", getdata);
         if (response && response.data && response.data.statusMessage) {
-            // console.log("afterRoomTemplateFetching=====>>>",params.template)
             let jsonData;
                 jsonData = await json.roomsData(params);
                 jsonData.addons = response.data.statusMessage[0].addons
@@ -277,15 +232,14 @@ let roomInsertion = async (params) => {
                 jsonData.metrics = response.data.statusMessage[0].metrics
                 jsonData.weights = response.data.statusMessage[0].weights
             var getdata = {
-                url: url,
-			    database: database,
+                url: params.url,
+			    database: params.database,
                 model: "rooms",
                 docType: 0,
                 query: jsonData
             };
             let responseData = await invoke.makeHttpCall_roomDataService("post", "insert", getdata);
             if (responseData && responseData.data && responseData.data.statusMessage) {
-                // console.log("RoomInsertionResponse=====>>>",responseData.data.statusMessage._id)
                 return { success: true, message:responseData.data.statusMessage}
             } else {
                 return { success: false, message: 'Error while inserting roomRecord' };
@@ -303,15 +257,6 @@ let roomInsertion = async (params) => {
 };
 let roomUpdate = async (params) => {
     try {
-        let url;
-        let database;
-        if(params && params.tenantResponse && params.tenantResponse.success){
-            url = params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName;
-            database = params.tenantResponse.message.databaseName;
-        } else {
-            url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
-            database = process.env.DATABASENAME;
-        }
         var jsonData = {
             "browser" : {
                 "name" : params.bowser.browser.name,
@@ -328,8 +273,8 @@ let roomUpdate = async (params) => {
             // "updatedAt" : new Date()
         }
         var getdata = {
-            url: url,
-			database: database,
+            url: params.url,
+			database: params.database,
             model: "rooms",
             docType: 0,
             query:{
@@ -339,7 +284,6 @@ let roomUpdate = async (params) => {
         };
         let responseData = await invoke.makeHttpCall_roomDataService("post", "update", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage.nModified ) {
-            // console.log("afterRoomUpdate=====>>>",params.id)
             return { success: true, message: responseData.data.statusMessage}
         } else {
             return { success: true, message: 'Data Not Found' };
@@ -513,26 +457,15 @@ let chatDetails = async (params) => {
 };
 let roomFetch = async (params) => {
     try {
-        let url;
-        let database;
-        if(params && params.tenantResponse && params.tenantResponse.success){
-            url = params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName;
-            database = params.tenantResponse.message.databaseName;
-        } else {
-            url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
-            database = process.env.DATABASENAME;
-        }
-        // console.log("beforeRoomFetching=====>>>",params.id)
         var getdata = {
-            url: url,
-			database: database,
+            url: params.url,
+			database: params.database,
             model: "rooms",
             docType: 1,
             query: params.id
         };
         let responseData = await invoke.makeHttpCall_roomDataService("post", "findById", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage) {
-            // console.log("RoomFetchingresponse=====>>>",params.id)
             return { success: true, message:responseData.data.statusMessage}
         } else {
             return { success: false, message: 'Data Not Found' };

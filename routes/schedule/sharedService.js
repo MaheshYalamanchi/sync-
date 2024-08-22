@@ -92,6 +92,7 @@ let validateToken = async (params) => {
                 if (tenantResponse && tenantResponse.success) {
                     url = tenantResponse.message.connectionString + '/' + tenantResponse.message.databaseName;
                     database = tenantResponse.message.databaseName;
+                    decodedToken.tenantResponse = tenantResponse;
                 } else {
                     return { success: false, message: tenantResponse.message }
                 }
@@ -101,41 +102,31 @@ let validateToken = async (params) => {
             }
             decodedToken.headers = params.body.authorization;
             if (decodedToken) {
-                // console.log("decoded the token====>>", params.body.authorization.authorization)
                 decodedToken.bowser = bowser.parse(params.body.bowserDetails);
                 decodedToken.bowserDetails = params.body.bowserDetails;
-                if (tenantResponse && tenantResponse.success) {
-                    decodedToken.tenantResponse = tenantResponse;
-                }
+                decodedToken.url = url;
+                decodedToken.database = database;
                 let userResponse = await scheduleService.userFetch(decodedToken);
-                console.log("checking---1",JSON.stringify(userResponse))
                 let responseData;
                 if (userResponse && userResponse.success) {
-                    let userUpdateResponse = await scheduleService.user_Update(decodedToken);
-                    console.log("checking---2",JSON.stringify(userUpdateResponse))
-                    if (userUpdateResponse && userUpdateResponse.success) {
-                        decodedToken.role = userResponse.message[0].role;
-                        decodedToken.provider = userResponse.message[0].provider;
-                        if (userResponse && userResponse.message && userResponse.message[0].locked != 1) {
+                    if (userResponse && userResponse.message && userResponse.message[0].locked != 1) {
+                        let userUpdateResponse = await scheduleService.user_Update(decodedToken);
+                        if (userUpdateResponse && userUpdateResponse.success) {
+                            decodedToken.role = userResponse.message[0].role;
+                            decodedToken.provider = userResponse.message[0].provider;
                             let roomsResponse = await scheduleService.roomFetch(decodedToken);
-                            console.log("checking---3",JSON.stringify(roomsResponse))
                             if (roomsResponse && roomsResponse.success) {
                                 if ((roomsResponse.message.status !== "stopped") && (roomsResponse.message.status !== "accepted") && (roomsResponse.message.status !== "rejected")) {
-                                    console.log("checking---4",JSON.stringify(roomsResponse))
                                     responseData = await scheduleService.roomUpdate(decodedToken)
-                                    console.log("checking---5",JSON.stringify(responseData))
-                                    if (responseData && !responseData.success) {
-                                    }
                                 } else {
                                     return { success: false, message: 'Eroor while updating roomRecord' };
                                 }
                             } else {
                                 responseData = await scheduleService.roomInsertion(decodedToken);
                             }
-                        } else {
-                            console.log("checking---6",JSON.stringify(userUpdateResponse))
-                            return { success: false, message: 'Data Not Found' };
                         }
+                    } else {
+                        return { success: false, message: 'Data Not Found' };
                     }
                 } else {
                     let response = await scheduleService.userInsertion(decodedToken);
@@ -147,26 +138,21 @@ let validateToken = async (params) => {
                         return { success: false, message: "user insertion failed..." }
                     }
                 }
-                console.log("checking---7",JSON.stringify(responseData))
                 if (responseData.success) {
-                    console.log("checking---8")
                     let getToken = await tokenService.jwtToken(decodedToken);
-                    console.log("checking---9",JSON.stringify(getToken))
                     if (getToken) {
                         return { success: true, message: { token: getToken } };
                     } else {
                         return { success: false, message: 'Error While Generating Token!' };
                     }
                 } else {
-                    // console.log("responseData136=====>>>>",responseData)
+                    return { success: false, message: 'Error While Generating Token...!' };
                 }
             } else {
-                console.log("checking---10")
                 return { success: false, message: 'Data Not Found' };
             }
         }
     } catch (error) {
-        console.log('jwtapicallfailed')
         console.log(error, "jwtError2===>>>>")
         if (error) {
             return { success: false, message: "TokenExpiredError" }
@@ -586,7 +572,7 @@ let getScheduleInfo = async (params) => {
                 }
             }
         }
-        if(scheduleCreationResponse && scheduleCreationResponse.success){
+        if (scheduleCreationResponse && scheduleCreationResponse.success) {
             return { success: true, message: "Inserted successfully" }
         } else {
             return { success: false, message: scheduleCreationResponse.message }
