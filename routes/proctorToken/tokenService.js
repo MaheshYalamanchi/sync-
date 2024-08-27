@@ -129,7 +129,6 @@ let generateToken1 = async (req) => {
 };
 let jwtToken = async (req) => {
     try {
-        console.log("tokenrequest",JSON.stringify(req))
         let username = req.username.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi,'_');
         let user = { "provider": req.provider, "id": username ,"role": req.role,"room": req.id,"nickname": req.nickname,"tenantId": req.tenantId}
         let tokenArg = {
