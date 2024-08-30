@@ -9,6 +9,7 @@ const invoke = require("../../lib/http/invoke");
 const _schedule = require('../schedule/schedule')
 const json = require('../json');
 const shared_service = require('./shared.service')
+const schedule_Service = require('./schedule.Service')
 let tokenValidation = async (params) => {
     try {
         // console.log(params.body,'body....................jwt')
@@ -585,6 +586,189 @@ let getScheduleInfo = async (params) => {
         }
     }
 };
+let getface = async (params) => {
+    try {
+        if(!params?.authorization){
+            console.log("Me1 Token========>>>>",params.authorization)
+            return { success: false, message: 'Authorization token missing.' }
+        }
+        var decodeToken = jwt_decode(params.authorization);
+        if (decodeToken){
+            let url;
+            let database;
+            let tenantResponse;
+            if(decodeToken && decodeToken.tenantId ){
+                tenantResponse = await _schedule.getTennant(decodeToken);
+                if (tenantResponse && tenantResponse.success){
+                    url = tenantResponse.message.connectionString+'/'+tenantResponse.message.databaseName;
+                    database = tenantResponse.message.databaseName;
+                    decodeToken.tenantResponse = tenantResponse;
+                } else {
+                    return { success: false, message: tenantResponse.message }
+                }
+            } else {
+                url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
+                database = process.env.DATABASENAME;
+            }
+            if(tenantResponse && tenantResponse.success){
+                params.tenantResponse = tenantResponse;
+            }
+            let faceResponse = await schedule_Service.getFacePassportResponse(params);
+            if (faceResponse && faceResponse.success){
+                // let getCount = await schedule_Service.getUserRoomsCount(decodeToken);
+                // if ( getCount.message.length >1 ){
+                //     params.decodeToken = decodeToken
+                //     let getFaceResponse = await schedule_Service.GetFaceInsertionResponse(params);
+                //     if(getFaceResponse && getFaceResponse.success){
+                //         return { success: true, message: getFaceResponse.message }
+                //         // let response = await schedule_Service.getface(decodeToken)
+                //         // if (response.success){
+                //         //     return { success: true, message: response.message[0] }
+                //         // } else {
+                //         //     return { success: false, message: response.message }
+                //         // }
+                //     } else {
+                //         return { success: false, message: getFaceResponse.message }
+                //     }
+                // } else {
+                    let jsonData =  {
+                        "face" : params.face,
+                        "rep" : faceResponse.message[0].metadata.rep,
+                        "threshold" : faceResponse.message[0].metadata.threshold,
+                        "similar" : faceResponse.message[0].metadata.similar
+                    };
+                    var getdata = {
+                        url: url,
+                        database: database,
+                        model: "users",
+                        docType: 1,
+                        query: {
+                            filter: { "_id": decodeToken.id },
+                            update: { $set: jsonData },
+                            projection: {
+                                id:"$_id",_id:0,browser:"$browser",os:"$os",platform:"$platform",role:"$role",labels:"$labels",
+                                exclude:"$exclude",nickname:"$nickname",provider:"$provider",loggedAt:"$loggedAt",ipaddress:"$ipaddress",
+                                useragent:"$useragent",referer:"$referer",createdAt:"$createdAt",similar:"$similar",face:"$face",
+                                username:"$_id",
+                            }
+                        }
+                    };
+                    let responseData = await invoke.makeHttpCall_userDataService("post", "findOneAndUpdate", getdata);
+                    // console.log('before response ',responseData.data)
+                    if (responseData && responseData.data.statusMessage ) {
+                        return { success: true, message: responseData.data.statusMessage }
+                        // console.log('after response',responseData.data)
+                        // console.log('before calling getface',decodeToken)
+                        // let response = await schedule_Service.getface(decodeToken)
+                        // console.log('response before........................',response)
+                        // if (response.success){
+                        //     // console.log('response after........................',response)
+                        //     return { success: true, message: response.message[0] }
+                        // }
+                    } else {
+                        return { success: false, message: 'Data Not Found' }
+                    }
+                // }
+            } else {
+                return { success: false, message: faceResponse.message }
+            }
+            
+        } else {
+            return { success: false, message: 'Invalid Token Error' }
+        }
+    } catch (error) {
+        console.log("putme1 Error Body========>>>>",JSON.stringify(params))
+            console.log(error,"putme1====>>>>putme1")
+        if (error && error.code == 'ECONNREFUSED') {
+            return { success: false, message: globalMsg[0].MSG000, status: globalMsg[0].status }
+        } else {
+            return { success: false, message: error }
+        }
+    }
+};
+let getPassport = async (params) => {
+    try {
+        if(!params?.authorization){
+            console.log("Me2 Token========>>>>",params.authorization)
+            return { success: false, message: 'Authorization token missing.' }
+        }
+        var decodeToken = jwt_decode(params.authorization);
+        if (decodeToken){
+            let url;
+            let database;
+            let tenantResponse;
+            if(decodeToken && decodeToken.tenantId ){
+                tenantResponse = await _schedule.getTennant(decodeToken);
+                if (tenantResponse && tenantResponse.success){
+                    url = tenantResponse.message.connectionString+'/'+tenantResponse.message.databaseName;
+                    database = tenantResponse.message.databaseName;
+                    decodeToken.tenantResponse = tenantResponse;
+                    params.tenantResponse = tenantResponse;
+                } else {
+                    return { success: false, message: tenantResponse.message }
+                }
+            } else {
+                url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
+                database = process.env.DATABASENAME;
+            }
+            let getCount = await schedule_Service.getUserRoomsCount(decodeToken);
+            // if ( getCount.message.length>1 ){
+            //     let getPassportResponse = await schedule_Service.GetPassportInsertionResponse(params);
+            //     if(getPassportResponse && getPassportResponse.success){
+            //         return { success: true, message: getPassportResponse.message }
+            //         // let response = await schedule_Service.getPassport(decodeToken)
+            //         // if (response.success){
+            //         //     return { success: true, message: response.message[0] }
+            //         // } else {
+            //         //     return { success: false, message: response.message }
+            //         // }
+            //     } else {
+            //         return { success: false, message: getPassportResponse.message }
+            //     }
+            // } else {
+                let jsonData =  {
+                    "passport" : params.passport,
+                };
+                var getdata = {
+                    url: url,
+                    database: database,
+                    model: "users",
+                    docType: 1,
+                    query: {
+                        filter: { "_id": decodeToken.id },
+                        update: { $set: jsonData },
+                        projection: {
+                            id:"$_id",_id:0,browser:"$browser",os:"$os",platform:"$platform",role:"$role",labels:"$labels",
+                            exclude:"$exclude",nickname:"$nickname",provider:"$provider",loggedAt:"$loggedAt",ipaddress:"$ipaddress",
+                            useragent:"$useragent",referer:"$referer",createdAt:"$createdAt",similar:"$similar",face:"$face",
+                            username:"$_id",passport:"$passport",verified:"$verified"
+                        }
+                    }
+                };
+                let responseData = await invoke.makeHttpCall_userDataService("post", "findOneAndUpdate", getdata);
+                if (responseData && responseData.data.statusMessage) {
+                    return { success: true, message: responseData.data.statusMessage }
+                    // let response = await schedule_Service.getPassport(decodeToken)
+                    // if (response.success){
+                    //     return { success: true, message: response.message[0] }
+                    // }
+                } else {
+                    return { success: false, message: 'Data Not Found' }
+                }
+            // }
+        } else {
+            return { success: false, message: 'Invalid Token Error' }
+        }
+    } catch (error) {
+        console.log("putme2 Error Body========>>>>",JSON.stringify(params))
+        console.log(error,"putme2====>>>>>>")
+        if (error && error.code == 'ECONNREFUSED') {
+            return { success: false, message: globalMsg[0].MSG000, status: globalMsg[0].status }
+        } else {
+            return { success: false, message: error }
+        }
+    }
+};
 
 function chunkArray(array, chunkSize) {
     const results = [];
@@ -597,6 +781,8 @@ module.exports = {
     tokenValidation,
     validateToken,
     getConnections,
-    getScheduleInfo
+    getScheduleInfo,
+    getface,
+    getPassport
 
 }

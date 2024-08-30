@@ -266,6 +266,51 @@ module.exports = function (params) {
         }
     }
   });
+  app.put("/api/user/me1", async (req, res) => {
+    "use strict";
+    try {
+        // console.log(req.body,'body data...............')
+        let result = await sharedService.getface(req.body)
+        if (result && result.success) {
+            app.logger.info({ success: true, message: result.message });
+            app.http.customResponse(res, result.message, 200);
+        } else {
+            app.logger.info({ success: false, message: result.message });
+            app.http.customResponse(res, { success: false, message: 'Data Not Found' }, 200);
+        }
+    } catch (error) {
+        console.log("putme1 Error Body========>>>>",JSON.stringify(req.body))
+        console.log(error,"putme1====>>>>putme1")
+        app.logger.error({ success: false, message: error });
+        if (error && error.message) {
+            app.http.customResponse(res, { success: false, message: error.message }, 400)
+        } else {
+            app.http.customResponse(res, { success: false, message: error }, 400)
+        }
+    }
+  });
+  app.put("/api/user/me2", async (req, res) => {
+      "use strict";
+      try {
+          let result = await sharedService.getPassport(req.body)
+          if (result && result.success) {
+              app.logger.info({ success: true, message: result.message });
+              app.http.customResponse(res, result.message, 200);
+          } else {
+              app.logger.info({ success: false, message: result.message });
+              app.http.customResponse(res, { success: false, message: 'Data Not Found' }, 200);
+          }
+      } catch (error) {
+          console.log("putme2 Error Body========>>>>",JSON.stringify(req.body))
+          console.log(error,"putme2====>>>>")
+          app.logger.error({ success: false, message: error });
+          if (error && error.message) {
+              app.http.customResponse(res, { success: false, message: error.message }, 400)
+          } else {
+              app.http.customResponse(res, { success: false, message: error }, 400)
+          }
+      }
+  });
 }
 
 function csv(data) {

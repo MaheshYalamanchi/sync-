@@ -450,21 +450,23 @@ let fetchstatus = async (params) => {
 };
 let getFacePassportResponse = async (params) => {
     try {
+        let url;
+        let database;
+        if(params && params.tenantResponse && params.tenantResponse.success){
+            url = params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName;
+            database = params.tenantResponse.message.databaseName;
+        } else {
+            url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
+            database = process.env.DATABASENAME;
+        }
         var getdata = {
-            url:process.env.MONGO_URI,
-            database:"proctor",
+            url: url,
+			database: database,
             model: "attaches",
             docType: 1,
-            query:[
-                // {
-                //     "$addFields": { "test": { "$toString": "$_id" } }
-                // },
-                {
-                    "$match": { "_id": params }
-                },
-            ]
+            query:{ "_id": params.face}
         };
-        let responseData = await invoke.makeHttpCall("post", "aggregate", getdata);
+        let responseData = await invoke.makeHttpCall_userDataService("post", "read", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage) {
                 return { success: true, message:responseData.data.statusMessage}
         } else {
@@ -538,20 +540,25 @@ let unreadchat = async (params) => {
     }
   };
 
-let getUserRoomsCount = async (params) => {
+  let getUserRoomsCount = async (params) => {
     try {
+        let url;
+        let database;
+        if(params && params.tenantResponse && params.tenantResponse.success){
+            url = params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName;
+            database = params.tenantResponse.message.databaseName;
+        } else {
+            url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
+            database = process.env.DATABASENAME;
+        }
         var getdata = {
-            url:process.env.MONGO_URI,
-            database: "proctor",
+            url: url,
+			database: database,
             model: "rooms",
             docType: 1,
-            query:[
-                {
-                    $match:{ student: params.id }
-                }
-            ]
+            query:{ student: params.id }
         };
-        let responseData = await invoke.makeHttpCall("post", "aggregate", getdata);
+        let responseData = await invoke.makeHttpCall_userDataService("post", "read", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage) {
             return { success: true, message: responseData.data.statusMessage }
         } else {
