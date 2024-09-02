@@ -208,7 +208,7 @@ let getScheduleInfo = async (params) => {
         const uniqueData = _.uniqBy(params, (item) => `${item.roomId}-${item.email}`);
         const liveProctoredChunks = uniqueData.filter(item => item.liveProctoringEnable);
         console.log("LiveProctoredChunks ======>>>>>>",JSON.stringify(liveProctoredChunks))
-        const chunks = await chunkArray(params, 20);
+        const chunks = await chunkArray(liveProctoredChunks, 20);
         for (let i = 0; i < chunks.length; i++) {
             let userArray = Array.from(new Set(chunks[i].map(user => user.email)));
             var getdata = {
