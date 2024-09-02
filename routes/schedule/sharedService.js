@@ -203,7 +203,9 @@ let getScheduleInfo = async (params) => {
             database = process.env.DATABASENAME;
         }
         let scheduleCreationResponse;
-        const chunks = await chunkArray(params, 20);
+        const liveProctoredChunks = params.filter(item => item.liveProctoringEnable);
+        console.log("LiveProctoredChunks ======>>>>>>",JSON.stringify(liveProctoredChunks))
+        const chunks = await chunkArray(liveProctoredChunks, 20);
         for (let i = 0; i < chunks.length; i++) {
             let userArray = Array.from(new Set(chunks[i].map(user => user.email)));
             var getdata = {
