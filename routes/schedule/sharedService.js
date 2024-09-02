@@ -447,7 +447,7 @@ let getScheduleInfo = async (params) => {
                                 scheduleCreationResponse = { success: false, message: "Session Insertion Failed -2" };
                             }
                         }
-                    } {
+                    }else {
                         scheduleCreationResponse = { success: false, message: "Template fetching Error -2" };
                     }
                 }
