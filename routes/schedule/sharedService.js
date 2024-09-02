@@ -210,6 +210,7 @@ let getScheduleInfo = async (params) => {
         console.log("LiveProctoredChunks ======>>>>>>",JSON.stringify(liveProctoredChunks))
         const chunks = await chunkArray(liveProctoredChunks, 20);
         for (let i = 0; i < chunks.length; i++) {
+            console.log(i,'no. of loop')
             let userArray = Array.from(new Set(chunks[i].map(user => user.email)));
             var getdata = {
                 url: url,
@@ -299,6 +300,7 @@ let getScheduleInfo = async (params) => {
                                         scheduleCreationResponse = await shared_service.scheduleCreation(chunks[i][0]);
                                     }
                                 } else {
+                                    console.log("SessionIds allready present so, Please provide new sessionsIds -1")
                                     scheduleCreationResponse = { success: false, message: "SessionIds allready present so, Please provide new sessionsIds -1" };
                                 }
                             } else {
@@ -337,13 +339,16 @@ let getScheduleInfo = async (params) => {
                                         scheduleCreationResponse = await shared_service.scheduleCreation(chunks[i][0]);
                                     }
                                 } else {
+                                    console.log( "Session Insertion Failed -1")
                                     scheduleCreationResponse = { success: false, message: "Session Insertion Failed -1" };
                                 }
                             }
-                        } {
+                        } else{
+                            console.log("Template fetching Error -1" )
                             scheduleCreationResponse = { success: false, message: "Template fetching Error -1" };
                         }
                     } else {
+                        console.log("User Insertion Failed -1")
                         scheduleCreationResponse = { success: false, message: "User Insertion Failed -1" };
                     }
                 } else {
@@ -452,6 +457,7 @@ let getScheduleInfo = async (params) => {
                     }
                 }
             } else {
+                console.log('else part........')
                 const missingUsers = userArray
                     .map(user => ({
                         "_id": user.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '_'),
@@ -565,16 +571,20 @@ let getScheduleInfo = async (params) => {
                                         scheduleCreationResponse = await shared_service.scheduleCreation(chunks[i][0]);
                                     }
                                 } else {
+                                    console.log('Session Insertion Failed -3')
                                     scheduleCreationResponse = { success: false, message: "Session Insertion Failed -3" };
                                 }
                             }
-                        } {
+                        }else {
+                            console.log('Template fetching Error -3')
                             scheduleCreationResponse = { success: false, message: "Template fetching Error -3" };
                         }
                     } else {
+                        console.log('User Insertion Failed -2')
                         scheduleCreationResponse = { success: false, message: "User Insertion Failed -2" };
                     }
                 } else {
+                    console.log('user creation failed -!')
                     scheduleCreationResponse = { success: false, message: "user creation failed -!" }
                 }
             }
