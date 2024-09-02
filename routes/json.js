@@ -96,7 +96,8 @@ let sessionData =  async (params) => {
         "testId":params.testId || null,
         "srcSystem":params.srcSystem || null,
         "verified":false,
-        "schedule_id": params.scheduleId || null
+        "schedule_id": params.scheduleId || null,
+        "liveProctoringEnable" : params.liveProctoringEnable || null
     }
     return getrooms;
     
