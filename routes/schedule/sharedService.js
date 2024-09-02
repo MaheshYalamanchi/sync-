@@ -210,7 +210,7 @@ let getScheduleInfo = async (params) => {
         console.log("LiveProctoredChunks ======>>>>>>",JSON.stringify(liveProctoredChunks))
         const chunks = await chunkArray(liveProctoredChunks, 20);
         for (let i = 0; i < chunks.length; i++) {
-            console.log(i,'no. of loop')
+            // console.log(i,'no. of loop')
             let userArray = Array.from(new Set(chunks[i].map(user => user.email)));
             var getdata = {
                 url: url,
@@ -223,7 +223,7 @@ let getScheduleInfo = async (params) => {
                 ]
             };
             let existingUser = await invoke.makeHttpCall("post", "aggregate", getdata);
-            console.log(existingUser,'existingUser')
+            // console.log(existingUser,'existingUser')
             if (existingUser && existingUser.data && existingUser.data.statusMessage && (existingUser.data.statusMessage.length > 0)) {
                 const existingUserIds = Array.from(new Set(existingUser.data.statusMessage.map(user => user.id)));
                 const missingUsers = userArray.filter(user => !existingUserIds.includes(user))
@@ -241,7 +241,7 @@ let getScheduleInfo = async (params) => {
                         query: missingUsers
                     };
                     let bulkwriteResponse = await invoke.makeHttpCall_userDataService("post", "bulkWrite", bulkWriteData);
-                    console.log(bulkwriteResponse,'bulkwriteResponse')
+                    // console.log(bulkwriteResponse,'bulkwriteResponse')
                     if (bulkwriteResponse && bulkwriteResponse.data && bulkwriteResponse.data.statusMessage && (bulkwriteResponse.data.statusMessage.length > 0)) {
                         var getTemplate = {
                             url: url,
@@ -251,7 +251,7 @@ let getScheduleInfo = async (params) => {
                             query: { _id: chunks[i][0]?.templateName || "default" }
                         };
                         let templateResponse = await invoke.makeHttpCall_roomDataService("post", "read", getTemplate);
-                        console.log(templateResponse,'templateResponse')
+                        // console.log(templateResponse,'templateResponse')
                         if (templateResponse && templateResponse.data && templateResponse.data.statusMessage) {
                             let SessionsList = chunks[i].map(user => user.roomId);
                             var SessionsListData = {
@@ -265,7 +265,7 @@ let getScheduleInfo = async (params) => {
                                 ]
                             };
                             let SessionsListUser = await invoke.makeHttpCall("post", "aggregate", SessionsListData);
-                            console.log('SessionsListUser',SessionsListUser)
+                            // console.log('SessionsListUser',SessionsListUser)
                             if (SessionsListUser && SessionsListUser.data && SessionsListUser.data.statusMessage && (SessionsListUser.data.statusMessage.length > 0)) {
                                 const SessionsIds = SessionsListUser.data.statusMessage.map(user => user.id);
                                 const missingSessions = Array.from(new Set(chunks[i].filter(param => !SessionsIds.includes(param.roomId))));
@@ -297,7 +297,7 @@ let getScheduleInfo = async (params) => {
                                         query: sessionArray
                                     };
                                     let SessionbulkwriteResponse = await invoke.makeHttpCall_userDataService("post", "bulkWrite", SessionbulkWriteData);
-                                    console.log(SessionbulkwriteResponse,'SessionbulkwriteResponse')
+                                    // console.log(SessionbulkwriteResponse,'SessionbulkwriteResponse')
                                     if (SessionbulkwriteResponse && SessionbulkwriteResponse.data && SessionbulkwriteResponse.data.statusMessage && (SessionbulkwriteResponse.data.statusMessage.length > 0)) {
                                         chunks[i][0].url = url;
                                         chunks[i][0].database = database;
@@ -305,7 +305,7 @@ let getScheduleInfo = async (params) => {
                                         scheduleCreationResponse = await shared_service.scheduleCreation(chunks[i][0]);
                                     }
                                 } else {
-                                    console.log("SessionIds allready present so, Please provide new sessionsIds -1")
+                                    // console.log("SessionIds allready present so, Please provide new sessionsIds -1")
                                     scheduleCreationResponse = { success: false, message: "SessionIds allready present so, Please provide new sessionsIds -1" };
                                 }
                             } else {
@@ -337,7 +337,7 @@ let getScheduleInfo = async (params) => {
                                         query: sessionArray
                                     };
                                     let SessionbulkwriteResponse = await invoke.makeHttpCall_userDataService("post", "bulkWrite", SessionbulkWriteData);
-                                    console.log(SessionbulkwriteResponse,'SessionbulkwriteResponse')
+                                    // console.log(SessionbulkwriteResponse,'SessionbulkwriteResponse')
                                     if (SessionbulkwriteResponse && SessionbulkwriteResponse.data && SessionbulkwriteResponse.data.statusMessage && (SessionbulkwriteResponse.data.statusMessage.length > 0)) {
                                         chunks[i][0].url = url;
                                         chunks[i][0].database = database;
@@ -345,16 +345,16 @@ let getScheduleInfo = async (params) => {
                                         scheduleCreationResponse = await shared_service.scheduleCreation(chunks[i][0]);
                                     }
                                 } else {
-                                    console.log( "Session Insertion Failed -1")
+                                    // console.log( "Session Insertion Failed -1")
                                     scheduleCreationResponse = { success: false, message: "Session Insertion Failed -1" };
                                 }
                             }
                         } else{
-                            console.log("Template fetching Error -1" )
+                            // console.log("Template fetching Error -1" )
                             scheduleCreationResponse = { success: false, message: "Template fetching Error -1" };
                         }
                     } else {
-                        console.log("User Insertion Failed -1")
+                        // console.log("User Insertion Failed -1")
                         scheduleCreationResponse = { success: false, message: "User Insertion Failed -1" };
                     }
                 } else {
@@ -366,7 +366,7 @@ let getScheduleInfo = async (params) => {
                         query: { _id: chunks[i][0]?.templateName || "default" }
                     };
                     let templateResponse = await invoke.makeHttpCall_roomDataService("post", "read", getTemplate);
-                    console.log(templateResponse,'templateResponse')
+                    // console.log(templateResponse,'templateResponse')
                     if (templateResponse && templateResponse.data && templateResponse.data.statusMessage) {
                         let SessionsList = Array.from(new Set(chunks[i].map(user => user.roomId)));
                         var SessionsListData = {
@@ -380,7 +380,7 @@ let getScheduleInfo = async (params) => {
                             ]
                         };
                         let SessionsListUser = await invoke.makeHttpCall("post", "aggregate", SessionsListData);
-                        console.log(SessionsListUser,'SessionsListUser')
+                        // console.log(SessionsListUser,'SessionsListUser')
                         if (SessionsListUser && SessionsListUser.data && SessionsListUser.data.statusMessage && (SessionsListUser.data.statusMessage.length > 0)) {
                             const SessionsIds = SessionsListUser.data.statusMessage.map(user => user.id);
                             const missingSessions = Array.from(new Set(chunks[i].filter(param => !SessionsIds.includes(param.roomId))));
@@ -412,7 +412,7 @@ let getScheduleInfo = async (params) => {
                                     query: sessionArray
                                 };
                                 let SessionbulkwriteResponse = await invoke.makeHttpCall_userDataService("post", "bulkWrite", SessionbulkWriteData);
-                                console.log('SessionbulkwriteResponse',SessionbulkwriteResponse)
+                                // console.log('SessionbulkwriteResponse',SessionbulkwriteResponse)
                                 if (SessionbulkwriteResponse && SessionbulkwriteResponse.data && SessionbulkwriteResponse.data.statusMessage && (SessionbulkwriteResponse.data.statusMessage.length > 0)) {
                                     chunks[i][0].url = url;
                                     chunks[i][0].database = database;
@@ -451,7 +451,7 @@ let getScheduleInfo = async (params) => {
                                     query: sessionArray
                                 };
                                 let SessionbulkwriteResponse = await invoke.makeHttpCall_userDataService("post", "bulkWrite", SessionbulkWriteData);
-                                console.log('SessionbulkwriteResponse',SessionbulkwriteResponse)
+                                // console.log('SessionbulkwriteResponse',SessionbulkwriteResponse)
                                 if (SessionbulkwriteResponse && SessionbulkwriteResponse.data && SessionbulkwriteResponse.data.statusMessage && (SessionbulkwriteResponse.data.statusMessage.length > 0)) {
                                     chunks[i][0].url = url;
                                     chunks[i][0].database = database;
@@ -467,7 +467,7 @@ let getScheduleInfo = async (params) => {
                     }
                 }
             } else {
-                console.log('else part........')
+                // console.log('else part........')
                 const missingUsers = userArray
                     .map(user => ({
                         "_id": user.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '_'),
