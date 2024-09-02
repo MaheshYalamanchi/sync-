@@ -580,11 +580,14 @@ let getScheduleInfo = async (params) => {
             }
         }
         if(scheduleCreationResponse && scheduleCreationResponse.success){
+            
             return { success: true, message: "Inserted successfully" }
         } else {
+            console.log(scheduleCreationResponse)
             return { success: false, message: scheduleCreationResponse.message }
         }
     } catch (error) {
+        console.log(error)
         if (error) {
             return { success: false, message: error }
         } else {
