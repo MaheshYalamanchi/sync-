@@ -118,7 +118,7 @@ let validateToken = async (params) => {
                             decodedToken.provider = userResponse.message[0].provider;
                             let roomsResponse = await scheduleService.roomFetch(decodedToken);
                             if (roomsResponse && roomsResponse.success) {
-                                if ((roomsResponse.message.status !== "stopped") && (roomsResponse.message.status !== "accepted") && (roomsResponse.message.status !== "rejected")) {
+                                if ((roomsResponse.message.status !== "accepted") && (roomsResponse.message.status !== "rejected")) {
                                     responseData = await scheduleService.roomUpdate(decodedToken)
                                 } else {
                                     return { success: false, message: 'Eroor while updating roomRecord' };
