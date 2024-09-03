@@ -203,10 +203,15 @@ let getScheduleInfo = async (params) => {
             database = process.env.DATABASENAME;
         }
         let scheduleCreationResponse;
+        let chunks;
         const uniqueData = _.uniqBy(params, (item) => `${item.roomId}-${item.email}`);
         const liveProctoredChunks = uniqueData.filter(item => item.liveProctoringEnable);
-        console.log("LiveProctoredChunks ======>>>>>>",JSON.stringify(liveProctoredChunks))
-        const chunks = await chunkArray(liveProctoredChunks, 20);
+        if(liveProctoredChunks && liveProctoredChunks.length>0){
+            console.log("LiveProctoredChunks ======>>>>>>",JSON.stringify(liveProctoredChunks))
+            chunks = await chunkArray(liveProctoredChunks, 20);
+        } else {
+            return { success: false, message: "There is no Liveproctored sessionIds...!" };
+        }
         for (let i = 0; i < chunks.length; i++) {
             let userArray = Array.from(new Set(chunks[i].map(user => user.email)));
             var getdata = {
@@ -338,7 +343,7 @@ let getScheduleInfo = async (params) => {
                                     scheduleCreationResponse = { success: false, message: "Session Insertion Failed -1" };
                                 }
                             }
-                        } {
+                        } else {
                             scheduleCreationResponse = { success: false, message: "Template fetching Error -1" };
                         }
                     } else {
@@ -566,7 +571,7 @@ let getScheduleInfo = async (params) => {
                                     scheduleCreationResponse = { success: false, message: "Session Insertion Failed -3" };
                                 }
                             }
-                        } {
+                        } else {
                             scheduleCreationResponse = { success: false, message: "Template fetching Error -3" };
                         }
                     } else {
