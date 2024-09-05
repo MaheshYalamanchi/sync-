@@ -69,6 +69,11 @@ spec:
                 secretKeyRef:
                   name: proctor-uat-env
                   key: STOP_ENDPOINT
+            - name: PROCTOR_MAPPING_COUNT
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-uat-env
+                  key: PROCTOR_MAPPING_COUNT
       imagePullSecrets:
         - name: mysecret
       nodeSelector:

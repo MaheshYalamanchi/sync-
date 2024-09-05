@@ -81,6 +81,11 @@ spec:
                 secretKeyRef:
                   name: proctor-dev-env
                   key: MONGO_URI_LOCAL
+            - name: PROCTOR_MAPPING_COUNT
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-dev-env
+                  key: PROCTOR_MAPPING_COUNT
       imagePullSecrets:
         - name: mysecret
       nodeSelector:
