@@ -19,6 +19,9 @@ spec:
           imagePullPolicy: Always                                                             
           ports:
           - containerPort: 3004
+          volumeMounts:
+          - name: 'data'
+            mountPath: '/mnt'
           env:
             - name: MONGO_URI
               valueFrom:
@@ -75,6 +78,11 @@ spec:
                 secretKeyRef:
                   name: proctor-prod-env
                   key: MONGO_URI_LOCAL
+            - name: PROCTOR_MAPPING_COUNT
+              valueFrom:
+                secretKeyRef:
+                  name: proctor-prod-env
+                  key: PROCTOR_MAPPING_COUNT
       imagePullSecrets:
         - name: mysecret
       nodeSelector:
