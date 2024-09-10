@@ -208,7 +208,7 @@ let getScheduleInfo = async (params) => {
         const liveProctoredChunks = uniqueData.filter(item => item.liveProctoringEnable);
         if(liveProctoredChunks && liveProctoredChunks.length>0){
             console.log("LiveProctoredChunks ======>>>>>>",JSON.stringify(liveProctoredChunks))
-            chunks = await chunkArray(liveProctoredChunks, process.env.PROCTOR_MAPPING_COUNT);
+            chunks = await chunkArray(liveProctoredChunks, parseInt(process.env.PROCTOR_MAPPING_COUNT));
         } else {
             return { success: false, message: "There is no Liveproctored sessionIds...!" };
         }
