@@ -137,7 +137,7 @@ let getSessions = async (params) => {
           model: "rooms",
           docType: 1,
           query: {
-              filter:{ complete: { $ne: !0 }, status: "started", updatedAt: { $lt: new Date(Date.now() - 12e4) } },
+              filter:{ complete: { $ne: !0 }, status: "started", updatedAt: { $lt: new Date(Date.now() - 30e4) } },
               update:{$set:{ status: "paused"}}
           }   
         };
