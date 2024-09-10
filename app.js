@@ -53,7 +53,7 @@ new CronJob('*/3 * * * *', function () {
   }
 }, null, true, "Asia/Calcutta");
 
-new PauseCronJob('*/2 * * * *', function () {
+new PauseCronJob('*/5 * * * *', function () {
   try {
     request(process.env.PAUSE_ENDPOINT, function (error, response, body) {
       if (!error && response.statusCode == 200) {
