@@ -452,13 +452,13 @@ let getFacePassportResponse = async (params) => {
     try {
         let url;
         let database;
-        if(params && params.tenantResponse && params.tenantResponse.success){
-            url = params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName;
-            database = params.tenantResponse.message.databaseName;
-        } else {
+        // if(params && params.tenantResponse && params.tenantResponse.success){
+        //     url = params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName;
+        //     database = params.tenantResponse.message.databaseName;
+        // } else {
             url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
             database = process.env.DATABASENAME;
-        }
+        // }
         var getdata = {
             url: url,
 			database: database,
@@ -544,13 +544,13 @@ let unreadchat = async (params) => {
     try {
         let url;
         let database;
-        if(params && params.tenantResponse && params.tenantResponse.success){
-            url = params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName;
-            database = params.tenantResponse.message.databaseName;
-        } else {
+        // if(params && params.tenantResponse && params.tenantResponse.success){
+        //     url = params.tenantResponse.message.connectionString+'/'+params.tenantResponse.message.databaseName;
+        //     database = params.tenantResponse.message.databaseName;
+        // } else {
             url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
             database = process.env.DATABASENAME;
-        }
+        // }
         var getdata = {
             url: url,
 			database: database,

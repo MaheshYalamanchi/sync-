@@ -88,20 +88,20 @@ let validateToken = async (params) => {
             }
             let url;
             let database;
-            let tenantResponse;
-            if (decodedToken && decodedToken.tenantId) {
-                tenantResponse = await _schedule.tenantResponse(decodedToken);
-                if (tenantResponse && tenantResponse.success) {
-                    url = tenantResponse.message.connectionString + '/' + tenantResponse.message.databaseName;
-                    database = tenantResponse.message.databaseName;
-                    decodedToken.tenantResponse = tenantResponse;
-                } else {
-                    return { success: false, message: tenantResponse.message }
-                }
-            } else {
+            // let tenantResponse;
+            // if (decodedToken && decodedToken.tenantId) {
+            //     tenantResponse = await _schedule.tenantResponse(decodedToken);
+            //     if (tenantResponse && tenantResponse.success) {
+            //         url = tenantResponse.message.connectionString + '/' + tenantResponse.message.databaseName;
+            //         database = tenantResponse.message.databaseName;
+            //         decodedToken.tenantResponse = tenantResponse;
+            //     } else {
+            //         return { success: false, message: tenantResponse.message }
+            //     }
+            // } else {
                 url = process.env.MONGO_URI + '/' + process.env.DATABASENAME;
                 database = process.env.DATABASENAME;
-            }
+            // }
             decodedToken.headers = params.body.authorization;
             if (decodedToken) {
                 decodedToken.bowser = bowser.parse(params.body.bowserDetails);
@@ -185,19 +185,19 @@ let getScheduleInfo = async (params) => {
         let url;
         let database;
         if (params && params.authorization) {
-            let decodeToken = jwt_decode(params.authorization);
-            if (decodeToken && decodeToken.tenantId) {
-                let tenantResponse = await _schedule.getTennant(decodeToken);
-                if (tenantResponse && tenantResponse.success) {
-                    url = tenantResponse.message.connectionString + '/' + tenantResponse.message.databaseName;
-                    database = tenantResponse.message.databaseName;
-                } else {
-                    return { success: false, message: tenantResponse.message }
-                }
-            } else {
+            // let decodeToken = jwt_decode(params.authorization);
+            // if (decodeToken && decodeToken.tenantId) {
+            //     let tenantResponse = await _schedule.getTennant(decodeToken);
+            //     if (tenantResponse && tenantResponse.success) {
+            //         url = tenantResponse.message.connectionString + '/' + tenantResponse.message.databaseName;
+            //         database = tenantResponse.message.databaseName;
+            //     } else {
+            //         return { success: false, message: tenantResponse.message }
+            //     }
+            // } else {
                 url = process.env.MONGO_URI + '/' + process.env.DATABASENAME;
                 database = process.env.DATABASENAME;
-            }
+            // }
         } else {
             url = process.env.MONGO_URI + '/' + process.env.DATABASENAME;
             database = process.env.DATABASENAME;
@@ -605,23 +605,23 @@ let getface = async (params) => {
         if (decodeToken){
             let url;
             let database;
-            let tenantResponse;
-            if(decodeToken && decodeToken.tenantId ){
-                tenantResponse = await _schedule.getTennant(decodeToken);
-                if (tenantResponse && tenantResponse.success){
-                    url = tenantResponse.message.connectionString+'/'+tenantResponse.message.databaseName;
-                    database = tenantResponse.message.databaseName;
-                    decodeToken.tenantResponse = tenantResponse;
-                } else {
-                    return { success: false, message: tenantResponse.message }
-                }
-            } else {
+            // let tenantResponse;
+            // if(decodeToken && decodeToken.tenantId ){
+            //     tenantResponse = await _schedule.getTennant(decodeToken);
+            //     if (tenantResponse && tenantResponse.success){
+            //         url = tenantResponse.message.connectionString+'/'+tenantResponse.message.databaseName;
+            //         database = tenantResponse.message.databaseName;
+            //         decodeToken.tenantResponse = tenantResponse;
+            //     } else {
+            //         return { success: false, message: tenantResponse.message }
+            //     }
+            // } else {
                 url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
                 database = process.env.DATABASENAME;
-            }
-            if(tenantResponse && tenantResponse.success){
-                params.tenantResponse = tenantResponse;
-            }
+            // }
+            // if(tenantResponse && tenantResponse.success){
+            //     params.tenantResponse = tenantResponse;
+            // }
             let faceResponse = await schedule_Service.getFacePassportResponse(params);
             if (faceResponse && faceResponse.success){
                 // let getCount = await schedule_Service.getUserRoomsCount(decodeToken);
@@ -705,21 +705,21 @@ let getPassport = async (params) => {
         if (decodeToken){
             let url;
             let database;
-            let tenantResponse;
-            if(decodeToken && decodeToken.tenantId ){
-                tenantResponse = await _schedule.getTennant(decodeToken);
-                if (tenantResponse && tenantResponse.success){
-                    url = tenantResponse.message.connectionString+'/'+tenantResponse.message.databaseName;
-                    database = tenantResponse.message.databaseName;
-                    decodeToken.tenantResponse = tenantResponse;
-                    params.tenantResponse = tenantResponse;
-                } else {
-                    return { success: false, message: tenantResponse.message }
-                }
-            } else {
+            // let tenantResponse;
+            // if(decodeToken && decodeToken.tenantId ){
+            //     tenantResponse = await _schedule.getTennant(decodeToken);
+            //     if (tenantResponse && tenantResponse.success){
+            //         url = tenantResponse.message.connectionString+'/'+tenantResponse.message.databaseName;
+            //         database = tenantResponse.message.databaseName;
+            //         decodeToken.tenantResponse = tenantResponse;
+            //         params.tenantResponse = tenantResponse;
+            //     } else {
+            //         return { success: false, message: tenantResponse.message }
+            //     }
+            // } else {
                 url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
                 database = process.env.DATABASENAME;
-            }
+            // }
             let getCount = await schedule_Service.getUserRoomsCount(decodeToken);
             // if ( getCount.message.length>1 ){
             //     let getPassportResponse = await schedule_Service.GetPassportInsertionResponse(params);
