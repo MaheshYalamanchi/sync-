@@ -82,7 +82,7 @@ let validateToken = async (params) => {
             return { success: false, message: "A token is required for authentication" };
         }
         const token = params.body.authorization.authorization.split(" ");
-        if (!token) {
+        if (!token[1] || token[1].includes('${')) {
             return { success: false, message: "A token is required for authentication" + token[1] };
         } else {
             const decodedToken = jwt.verify(token[1], TOKEN_KEY);
@@ -604,6 +604,11 @@ let getface = async (params) => {
             console.log("Me1 Token========>>>>",params.authorization)
             return { success: false, message: 'Authorization token missing.' }
         }
+        let token  = params?.authorization.split(" ")
+        if(!token[1] || token[1].includes('${')){
+            console.log("Me1 Token========>>>>",params.authorization)
+            return { success: false, message: 'Authorization token missing.' }
+        }
         var decodeToken = jwt_decode(params.authorization);
         if (decodeToken){
             let url;
@@ -701,6 +706,11 @@ let getface = async (params) => {
 let getPassport = async (params) => {
     try {
         if(!params?.authorization){
+            console.log("Me2 Token========>>>>",params.authorization)
+            return { success: false, message: 'Authorization token missing.' }
+        }
+        let token  = params?.authorization.split(" ")
+        if(!token[1] || token[1].includes('${')){
             console.log("Me2 Token========>>>>",params.authorization)
             return { success: false, message: 'Authorization token missing.' }
         }
