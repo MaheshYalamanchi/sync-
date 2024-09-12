@@ -8,18 +8,18 @@ let csvUpload = async (data) => {
       let  decodeToken = jwt_decode(data.authorization);
       let url;
       let database;
-      if(decodeToken && decodeToken.tenantId){
-          let tenantResponse = await _schedule.getTennant(decodeToken);
-          if (tenantResponse && tenantResponse.success){
-              url = tenantResponse.message.connectionString+'/'+tenantResponse.message.databaseName;
-              database = tenantResponse.message.databaseName;
-          }else {
-                  return { success: false, message: tenantResponse.message }
-              }
-      } else {
+      // if(decodeToken && decodeToken.tenantId){
+      //     let tenantResponse = await _schedule.getTennant(decodeToken);
+      //     if (tenantResponse && tenantResponse.success){
+      //         url = tenantResponse.message.connectionString+'/'+tenantResponse.message.databaseName;
+      //         database = tenantResponse.message.databaseName;
+      //     }else {
+      //             return { success: false, message: tenantResponse.message }
+      //         }
+      // } else {
           url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
           database = process.env.DATABASENAME;
-      }
+      // }
       let jsonData = {
         url: url,
         database: database
@@ -40,18 +40,18 @@ let csvDownload = async (data) => {
     let  decodeToken = jwt_decode(data.authorization);
     let url;
     let database;
-    if(decodeToken && decodeToken.tenantId){
-        let tenantResponse = await _schedule.getTennant(decodeToken);
-        if (tenantResponse && tenantResponse.success){
-            url = tenantResponse.message.connectionString+'/'+tenantResponse.message.databaseName;
-            database = tenantResponse.message.databaseName;
-        }else {
-                return { success: false, message: tenantResponse.message }
-            }
-    } else {
+    // if(decodeToken && decodeToken.tenantId){
+    //     let tenantResponse = await _schedule.getTennant(decodeToken);
+    //     if (tenantResponse && tenantResponse.success){
+    //         url = tenantResponse.message.connectionString+'/'+tenantResponse.message.databaseName;
+    //         database = tenantResponse.message.databaseName;
+    //     }else {
+    //             return { success: false, message: tenantResponse.message }
+    //         }
+    // } else {
         url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
         database = process.env.DATABASENAME;
-    }
+    // }
     let jsonData = {
       url: url,
       database: database
@@ -137,7 +137,7 @@ let getSessions = async (params) => {
           model: "rooms",
           docType: 1,
           query: {
-              filter:{ complete: { $ne: !0 }, status: "started", updatedAt: { $lt: new Date(Date.now() - 12e4) } },
+              filter:{ complete: { $ne: !0 }, status: "started", updatedAt: { $lt: new Date(Date.now() - 30e4) } },
               update:{$set:{ status: "paused"}}
           }   
         };
