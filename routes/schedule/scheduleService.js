@@ -296,135 +296,6 @@ let roomUpdate = async (params) => {
         }
     }
 };
-let usersDetailsUpdate = async (params) => {
-    try {
-        var getdata = {
-            url:process.env.MONGO_URI,
-            database:"proctor",
-            model: "users",
-            docType: 0,
-            query:{
-                filter: { "_id": params.decodeToken.id },
-                // update: { $set: { verified: params.verified} }
-                update: { $set: { verified: true } }
-            }
-        };
-        let responseData = await invoke.makeHttpCall("post", "update", getdata);
-        if (responseData && responseData.data && responseData.data.statusMessage.nModified) {
-            return { success: true, message: responseData.data.statusMessage}
-        } else {
-            return { success: false, message: 'Data Not Found' };
-        }
-    } catch (error) {
-        if (error && error.code == 'ECONNREFUSED') {
-            return { success: false, message: globalMsg[0].MSG000, status: globalMsg[0].status }
-        } else {
-            return { success: false, message: error }
-        }
-    }
-};
-let userDetails = async (params) => {
-    try {
-        var getdata = {
-            url:process.env.MONGO_URI,
-            database:"proctor",
-            model: "users",
-            docType: 1,
-            query: [
-                {
-                    $match :{ _id : params.id}
-                }
-            ]
-        };
-        let responseData = await invoke.makeHttpCall("post", "aggregate", getdata);
-        if (responseData && responseData.data && responseData.data.statusMessage) {
-            return { success: true, message:responseData.data.statusMessage}
-        } else {
-            return { success: false, message: 'Data Not Found' };
-        }
-    } catch (error) {
-        if (error && error.code == 'ECONNREFUSED') {
-            return { success: false, message: globalMsg[0].MSG000, status: globalMsg[0].status }
-        } else {
-            return { success: false, message: error }
-        }
-    }
-};
-let getCandidateDetailsUpdate = async (params) => {
-    try {
-        let roomsData = await schedule.getRoomDetails(params);
-        if(roomsData && roomsData.success){
-            let jsonData;
-            if (roomsData.message && (roomsData.message.startedAt == null)){
-                jsonData = {
-                    status : 'started',
-                    startedAt : new Date(),
-                    ipaddress: params.body.ipAddress
-                }
-            } else {
-                jsonData = {
-                    status : 'started',
-                    ipaddress: params.body.ipAddress,
-                    updatedAt: new Date()
-                }
-            }
-            var getdata = {   
-                url:process.env.MONGO_URI,
-                database:"proctor",
-                model: "rooms",
-                docType: 0,
-                query:{
-                    filter: { "_id": params.query.id },
-                    update: { $set: jsonData }
-                }
-            };
-            let responseData = await invoke.makeHttpCall("post", "update", getdata);
-            if (responseData && responseData.data && responseData.data.statusMessage.nModified) {
-                return { success: true, message: responseData.data.statusMessage}
-            } else {
-                return { success: false, message: 'Data Not Found' };
-            }
-        } else {
-            return { success: roomsData.success , message: roomsData.message };
-        }
-    } catch (error) {
-        if (error && error.code == 'ECONNREFUSED') {
-            return { success: false, message: globalMsg[0].MSG000, status: globalMsg[0].status }
-        } else {
-            return { success: false, message: error }
-        }
-    }
-};
-let getCandidateDetailsUpdateStop = async (params) => {
-    try {
-        jsonData = {
-            status : 'stopped',
-            stoppedAt : new Date()
-        }
-        var getdata = {
-            url:process.env.MONGO_URI,
-            database:"proctor",
-            model: "rooms",
-            docType: 0,
-            query:{
-                filter: { "_id": params.id },
-                update: { $set: jsonData }
-            }
-        };
-        let responseData = await invoke.makeHttpCall("post", "update", getdata);
-        if (responseData && responseData.data && responseData.data.statusMessage.nModified) {
-            return { success: true, message: responseData.data.statusMessage}
-        } else {
-            return { success: false, message: 'Data Not Found' };
-        }
-    } catch (error) {
-        if (error && error.code == 'ECONNREFUSED') {
-            return { success: false, message: globalMsg[0].MSG000, status: globalMsg[0].status }
-        } else {
-            return { success: false, message: error }
-        }
-    }
-};
 let chatDetails = async (params) => {
     try {
         var getdata = {
@@ -546,12 +417,8 @@ module.exports = {
     userUpdate,
     roomInsertion,
     roomUpdate,
-    usersDetailsUpdate,
-    userDetails,
-    getCandidateDetailsUpdate,
     chatDetails,
     roomFetch,
-    getCandidateDetailsUpdateStop,
     errorupdate,
     user_Update
 }

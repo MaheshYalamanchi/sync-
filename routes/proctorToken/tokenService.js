@@ -47,46 +47,46 @@ let generateToken = async (req) => {
     try {
         let timeout = typeof req.timeout != 'undefined' ? req.timeout : 90
         let template = typeof req.template != 'undefined' ? req.template : "default"
-        let user = {"assessmentId": req.assessmentId,"username": req.username,"nickname": req.nickname, "template": template,"subject":req.subject,"timeout":timeout,tenantId: req.tenantId}
+        let user = {"assessmentId": req?.assessmentId,"username": req?.username,"nickname": req?.nickname, "template": template,"subject":req?.subject,"timeout":timeout,tenantId: req?.tenantId}
         if (!req.roomId){
             user.id = uuid()
         }else{
             user.id = req.roomId
         }
-        user.tags = [req.nickname,req.assessmentId, req.taskId];
-        user.taskId = req.taskId
-        user.nickname = req.nickname.replace(/\s/g, "");
-        user.requestType = req.requestType;
-        user.videoass=req.videoass
+        user.tags = [req?.nickname,req?.assessmentId, req?.taskId];
+        user.taskId = req?.taskId
+        user.nickname = req?.nickname.replace(/\s/g, "");
+        user.requestType = req?.requestType;
+        user.videoass=req?.videoass
         let tokenArg = {
-            nickname : user.nickname,
-            id : user.id,
-            tags : user.tags,
-            username : user.username,
-            template : user.template,
-            subject : user.subject,
-            timeout : user.timeout,
-            videoass : user.videoass,
-            tenantId: user.tenantId
+            nickname : user?.nickname,
+            id : user?.id,
+            tags : user?.tags,
+            username : user?.username,
+            template : user?.template,
+            subject : user?.subject,
+            timeout : user?.timeout,
+            videoass : user?.videoass,
+            tenantId: user?.tenantId
         };
-        user.proctorToken = jwt.sign(tokenArg, secret, { expiresIn: 5400000 });
-        if (user.proctorToken){
+        user.proctorToken = await jwt.sign(tokenArg, secret, { expiresIn: 5400000 });
+        if (user?.proctorToken){
             const data = {
-                "assessmentId": user.assessmentId,
-                "exp": req.exp,
-                "iat": req.iat,
-                "id": user.id,
-                "nickname": user.nickname,
-                "subject": user.subject,
-                "taskId": user.taskId,
-                "template": user.template,
-                "timeout": user.timeout,
-                "tags": user.tags,
-                "username": user.username,
-                "proctorToken": user.proctorToken,
-                "requestType": user.requestType,
-                "videoass": user.videoass,
-                "tenantId": user.tenantId
+                "assessmentId": user?.assessmentId,
+                "exp": req?.exp,
+                "iat": req?.iat,
+                "id": user?.id,
+                "nickname": user?.nickname,
+                "subject": user?.subject,
+                "taskId": user?.taskId,
+                "template": user?.template,
+                "timeout": user?.timeout,
+                "tags": user?.tags,
+                "username": user?.username,
+                "proctorToken": user?.proctorToken,
+                "requestType": user?.requestType,
+                "videoass": user?.videoass,
+                "tenantId": user?.tenantId
             }
             // const decodedToken = jwt.verify(user.proctorToken,secret);
             // decodedToken.testId = req?.testId || null;
@@ -104,7 +104,7 @@ let generateToken = async (req) => {
             //         let responseData = await scheduleService.roomInsertion(decodedToken);
             //     }
             // }
-            return { success: true, message: "Proctor Token",ProctorToken:user.proctorToken ,data:data};
+            return { success: true, message: "Proctor Token",ProctorToken:user?.proctorToken ,data:data};
         }else{
             return {success: false, message:'Error While Generating Token!'};
         }
