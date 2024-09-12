@@ -211,10 +211,6 @@ let fsWrite = async (filename,fileData) => {
 };
 
 module.exports = {
-    eventInfo,
-    updateScore,
-    faceInfo,
-    attachInsertion,
     getRoomDetails,
     // tenantResponse,
     getTennant,
