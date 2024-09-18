@@ -667,7 +667,8 @@ let getface = async (params) => {
                                 exclude:"$exclude",nickname:"$nickname",provider:"$provider",loggedAt:"$loggedAt",ipaddress:"$ipaddress",
                                 useragent:"$useragent",referer:"$referer",createdAt:"$createdAt",similar:"$similar",face:"$face",
                                 username:"$_id",
-                            }
+                            },
+                            returnDocument: 'after' 
                         }
                     };
                     let responseData = await invoke.makeHttpCall("post", "findOneAndUpdate", getdata);
