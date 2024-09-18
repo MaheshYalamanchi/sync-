@@ -670,7 +670,7 @@ let getface = async (params) => {
                             }
                         }
                     };
-                    let responseData = await invoke.makeHttpCall("post", "findOneAndUpdate", getdata);
+                    let responseData = await invoke.makeHttpCall("post", "update", getdata);
                     // console.log('before response ',responseData.data)
                     if (responseData && responseData.data.statusMessage ) {
                         return { success: true, message: responseData.data.statusMessage }
@@ -767,7 +767,7 @@ let getPassport = async (params) => {
                         }
                     }
                 };
-                let responseData = await invoke.makeHttpCall("post", "findOneAndUpdate", getdata);
+                let responseData = await invoke.makeHttpCall("post", "update", getdata);
                 if (responseData && responseData.data.statusMessage) {
                     return { success: true, message: responseData.data.statusMessage }
                     // let response = await schedule_Service.getPassport(decodeToken)
