@@ -1,7 +1,6 @@
 const invoke = require("../../lib/http/invoke");
 const globalMsg = require('../../configuration/messages/message');
 const schedule = require("./schedule")
-var ObjectID = require('mongodb').ObjectID;
 const json = require('../json');
 // function getOperatingSystemInfo(browser) {
 //     try{
@@ -167,10 +166,11 @@ let userFetch = async (params) => {
 			database: params.database,
             model: "users",
             docType: 1,
-            query: {_id:username}
+            // query: {_id:username}
+            query:username
         };
-        let responseData = await invoke.makeHttpCall_userDataService("post", "read", getdata);
-        if (responseData && responseData.data && responseData.data.statusMessage&&responseData.data.statusMessage.length) {
+        let responseData = await invoke.makeHttpCall_userDataService("post", "findById", getdata);
+        if (responseData && responseData.data && responseData.data.statusMessage&&responseData.data.statusMessage) {
             return { success: true, message:responseData.data.statusMessage}
         } else {
             return { success: false, message: 'Data Not Found' };

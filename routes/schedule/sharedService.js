@@ -114,11 +114,11 @@ let validateToken = async (params) => {
                 let userResponse = await scheduleService.userFetch(decodedToken);
                 let responseData;
                 if (userResponse && userResponse.success) {
-                    if (userResponse && userResponse.message && userResponse.message[0].locked != 1) {
+                    if (userResponse && userResponse.message && userResponse.message.locked != 1) {
                         let userUpdateResponse = await scheduleService.user_Update(decodedToken);
                         if (userUpdateResponse && userUpdateResponse.success) {
-                            decodedToken.role = userResponse.message[0].role;
-                            decodedToken.provider = userResponse.message[0].provider;
+                            decodedToken.role = userResponse.message.role;
+                            decodedToken.provider = userResponse.message.provider;
                             let roomsResponse = await scheduleService.roomFetch(decodedToken);
                             if (roomsResponse && roomsResponse.success) {
                                 if ((roomsResponse.message.status !== "accepted") && (roomsResponse.message.status !== "rejected")) {
