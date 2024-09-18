@@ -650,9 +650,9 @@ let getface = async (params) => {
                 // } else {
                     let jsonData =  {
                         "face" : params.face,
-                        "rep" : faceResponse.message[0].metadata.rep,
-                        "threshold" : faceResponse.message[0].metadata.threshold,
-                        "similar" : faceResponse.message[0].metadata.similar
+                        "rep" : faceResponse.message.metadata.rep,
+                        "threshold" : faceResponse.message.metadata.threshold,
+                        "similar" : faceResponse.message.metadata.similar
                     };
                     var getdata = {
                         url: url,
@@ -733,7 +733,7 @@ let getPassport = async (params) => {
                 url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
                 database = process.env.DATABASENAME;
             // }
-            let getCount = await schedule_Service.getUserRoomsCount(decodeToken);
+            // let getCount = await schedule_Service.getUserRoomsCount(decodeToken);
             // if ( getCount.message.length>1 ){
             //     let getPassportResponse = await schedule_Service.GetPassportInsertionResponse(params);
             //     if(getPassportResponse && getPassportResponse.success){
