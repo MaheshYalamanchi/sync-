@@ -116,7 +116,7 @@ let userInsertion = async (params) => {
 let user_Update = async (params) => {
     try {
         let username = params.username.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi,'_')
-        jsonData = {
+        let jsonData = {
             "browser" : {
                 "name" : params.bowser.browser.name,
                 "version" : params.bowser.browser.version
@@ -170,7 +170,7 @@ let userFetch = async (params) => {
             // query: {_id:username}
             query:username
         };
-        let responseData = await invoke.makeHttpCall_userDataService("post", "findById", getdata);
+        let responseData = await invoke.makeHttpCall("post", "findById", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage&&responseData.data.statusMessage) {
             return { success: true, message:responseData.data.statusMessage}
         } else {
