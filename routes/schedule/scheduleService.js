@@ -167,12 +167,12 @@ let userFetch = async (params) => {
 			database: params.database,
             model: "users",
             docType: 1,
-            // query: {_id:username}
-            query:username
+            query: {_id:username}
+            // query:username
         };
-        let responseData = await invoke.makeHttpCall_roomDataService("post", "findById", getdata);
-        if (responseData && responseData.data && responseData.data.statusMessage&&responseData.data.statusMessage) {
-            return { success: true, message:responseData.data.statusMessage}
+        let responseData = await invoke.makeHttpCall_roomDataService("post", "read", getdata);
+        if (responseData && responseData.data && responseData.data.statusMessage&&responseData.data.statusMessage.length) {
+            return { success: true, message:responseData.data.statusMessage[0]}
         } else {
             return { success: false, message: 'Data Not Found' };
         }
@@ -334,11 +334,11 @@ let roomFetch = async (params) => {
 			database: params.database,
             model: "rooms",
             docType: 1,
-            query: params.id
+            query: {_id:params.id}
         };
-        let responseData = await invoke.makeHttpCall_roomDataService("post", "findById", getdata);
-        if (responseData && responseData.data && responseData.data.statusMessage) {
-            return { success: true, message:responseData.data.statusMessage}
+        let responseData = await invoke.makeHttpCall_roomDataService("post", "read", getdata);
+        if (responseData && responseData.data && responseData.data.statusMessage.length) {
+            return { success: true, message:responseData.data.statusMessage[0]}
         } else {
             return { success: false, message: 'Data Not Found' };
         }
