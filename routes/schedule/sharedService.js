@@ -143,7 +143,7 @@ let validateToken = async (params) => {
                         return { success: false, message: "user insertion failed..." }
                     }
                 }
-                if (responseData.success) {
+                if (responseData&&responseData.success) {
                     let getToken = await tokenService.jwtToken(decodedToken);
                     if (getToken) {
                         return { success: true, message: { token: getToken } };
