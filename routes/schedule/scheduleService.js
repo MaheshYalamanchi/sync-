@@ -199,7 +199,7 @@ let userUpdate = async (params) => {
                 update: { $set: jsonData }
             }
         };
-        let responseData = await invoke.makeHttpCall("post", "findOneAndUpdate", getdata);
+        let responseData = await invoke.makeHttpCall_roomDataService("post", "findOneAndUpdate", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage) {
             return { success: true, message: responseData.data.statusMessage}
         } else {
