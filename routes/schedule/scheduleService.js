@@ -71,7 +71,7 @@ const json = require('../json');
 let userInsertion = async (params) => {
     try {
         let username = params.username.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi,'_')
-        jsonData = {
+        let jsonData = {
             "_id" : username,
             // "browser" : {
             //     "name" : params.bowser.browser.name || null,
