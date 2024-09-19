@@ -170,7 +170,7 @@ let userFetch = async (params) => {
             // query: {_id:username}
             query:username
         };
-        let responseData = await invoke.makeHttpCall("post", "findById", getdata);
+        let responseData = await invoke.makeHttpCall_roomDataService("post", "findById", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage&&responseData.data.statusMessage) {
             return { success: true, message:responseData.data.statusMessage}
         } else {
