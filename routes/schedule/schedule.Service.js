@@ -125,11 +125,11 @@ let getFacePassportResponse = async (params) => {
 			database: database,
             model: "attaches",
             docType: 1,
-            query: params.face
+            query: {_id:params.face}
         };
-        let responseData = await invoke.makeHttpCall("post", "findById", getdata);
-        if (responseData && responseData.data && responseData.data.statusMessage) {
-                return { success: true, message:responseData.data.statusMessage}
+        let responseData = await invoke.makeHttpCall("post", "read", getdata);
+        if (responseData && responseData.data && responseData.data.statusMessage.length) {
+                return { success: true, message:responseData.data.statusMessage[0]}
         } else {
             return { success: false, message: 'Data Not Found' };
         }
