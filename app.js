@@ -39,19 +39,20 @@ require('./routes/tenant/index')({ app: app })
 var request = require('request')
 var CronJob = require('cron').CronJob;
 var PauseCronJob = require('cron').CronJob;
-new CronJob('*/3 * * * *', function () {
-  try {
-    request(process.env.STOP_ENDPOINT, function (error, response, body) {
-      if (!error && response.statusCode == 200) {
-        console.log('You will see this message every 3 minutes(stop)');
-      } else {
-        console.log("StopErrorLog====>>>>", error)
-      }
-    })
-  } catch (error) {
-    console.log("StopCatchLog====>>>>", error)
-  }
-}, null, true, "Asia/Calcutta");
+
+// new CronJob('*/3 * * * *', function () {
+//   try {
+//     request(process.env.STOP_ENDPOINT, function (error, response, body) {
+//       if (!error && response.statusCode == 200) {
+//         console.log('You will see this message every 3 minutes(stop)');
+//       } else {
+//         console.log("StopErrorLog====>>>>", error)
+//       }
+//     })
+//   } catch (error) {
+//     console.log("StopCatchLog====>>>>", error)
+//   }
+// }, null, true, "Asia/Calcutta");
 
 new PauseCronJob('*/5 * * * *', function () {
   try {
