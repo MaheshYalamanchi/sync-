@@ -39,6 +39,7 @@ require('./routes/tenant/index')({ app: app })
 var request = require('request')
 var CronJob = require('cron').CronJob;
 var PauseCronJob = require('cron').CronJob;
+
 new CronJob('*/3 * * * *', function () {
   try {
     request(process.env.STOP_ENDPOINT, function (error, response, body) {

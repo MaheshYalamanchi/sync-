@@ -114,11 +114,11 @@ let validateToken = async (params) => {
                 let userResponse = await scheduleService.userFetch(decodedToken);
                 let responseData;
                 if (userResponse && userResponse.success) {
-                    if (userResponse && userResponse.message && userResponse.message[0].locked != 1) {
+                    if (userResponse && userResponse.message && userResponse.message.locked != 1) {
                         let userUpdateResponse = await scheduleService.user_Update(decodedToken);
                         if (userUpdateResponse && userUpdateResponse.success) {
-                            decodedToken.role = userResponse.message[0].role;
-                            decodedToken.provider = userResponse.message[0].provider;
+                            decodedToken.role = userResponse.message.role;
+                            decodedToken.provider = userResponse.message.provider;
                             let roomsResponse = await scheduleService.roomFetch(decodedToken);
                             if (roomsResponse && roomsResponse.success) {
                                 if ((roomsResponse.message.status !== "accepted") && (roomsResponse.message.status !== "rejected")) {
@@ -143,7 +143,7 @@ let validateToken = async (params) => {
                         return { success: false, message: "user insertion failed..." }
                     }
                 }
-                if (responseData.success) {
+                if (responseData&&responseData.success) {
                     let getToken = await tokenService.jwtToken(decodedToken);
                     if (getToken) {
                         return { success: true, message: { token: getToken } };
@@ -650,9 +650,9 @@ let getface = async (params) => {
                 // } else {
                     let jsonData =  {
                         "face" : params.face,
-                        "rep" : faceResponse.message[0].metadata.rep,
-                        "threshold" : faceResponse.message[0].metadata.threshold,
-                        "similar" : faceResponse.message[0].metadata.similar
+                        "rep" : faceResponse.message.metadata.rep,
+                        "threshold" : faceResponse.message.metadata.threshold,
+                        "similar" : faceResponse.message.metadata.similar
                     };
                     var getdata = {
                         url: url,
@@ -667,10 +667,11 @@ let getface = async (params) => {
                                 exclude:"$exclude",nickname:"$nickname",provider:"$provider",loggedAt:"$loggedAt",ipaddress:"$ipaddress",
                                 useragent:"$useragent",referer:"$referer",createdAt:"$createdAt",similar:"$similar",face:"$face",
                                 username:"$_id",
-                            }
+                            },
+                            returnDocument: 'after' 
                         }
                     };
-                    let responseData = await invoke.makeHttpCall_userDataService("post", "findOneAndUpdate", getdata);
+                    let responseData = await invoke.makeHttpCall_roomDataService("post", "findOneAndUpdate", getdata);
                     // console.log('before response ',responseData.data)
                     if (responseData && responseData.data.statusMessage ) {
                         return { success: true, message: responseData.data.statusMessage }
@@ -733,7 +734,7 @@ let getPassport = async (params) => {
                 url = process.env.MONGO_URI+'/'+process.env.DATABASENAME;
                 database = process.env.DATABASENAME;
             // }
-            let getCount = await schedule_Service.getUserRoomsCount(decodeToken);
+            // let getCount = await schedule_Service.getUserRoomsCount(decodeToken);
             // if ( getCount.message.length>1 ){
             //     let getPassportResponse = await schedule_Service.GetPassportInsertionResponse(params);
             //     if(getPassportResponse && getPassportResponse.success){

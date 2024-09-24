@@ -272,10 +272,10 @@ module.exports = function (params) {
         // console.log(req.body,'body data...............')
         let result = await sharedService.getface(req.body)
         if (result && result.success) {
-            app.logger.info({ success: true, message: result.message });
+            // app.logger.info({ success: true, message: result.message });
             app.http.customResponse(res, result.message, 200);
         } else {
-            app.logger.info({ success: false, message: result.message });
+            // app.logger.info({ success: false, message: result.message });
             app.http.customResponse(res, { success: false, message: 'Data Not Found' }, 200);
         }
     } catch (error) {
@@ -294,10 +294,10 @@ module.exports = function (params) {
       try {
           let result = await sharedService.getPassport(req.body)
           if (result && result.success) {
-              app.logger.info({ success: true, message: result.message });
+              // app.logger.info({ success: true, message: result.message });
               app.http.customResponse(res, result.message, 200);
           } else {
-              app.logger.info({ success: false, message: result.message });
+              // app.logger.info({ success: false, message: result.message });
               app.http.customResponse(res, { success: false, message: 'Data Not Found' }, 200);
           }
       } catch (error) {

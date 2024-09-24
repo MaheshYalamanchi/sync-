@@ -1,7 +1,6 @@
 const invoke = require("../../lib/http/invoke");
 const globalMsg = require('../../configuration/messages/message');
 const schedule = require("./schedule")
-var ObjectID = require('mongodb').ObjectID;
 const json = require('../json');
 // function getOperatingSystemInfo(browser) {
 //     try{
@@ -72,7 +71,7 @@ const json = require('../json');
 let userInsertion = async (params) => {
     try {
         let username = params.username.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi,'_')
-        jsonData = {
+        let jsonData = {
             "_id" : username,
             // "browser" : {
             //     "name" : params.bowser.browser.name || null,
@@ -98,6 +97,7 @@ let userInsertion = async (params) => {
             docType: 0,
             query: jsonData
         };
+        // console.log(JSON.stringify(jsonData))
         let responseData = await invoke.makeHttpCall_userDataService("post", "insert", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage) {
             return { success: true, message:responseData.data.statusMessage}
@@ -116,7 +116,7 @@ let userInsertion = async (params) => {
 let user_Update = async (params) => {
     try {
         let username = params.username.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi,'_')
-        jsonData = {
+        let jsonData = {
             "browser" : {
                 "name" : params.bowser.browser.name,
                 "version" : params.bowser.browser.version
@@ -168,10 +168,11 @@ let userFetch = async (params) => {
             model: "users",
             docType: 1,
             query: {_id:username}
+            // query:username
         };
-        let responseData = await invoke.makeHttpCall_userDataService("post", "read", getdata);
+        let responseData = await invoke.makeHttpCall_roomDataService("post", "read", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage&&responseData.data.statusMessage.length) {
-            return { success: true, message:responseData.data.statusMessage}
+            return { success: true, message:responseData.data.statusMessage[0]}
         } else {
             return { success: false, message: 'Data Not Found' };
         }
@@ -198,7 +199,7 @@ let userUpdate = async (params) => {
                 update: { $set: jsonData }
             }
         };
-        let responseData = await invoke.makeHttpCall_userDataService("post", "findOneAndUpdate", getdata);
+        let responseData = await invoke.makeHttpCall_roomDataService("post", "findOneAndUpdate", getdata);
         if (responseData && responseData.data && responseData.data.statusMessage) {
             return { success: true, message: responseData.data.statusMessage}
         } else {
@@ -333,11 +334,11 @@ let roomFetch = async (params) => {
 			database: params.database,
             model: "rooms",
             docType: 1,
-            query: params.id
+            query: {_id:params.id}
         };
-        let responseData = await invoke.makeHttpCall_roomDataService("post", "findById", getdata);
-        if (responseData && responseData.data && responseData.data.statusMessage) {
-            return { success: true, message:responseData.data.statusMessage}
+        let responseData = await invoke.makeHttpCall_roomDataService("post", "read", getdata);
+        if (responseData && responseData.data && responseData.data.statusMessage.length) {
+            return { success: true, message:responseData.data.statusMessage[0]}
         } else {
             return { success: false, message: 'Data Not Found' };
         }
