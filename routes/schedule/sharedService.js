@@ -111,28 +111,22 @@ let validateToken = async (params) => {
                 decodedToken.bowserDetails = params.body.bowserDetails;
                 decodedToken.url = url;
                 decodedToken.database = database;
-                console.log("log1==========>>>>>",JSON.stringify(decodedToken))
                 let userResponse = await scheduleService.userFetch(decodedToken);
                 let responseData;
                 if (userResponse && userResponse.success) {
-                    console.log("log2==========>>>>>",JSON.stringify(userResponse))
                     if (userResponse && userResponse.message && userResponse.message.locked != 1) {
-                        console.log("log3==========>>>>>",JSON.stringify(userResponse))
                         let userUpdateResponse = await scheduleService.user_Update(decodedToken);
                         if (userUpdateResponse && userUpdateResponse.success) {
-                            console.log("log8==========>>>>>",JSON.stringify(userUpdateResponse))
                             decodedToken.role = userResponse.message.role;
                             decodedToken.provider = userResponse.message.provider;
                             let roomsResponse = await scheduleService.roomFetch(decodedToken);
                             if (roomsResponse && roomsResponse.success) {
-                                console.log("log9==========>>>>>",JSON.stringify(roomsResponse))
                                 if ((roomsResponse.message.status !== "accepted") && (roomsResponse.message.status !== "rejected")) {
                                     responseData = await scheduleService.roomUpdate(decodedToken)
                                 } else {
                                     return { success: false, message: 'Eroor while updating roomRecord' };
                                 }
                             } else {
-                                console.log("log10==========>>>>>",JSON.stringify(roomsResponse))
                                 responseData = await scheduleService.roomInsertion(decodedToken);
                             }
                         }
@@ -140,10 +134,8 @@ let validateToken = async (params) => {
                         return { success: false, message: 'Data Not Found' };
                     }
                 } else {
-                    console.log("log4==========>>>>>",JSON.stringify(decodedToken))
                     let response = await scheduleService.userInsertion(decodedToken);
                     if (response && response.success) {
-                        console.log("log5==========>>>>>",JSON.stringify(response))
                         decodedToken.role = response.message.role;
                         decodedToken.provider = response.message.provider;
                         responseData = await scheduleService.roomInsertion(decodedToken);
@@ -152,10 +144,8 @@ let validateToken = async (params) => {
                     }
                 }
                 if (responseData&&responseData.success) {
-                    console.log("log6==========>>>>>",JSON.stringify(responseData))
                     let getToken = await tokenService.jwtToken(decodedToken);
                     if (getToken) {
-                        console.log("log7==========>>>>>",JSON.stringify(getToken))
                         return { success: true, message: { token: getToken } };
                     } else {
                         return { success: false, message: 'Error While Generating Token!' };
