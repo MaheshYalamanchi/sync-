@@ -155,7 +155,7 @@ let validateToken = async (params) => {
                     console.log("log6==========>>>>>",JSON.stringify(responseData))
                     let getToken = await tokenService.jwtToken(decodedToken);
                     if (getToken) {
-                        console.log("log7==========>>>>>",JSON.stringify(responseData))
+                        console.log("log7==========>>>>>",JSON.stringify(getToken))
                         return { success: true, message: { token: getToken } };
                     } else {
                         return { success: false, message: 'Error While Generating Token!' };
